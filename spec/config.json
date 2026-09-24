@@ -1,0 +1,18 @@
+{
+  "language": "pt-BR",
+  "tracker": {
+    "type": "github",
+    "taskPattern": "TASK-\\d+"
+  },
+  "layers": [
+    "product"
+  ],
+  "nonCodePaths": [
+    "spec/",
+    "README.md",
+    "AGENTS.md",
+    ".github/",
+    ".claude/",
+    "scripts/spec"
+  ]
+}

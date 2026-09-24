@@ -5,7 +5,8 @@
     "taskPattern": "TASK-\\d+"
   },
   "layers": [
-    "product"
+    "product",
+    "model"
   ],
   "nonCodePaths": [
     "spec/",

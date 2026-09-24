@@ -1,0 +1,30 @@
+# Iconula — Modelo conceitual
+
+- ✓ **Catálogo**
+  - ✓ igual para todas as contas; não muda durante o uso
+- ✓ **Seção**
+  - ✓ sigla: identidade; imutável
+  - ✓ pertence a 1 **Catálogo**
+  - ✓ tipos: **Seleção** | **Especial**
+  - ✓ **Seleção** pertence a 1 **Grupo da Copa**
+  - ✓ posição no álbum físico: define a ordem do álbum
+- ✓ **Figurinha**
+  - ✓ código: identidade; imutável
+  - ✓ pertence a 1 **Seção**
+- ✓ **Grupo da Copa**
+  - ✓ letra: identidade
+- ✓ **Conta**
+  - ✓ estados de atestação: pendente | atestada
+  - ✓ pendente → atestada: o usuário atesta no primeiro acesso
+  - ✓ estados de aceite dos textos: pendente | em dia
+  - ✓ pendente → em dia: o usuário aceita as versões vigentes da política e dos termos
+  - ✓ em dia → pendente: publicação de versão com mudança material
+- ✓ **Coleção**
+  - ✓ pertence a 1 **Conta**
+  - ✓ uma **Contagem** por **Figurinha** do catálogo
+  - ✓ estados por figurinha: Faltante (derivado), Colada (derivado), Repetida (derivado)
+- ✓ **Link do catálogo**
+  - ✓ pertence a 1 **Conta**
+  - ✓ estados: desligado | ligado; nasce desligado
+  - ✓ desligado → ligado: o dono liga
+  - ✓ ligado → desligado: o dono desliga

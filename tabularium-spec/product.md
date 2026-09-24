@@ -10,8 +10,11 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - Verificação automática no PR, sem instalar nada além do Node
 
 ## Glossário
-- **Spec**: pasta com o documento de produto, os registros de decisão e a configuração de um projeto
+- **Spec**: pasta com o documento de produto, o modelo conceitual, os registros de decisão e a configuração de um projeto
 - **Documento de produto**: arquivo único que descreve o que o produto é e seu comportamento observável
+- **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
+- **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
+- **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
 - **Item**: linha do documento de produto: requisito, regra, regra transversal ou não funcional
   - **Requisito**: capacidade do produto, na forma verbo + objeto
   - **Regra**: fato testável que restringe um requisito
@@ -38,10 +41,12 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
   - ✓ Padrão de task novo não reescreve históricos
 - ✓ Oferecer a troca do exemplo incluído por um esqueleto vazio
+- Criar o esqueleto do modelo conceitual a pedido
 - ✓ Avisar quando um arquivo de instruções específico de um agente anula as instruções comuns
 
 ### Extração da spec de código existente
-- ✓ Gerar documento de produto e decisões a partir do código, dos testes e da documentação existente
+- ✓ Gerar documento de produto e decisões a partir do código, dos testes e da documentação existente ⇢ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
+  - Modelo conceitual vem do comportamento e do vocabulário do domínio, nunca do schema; o que só existe no banco vira pergunta
   - ✓ Item só é marcado implementado com evidência no código
   - ✓ Item só documentado vira pergunta: compromisso ou documentação desatualizada
   - ✓ Divergência entre código e documentação vira pergunta; se valer o documentado, vira mudança comprometida
@@ -51,7 +56,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 
 ### Documento de produto
-- ✓ Descrever o produto num único arquivo, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo
+- ✓ Descrever o produto num único arquivo, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo ⇢ Descrever o produto em dois arquivos lidos juntos: o documento de produto, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo; e o modelo conceitual, opcional
   - ✓ Requisitos e regras em listas aninhadas, sem IDs nem âncoras
   - ✓ Domínios subdivididos quando crescem demais ou misturam assuntos, a julgamento
   - ✓ Cada conceito tem uma única casa; nenhuma afirmação se repete entre seções
@@ -63,11 +68,27 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Indicar o estado de cada item: implementado, comprometido ou mudança comprometida
   - ✓ Glossário, diferenciais e fora de escopo não levam estado
 
+### Modelo conceitual
+- Descrever a estrutura do domínio num modelo conceitual
+  - O glossário define cada termo; o modelo estrutura, sem redefinir: relações com cardinalidade, estados e transições, invariantes
+  - Termo definido pela própria condição mantém a condição no glossário; o modelo só cita o estado
+  - Sem informação de implementação; identificador só quando é conceito de negócio
+  - Atributos só quando têm regra ou importam ao usuário
+  - Invariantes do domínio vivem no modelo; regras transversais ficam com o comportamento
+  - Um bloco por entidade, em lista plana; agrupamento por domínio só quando a lista crescer
+  - Relação com verbo, cardinalidade (1, 0..1, N, 0..N) e entidade-alvo, escrita uma vez, no bloco da entidade dependente; relação N:N no bloco da entidade mais central
+  - Estado derivado fica na entidade dona do atributo que o deriva, marcado como derivado
+  - Estados registrados listados, e uma transição por linha com quem ou que ação a provoca
+  - Modelo e documento de produto não se referenciam; compartilham o vocabulário do glossário
+  - Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
+  - Produto sem estrutura relevante dispensa o modelo
+
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
   - ✓ Só decisões vigentes; a que deixa de valer é apagada, salvo se explica um item de fora de escopo
   - ✓ Mudança de decisão move a escolha anterior para alternativas descartadas e registra a mudança no histórico
   - ✓ O porquê vem do humano; o agente nunca o inventa
+  - Decisões sobre o modelo conceitual ficam na camada de produto
 - ✓ Gerar o mapa de decisões de cada camada, para o agente abrir só o que a tarefa exige
 - ✓ Organizar as decisões de uma camada a pedido, confrontando-as com o documento de referência
   - ✓ Detecta contradição, decisões contraditórias entre si, órfãs, lacunas, sobreposição, mistura de assuntos, camada errada e problemas de forma
@@ -79,7 +100,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 ### Amadurecimento de ideias
 - ✓ Esmiuçar uma ideia contra a spec em rodadas de perguntas interativas, até cada ponto estar decidido
   - ✓ Aceita como entrada texto livre, issue de requisito ou proposta aberta
-  - ✓ Confronta a ideia com glossário, regras transversais, não funcionais, decisões vigentes e código
+  - ✓ Confronta a ideia com glossário, regras transversais, não funcionais, decisões vigentes e código ⇢ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
   - ✓ Classifica a ideia como acréscimo, ajuste de compromisso ou mudança significativa e levanta a cascata
   - ✓ Proposta rediscutida volta a rascunho, e a defasagem em relação à branch principal vira pergunta
   - ✓ Ideia em texto livre ganha a oferta de abrir uma issue de requisito
@@ -122,6 +143,9 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Barrar PR de código que cria mudança comprometida ou altera decisões, salvo com rótulo de divergência
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
+- Validar o modelo conceitual, quando existir, com as mesmas regras do documento de produto
+- Barrar entidade do modelo conceitual ausente do glossário; termo do glossário fora do modelo é permitido
+- Avisar sobre termos de implementação no modelo conceitual
 - Exigir atualização da spec quando o PR altera código ligado a ela
 - Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão
 

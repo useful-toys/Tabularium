@@ -15,6 +15,7 @@ App web para quem coleciona o álbum oficial Panini da Copa do Mundo FIFA 2026: 
   - **Seleção**: um dos 48 times classificados, sigla FIFA (BRA, ARG…), 20 figurinhas; 01 é o escudo, 13 a foto do time, as demais são jogadores
   - **Especial**: Extras FIFA (`FWC`, 20 figurinhas: troféu, mascotes, campeãs do passado) e Coca-Cola (`COC`, 14)
 - **Grupo da Copa**: os 12 grupos do torneio (A–L), com 4 seleções cada
+- **Conta**: usuário do app, identificado pela conta Google
 - **Coleção**: a contagem de cada figurinha do catálogo para um usuário
 - **Contagem**: unidades registradas de uma figurinha (0 a 99)
 - **Faltante**: contagem 0
@@ -110,8 +111,6 @@ App web para quem coleciona o álbum oficial Panini da Copa do Mundo FIFA 2026: 
 - ✓ Aviso de independência: sem vínculo com Panini ou FIFA; marcas pertencem aos titulares
 
 ## Regras transversais
-- ✓ A identidade de uma figurinha é seu código; nunca muda
-- ✓ Colada é presumida pela contagem; não existe "tenho, mas não colei"
 - ✓ A coleção de um usuário só é visível a ele, exceto pelo link do catálogo ativo
 - ✓ Nenhum dado é tratado além da identidade Google, da coleção e das métricas de uso consentidas
 - ✓ Falha de salvamento nunca trava o app e sempre é informada

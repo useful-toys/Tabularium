@@ -46,8 +46,8 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 2. **Proposta**: com a ideia madura, o agente abre um pull request que altera só a spec, já com o texto final. Nada de rascunho de ideias.
 3. **Revisão**:
    - um check de CI valida as regras da spec e **bloqueia** o merge se algo estiver errado;
-   - um agente revisor (Copilot ou Claude) comenta possíveis lacunas, sem bloquear;
-   - quem aprova é uma pessoa.
+   - um agente de revisão (Copilot ou Claude) comenta possíveis lacunas, sem bloquear;
+   - quem decide é uma pessoa, ao fazer o merge.
 4. **Aceite**: o merge do PR transforma a proposta em compromisso. Os itens entram na spec sem `✓`, ou com `⇢`.
 5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens como `✓`. O check do CI impede marcar algo como implementado num PR sem código.
 
@@ -72,7 +72,7 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 | `spec/decisions/<camada>/README.md` | Mapa gerado | O agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
 | `spec/config.json` | Camadas, idioma, caminhos que não são código | Alterado pelo `/spec-init` |
 | `AGENTS.md`, `spec/AGENTS.md` | Processo; regras de formato e de mudança (fonte única) | Sem `CLAUDE.md`: a presença dele anula os `AGENTS.md` no Claude Code |
-| `REVIEW.md` | Checklist para agentes revisores (Copilot code review) | Revisão consultiva |
+| `REVIEW.md` | Checklist para agentes de revisão (Copilot code review) | Revisão consultiva |
 
 ### Estados de um item
 
@@ -99,7 +99,7 @@ flowchart LR
   G -. a pedido .-> S["/spec-issue<br/>issue requirement"]
   D --> P["/spec-propose<br/>PR draft: requirement + spec-only"]
   P --> R["CI: spec-check (bloqueia)<br/>+ revisão consultiva (/spec-impact, Copilot)"]
-  R --> A[Revisor aprova<br/>merge = compromisso]
+  R --> A[Humano decide o merge<br/>merge = compromisso]
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
@@ -110,7 +110,7 @@ flowchart LR
 5. **Validar**:
    - `spec-check` bloqueante;
    - revisão consultiva que nunca bloqueia: Copilot via ruleset e `REVIEW.md`, e/ou Claude via job `spec-review` com `ANTHROPIC_API_KEY`. O conteúdo do PR é tratado como dado, não como instrução.
-6. **Aceitar**: qualquer revisor. O merge torna o texto compromisso. PR fechado sem merge é recusa.
+6. **Aceitar**: qualquer pessoa com permissão de merge, sem aprovação formal obrigatória. O agente só integra a pedido explícito dela. O merge torna o texto compromisso. PR fechado sem merge é recusa.
 7. **Entregar**: implementação e `/spec-sync` no mesmo PR:
    - marca `✓` e resolve `⇢`;
    - cita a issue com `Closes #N`;
@@ -127,7 +127,7 @@ flowchart LR
 | Mapa de decisões desatualizado, frontmatter ou seções faltando, link ou referência no `product.md` | erro |
 | Referência temporal no `product.md`, `CLAUDE.md` presente | aviso |
 
-A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atualizada, e aprovações descartadas a cada commit novo. Isso protege contra propostas concorrentes: uma proposta aceita antes força a outra a ser revalidada.
+A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atualizada, e, se a equipe exigir aprovação, aprovações descartadas a cada commit novo. Isso protege contra propostas concorrentes: uma proposta aceita antes força a outra a ser revalidada.
 
 ### Manutenção
 

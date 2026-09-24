@@ -59,4 +59,4 @@ Proposta de requisito. Refs #<issue>
 - **Origem issue**: comente na issue as decisões adicionais tomadas desde o último resumo e o link do PR. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
 
 ## 5. Fechamento
-Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é o revisor.
+Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.

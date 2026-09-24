@@ -161,14 +161,14 @@ Template de repositório que mantém, junto do código, uma especificação viva
 
 ## Regras transversais
 - ✓ Toda mudança, inclusive só de spec, entra por PR na branch principal protegida
-- ✓ Merge exige branch atualizada com a principal e aprovação posterior ao último commit ⇢ Merge exige branch atualizada com a principal; a aceitação é o merge decidido por um humano, feito por ele ou pelo agente a pedido dele, sem aprovação formal obrigatória
-- ✓ Qualquer revisor pode aceitar uma proposta ⇢ Qualquer pessoa com permissão de merge pode aceitar uma proposta
+- ✓ Merge exige branch atualizada com a principal; a aceitação é o merge decidido por um humano, feito por ele ou pelo agente a pedido dele, sem aprovação formal obrigatória
+- ✓ Qualquer pessoa com permissão de merge pode aceitar uma proposta
 - ✓ Rótulos de issues e PRs em inglês
 - ✓ A spec descreve a branch principal: item implementado é verdade no código; comprometido é intenção registrada
 - ✓ Ideias em amadurecimento vivem na conversa ou no tracker, nunca na spec; a spec recebe só texto final aceito
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
-- O agente só integra um PR a pedido explícito do humano, PR a PR
+- ✓ O agente só integra um PR a pedido explícito do humano, PR a PR
 - Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado
 

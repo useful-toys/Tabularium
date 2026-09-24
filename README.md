@@ -37,7 +37,7 @@ AGENTS.md                       processo (lido por qualquer agente)
 REVIEW.md                       instruções de revisão para agentes revisores (ex.: Copilot code review)
 spec/AGENTS.md                  regras de formato e de mudança da spec
 spec/product.md                 o que o produto é e como se comporta
-spec/config.json                preferências: tracker, padrão de task, camadas, idioma
+spec/config.json                preferências: camadas, idioma, caminhos que não são código
 spec/decisions/<camada>/        uma decisão vigente por arquivo + mapa gerado (README.md)
 scripts/spec.mjs                build-map e check (Node, sem dependências)
 .claude/skills/                 spec-init, spec-extract, spec-grill, spec-ideas, spec-issue,

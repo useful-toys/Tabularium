@@ -34,6 +34,7 @@ export const LOCALES = {
     decisionItems: ['- Decisão:', '- Contexto:', '- Alternativas descartadas', '- Consequências'],
     historyHeading: '## Histórico',
     reorgLabel: 'organização',
+    initialLabel: 'plano-inicial',
     mapTitle: (layer) => `# Decisões: ${layer}`,
     mapNotice: '<!-- Gerado por `node scripts/spec.mjs build-map`. Não edite à mão. -->',
     loadWhen: 'Carregar quando',
@@ -112,7 +113,7 @@ export function buildMaps(root, spec = 'spec') {
 
 // ---------- decisões ----------
 
-export function checkDecision(file, text, { locale, taskPattern }) {
+export function checkDecision(file, text, { locale }) {
   const errors = [];
   const { data, body } = parseFrontmatter(text);
   if (!data) return [`${file}: sem frontmatter`];
@@ -135,8 +136,8 @@ export function checkDecision(file, text, { locale, taskPattern }) {
   if (lines.slice(h + 1).some((l) => l.startsWith('## '))) {
     errors.push(`${file}: \`${locale.historyHeading}\` deve ser a última seção`);
   }
-  // #N (issue ou PR do GitHub) é sempre aceito, além do padrão do tracker.
-  const entry = new RegExp(`^- \\d{4}-\\d{2}-\\d{2} (${taskPattern}|#\\d+|${locale.reorgLabel}): \\S`);
+  // Origem da entrada: #N (issue ou PR do GitHub), organização ou plano inicial.
+  const entry = new RegExp(`^- \\d{4}-\\d{2}-\\d{2} (#\\d+|${locale.reorgLabel}|${locale.initialLabel}): \\S`);
   const entries = lines.slice(h + 1).filter((l) => l.startsWith('- '));
   if (entries.length === 0) errors.push(`${file}: histórico vazio`);
   for (const e of entries) {
@@ -288,7 +289,7 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
     }
     for (const file of decisionFiles(root, layer, spec)) {
       const text = readFileSync(join(root, spec, 'decisions', layer, file), 'utf8');
-      errors.push(...checkDecision(`decisions/${layer}/${file}`, text, { locale, taskPattern: config.tracker.taskPattern }));
+      errors.push(...checkDecision(`decisions/${layer}/${file}`, text, { locale }));
     }
   }
 

@@ -12,4 +12,4 @@ carregar-quando: mudança em desfazer ou confirmação
   - Aceita: erro só se corrige se percebido
 
 ## Histórico
-- 2026-01-02 TASK-1: decisão criada
+- 2026-01-02 #1: decisão criada

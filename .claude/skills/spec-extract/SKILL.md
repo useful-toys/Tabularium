@@ -27,7 +27,7 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
 5. **Regras transversais, Não funcionais e Fora de escopo**: extraia e confirme da mesma forma.
 6. **Decisões** (`spec/decisions/product/`):
    - ADRs e decisões antigas: converta ao novo formato só as decisões **de produto** e **vigentes**. As técnicas vão para a camada técnica correspondente, se existir em `spec/config.json`; senão, liste-as no relatório. As obsoletas não migram.
-   - Histórico: `AAAA-MM-DD <task ou organização>: migrada de <documento de origem>`, com a data de hoje.
+   - Histórico: `AAAA-MM-DD organização: migrada de <documento de origem>`, com a data de hoje.
    - Lacuna (escolha não óbvia sem justificativa): escreva `tema` e `decisao` e pergunte o contexto e as alternativas descartadas.
 7. **Valide**: `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`.
 

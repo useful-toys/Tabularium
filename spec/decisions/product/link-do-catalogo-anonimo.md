@@ -14,4 +14,4 @@ carregar-quando: mudança em compartilhamento, visibilidade da coleção ou priv
   - Aceita: quem tem o link vê a coleção enquanto ele estiver ligado
 
 ## Histórico
-- 2026-08-05 TASK-079: decisão criada
+- 2026-08-05 #79: decisão criada

@@ -13,4 +13,4 @@ carregar-quando: mudança em textos de apoio, ajuda, rótulos ou onboarding
   - Aceita: iniciantes aprendem pelo uso
 
 ## Histórico
-- 2026-06-12 TASK-049: decisão criada
+- 2026-06-12 #49: decisão criada

@@ -15,6 +15,6 @@ carregar-quando: mudança em confirmação, desfazer ou fluxo de ajuste
   - Aceita: erro só é corrigido se o usuário perceber a tempo
 
 ## Histórico
-- 2026-09-20 TASK-091: limite de desfazer passa de 10 para 20 (comprometido, ainda não entregue)
-- 2026-06-18 TASK-052: limite de desfazer passa de 1 para 10; "desfazer só o último" vira alternativa descartada
-- 2026-06-02 TASK-041: decisão criada
+- 2026-09-20 #91: limite de desfazer passa de 10 para 20 (comprometido, ainda não entregue)
+- 2026-06-18 #52: limite de desfazer passa de 1 para 10; "desfazer só o último" vira alternativa descartada
+- 2026-06-02 #41: decisão criada

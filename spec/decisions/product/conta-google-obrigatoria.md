@@ -13,4 +13,4 @@ carregar-quando: mudança em entrada, acesso sem conta, provedores de login ou d
   - Aceita: quem não quer conta Google não usa o app
 
 ## Histórico
-- 2026-05-10 TASK-012: decisão criada
+- 2026-05-10 #12: decisão criada

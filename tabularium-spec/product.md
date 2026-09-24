@@ -6,9 +6,9 @@ Template de repositório que mantém, junto do código, uma especificação viva
 ## Diferenciais
 - A spec cabe no contexto de um agente: arquivos densos, lidos de uma vez ou sob demanda
 - A spec nunca mente sobre o que está implementado: cada item diz se é realidade ou compromisso
-- Funciona com qualquer agente que leia `AGENTS.md`, sem ferramenta proprietária
+- Funciona com qualquer agente que leia `AGENTS.md`, sem ferramenta proprietária de agente
 - Verificação automática no PR, sem instalar nada além do Node
-- Evolui pelo fluxo git que a equipe já usa: issue como fila, PR como proposta, merge como aceitação, branch principal protegida
+- Evolui pelo fluxo git e GitHub que a equipe já usa, sem processo próprio
 
 ## Glossário
 - **Spec**: pasta com o documento de produto, o modelo conceitual, os registros de decisão e a configuração de um projeto
@@ -127,7 +127,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
-  - Na atualização, a descrição guia o reencaixe do diff na nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
+  - No rebase sobre a branch principal, a descrição guia o reencaixe do diff na nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e issue de requisito mencionam uma à outra; a issue recebe as decisões adicionais
 - ✓ Revisar uma proposta de forma consultiva, comentando classificação, cascata, decisões, conflitos e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pelo revisor de código do Copilot, por um agente no CI com chave própria, ou pelos dois
@@ -177,7 +177,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Portabilidade: verificação roda em Windows e Linux só com Node, sem dependências
 - ✓ Compatibilidade: instruções lidas por qualquer agente que siga a convenção de `AGENTS.md`
 - ✓ Determinismo: mapas e verificações gerados por script, sem gastar tokens do agente
-- Plataforma: GitHub — issues, PRs, proteção de branch, Actions e revisão do Copilot
+- Plataforma: GitHub — issues, PRs, proteção de branch e Actions
 
 ## Fora de escopo
 - **Arquivos de instruções específicos de um agente** — permanente: anulariam as instruções comuns e duplicariam regras
@@ -186,4 +186,4 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Solicitações, backlog e ideias adiadas na spec** — permanente: pertencem ao tracker; ocupariam o contexto do agente sem informar suas decisões
 - **Documentação em formatos convencionais mantida na spec** — permanente: visão, casos de uso, diagramas, histórias e BDD consomem muitos tokens e divergem; são exportados a pedido
 - **Script de instalação** — nesta versão: adoção por template do GitHub ou cópia de arquivos
-- **Outros hubs git, trackers, plataformas de CI e provedores de modelo** — nesta versão: complexidade que não queremos agora
+- **Outros hubs git, trackers, plataformas de CI e provedores de modelo além do Copilot e do Claude** — nesta versão: complexidade que não queremos agora

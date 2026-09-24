@@ -15,5 +15,5 @@ carregar-quando: mudança em ordenação, agrupamento ou posição dos especiais
   - Aceita: duas ordens para o usuário conhecer
 
 ## Histórico
-- 2026-07-01 TASK-061: Extras FIFA e Coca-Cola fixos nas pontas em qualquer ordem
-- 2026-06-10 TASK-047: decisão criada
+- 2026-07-01 #61: Extras FIFA e Coca-Cola fixos nas pontas em qualquer ordem
+- 2026-06-10 #47: decisão criada

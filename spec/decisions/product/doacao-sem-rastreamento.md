@@ -14,4 +14,4 @@ carregar-quando: mudança em doação, monetização ou métricas
   - Aceita: nenhuma visibilidade sobre quem apoia
 
 ## Histórico
-- 2026-08-20 TASK-085: decisão criada
+- 2026-08-20 #85: decisão criada

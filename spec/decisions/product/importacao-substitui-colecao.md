@@ -13,4 +13,4 @@ carregar-quando: mudança em importação, exportação ou desfazer
   - Aceita: importar por engano só se desfaz com outro arquivo exportado antes
 
 ## Histórico
-- 2026-07-08 TASK-066: decisão criada
+- 2026-07-08 #66: decisão criada

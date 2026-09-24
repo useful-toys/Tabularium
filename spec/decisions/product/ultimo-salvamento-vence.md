@@ -13,4 +13,4 @@ carregar-quando: mudança em salvamento, sincronização ou uso em vários apare
   - Aceita: perda de ajustes no uso simultâneo, registrada como limitação no product.md
 
 ## Histórico
-- 2026-06-02 TASK-041: decisão criada
+- 2026-06-02 #41: decisão criada

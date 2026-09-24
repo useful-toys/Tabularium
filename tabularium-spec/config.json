@@ -5,5 +5,5 @@
     "taskPattern": "plano-inicial|#\\d+"
   },
   "layers": ["product"],
-  "nonCodePaths": ["tabularium-spec/", "spec/product.md", "spec/decisions/", "spec/plans/", "spec/config.json", "README.md"]
+  "nonCodePaths": ["tabularium-spec/", "spec/product.md", "spec/decisions/", "spec/config.json", "README.md"]
 }

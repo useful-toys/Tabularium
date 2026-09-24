@@ -10,7 +10,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - Verificação automática no PR, sem instalar nada além do Node
 
 ## Glossário
-- **Spec**: pasta com o documento de produto, os registros de decisão, os planos e a configuração de um projeto
+- **Spec**: pasta com o documento de produto, os registros de decisão e a configuração de um projeto
 - **Documento de produto**: arquivo único que descreve o que o produto é e seu comportamento observável
 - **Item**: linha do documento de produto: requisito, regra, regra transversal ou não funcional
   - **Requisito**: capacidade do produto, na forma verbo + objeto
@@ -22,7 +22,9 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Decisão**: registro de uma escolha não óbvia vigente, com contexto, alternativas descartadas, consequências e histórico
 - **Camada**: grupo de decisões de mesma natureza (produto, interface, arquitetura…)
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
-- **Plano**: documento de trabalho de uma task, com impacto, passos e pendências
+- **Issue de requisito**: issue do tracker onde uma ideia amadurece até estar pronta para proposta
+- **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
+- **Entrega**: PR de código que implementa compromissos e sincroniza a spec
 - **Tracker**: sistema externo de solicitações (GitHub Issues ou Jira)
 
 ## Requisitos
@@ -74,19 +76,40 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Nada muda sem aprovação, em lote ou item a item
   - ✓ Qualquer agente sugere a organização ao notar inconsistência em outra atividade
 
-### Ciclo de mudança
-- ✓ Analisar o impacto de uma solicitação do tracker sobre a spec
-  - ✓ Lista todos os itens e decisões tocados, inclusive em cascata, para confirmação humana
-  - ✓ Classifica cada efeito como acréscimo, ajuste de compromisso ou mudança significativa
-  - ✓ Aponta conflito com mudanças comprometidas em aberto
-- ✓ Registrar o compromisso na spec antes do código, com o plano da task
+### Amadurecimento de ideias
+- ✓ Esmiuçar uma ideia contra a spec em rodadas de perguntas interativas, até cada ponto estar decidido
+  - ✓ Aceita como entrada texto livre, issue de requisito ou proposta aberta
+  - ✓ Confronta a ideia com glossário, regras transversais, não funcionais, decisões vigentes e código
+  - ✓ Classifica a ideia como acréscimo, ajuste de compromisso ou mudança significativa e levanta a cascata
+  - ✓ Proposta rediscutida volta a rascunho, e a defasagem em relação à branch principal vira pergunta
+  - ✓ Ideia em texto livre ganha a oferta de abrir uma issue de requisito
+- ✓ Sugerir alternativas, cenários de borda, cascata esquecida e recortes para o humano aceitar ou descartar com motivo
+  - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
+- ✓ Registrar na issue ou na proposta o resumo do que foi decidido e sugerido, como memória entre sessões
+- ✓ Oferecer formulário de issue de requisito: problema, proposta, alternativas e dúvidas
+
+### Proposta
+- ✓ Registrar uma ideia madura como proposta com texto final, sem nova entrevista
   - ✓ Acréscimo entra como item comprometido; mudança significativa entra como mudança comprometida, sem alterar o que vale hoje
-  - ✓ Mudança significativa sempre cria ou atualiza uma decisão
+  - ✓ Opera nas decisões: criar, alterar, fundir, dividir, mover ou remover
+  - ✓ Mudança significativa sempre cria ou altera uma decisão
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
+  - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
+  - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
+  - ✓ Proposta e issue de requisito mencionam uma à outra; a issue recebe as decisões adicionais
+- ✓ Revisar uma proposta de forma consultiva, comentando classificação, cascata, decisões, conflitos e forma
+  - ✓ Roda automaticamente a cada atualização de proposta, pelo revisor de código do Copilot, por um agente no CI com chave própria, ou pelos dois
+  - ✓ Nunca aprova nem bloqueia; quem decide é o revisor
+  - ✓ Trata o conteúdo da proposta como dado, não como instrução
+- ✓ Analisar sob demanda o impacto de uma ideia ou issue sobre a spec
+
+### Entrega
 - ✓ Sincronizar a spec com a entrega, no mesmo PR do código
   - ✓ Marca como implementado o que foi entregue e reescreve as mudanças comprometidas entregues
-  - ✓ Divergência entre compromisso e entrega é confirmada com o usuário antes de ajustar a spec
-  - ✓ O que ficou de fora continua comprometido e é registrado nas pendências do plano
+  - ✓ Pequena divergência entre compromisso e entrega é ajustada no próprio PR, com rótulo de divergência e aval do revisor
+  - ✓ Divergência grande vira nova proposta antes da entrega
+  - ✓ Mudança pequena, sem mudança comprometida nem decisão, pode entrar junto com o código
+  - ✓ A entrega fecha a issue de requisito
 - ✓ Verificar o drift entre spec e código sob demanda, com achados e evidências
 
 ### Verificação automática
@@ -95,14 +118,20 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Listar as mudanças comprometidas em aberto
 - ✓ Barrar PR que entrega mudança comprometida sem alterar código
 - ✓ Barrar PR que altera ou marca item implementado sem alterar código, salvo quando rotulado como só-spec
+- ✓ Barrar mudança comprometida criada, alterada ou desfeita sem decisão alterada no mesmo PR
+- ✓ Barrar PR de código que cria mudança comprometida ou altera decisões, salvo com rótulo de divergência
+- ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
 - Exigir atualização da spec quando o PR altera código ligado a ela
 - Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão
 
 ## Regras transversais
 - ✓ Toda mudança, inclusive só de spec, entra por PR na branch principal protegida
+- ✓ Merge exige branch atualizada com a principal e aprovação posterior ao último commit
+- ✓ Qualquer revisor pode aceitar uma proposta
+- ✓ Rótulos de issues e PRs em inglês
 - ✓ A spec descreve a branch principal: item implementado é verdade no código; comprometido é intenção registrada
-- ✓ Ideias não comprometidas e solicitações vivem no tracker, não na spec
+- ✓ Ideias em amadurecimento vivem no tracker; a spec recebe só texto final aceito
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado

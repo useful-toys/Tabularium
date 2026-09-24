@@ -1,6 +1,6 @@
 # tabularium3: template de spec viva
 
-Template para manter, dentro do repositório, uma **especificação viva**: o que o produto é, como se comporta e as decisões que o moldaram. A spec anda sincronizada com o código, e cada mudança passa por análise de impacto, compromisso, implementação e sincronização.
+Template para manter, dentro do repositório, uma **especificação viva**: o que o produto é, como se comporta e as decisões que o moldaram. A spec anda sincronizada com o código. Cada mudança de requisito amadurece numa issue, vira um PR com o texto final, é aceita no merge e é entregue junto com o código.
 
 O exemplo incluído (`spec/`) é o Iconula, um app de figurinhas da Copa 2026. Substitua-o ao adotar o template.
 
@@ -10,11 +10,10 @@ A spec do próprio tabularium3 (requisitos do template e as decisões que o mold
 
 ```mermaid
 flowchart LR
-  T[Issue / Jira] --> I["/spec-impact"]
-  I --> P["/spec-plan<br/>compromisso na spec<br/>(PR spec-only)"]
-  P --> C[Implementação]
-  C --> S["/spec-sync<br/>✓ e ⇢ resolvidos<br/>(mesmo PR do código)"]
-  S --> M[main]
+  I["Issue requirement<br/>/spec-grill · /spec-ideas"] --> P["/spec-propose<br/>PR com texto final<br/>(draft, requirement, spec-only)"]
+  P --> R["CI: check bloqueante<br/>+ revisão consultiva<br/>(Copilot e/ou Claude)"]
+  R --> A["Revisor aprova<br/>merge = compromisso"]
+  A --> C["Implementação + /spec-sync<br/>✓ e ⇢ resolvidos<br/>Closes #issue"]
 ```
 
 | Na `main`, em `spec/product.md` | Significa |
@@ -23,18 +22,26 @@ flowchart LR
 | `- texto` | comprometido, ainda não implementado |
 | `- ✓ hoje ⇢ desejado` | mudança comprometida sobre algo implementado |
 
+| Label | Uso |
+|---|---|
+| `requirement` | issue ou PR de proposta de requisito |
+| `spec-only` | PR que altera só a spec |
+| `spec-mismatch` | PR de código que ajusta uma pequena divergência entre entrega e compromisso |
+
 ## Estrutura
 
 ```
 AGENTS.md                       processo (lido por qualquer agente)
-spec/AGENTS.md                  regras de formato da spec
+REVIEW.md                       instruções de revisão para agentes revisores (ex.: Copilot code review)
+spec/AGENTS.md                  regras de formato e de mudança da spec
 spec/product.md                 o que o produto é e como se comporta
 spec/config.json                preferências: tracker, padrão de task, camadas, idioma
 spec/decisions/<camada>/        uma decisão vigente por arquivo + mapa gerado (README.md)
-spec/plans/                     planos por task
 scripts/spec.mjs                build-map e check (Node, sem dependências)
-.claude/skills/                 spec-init, spec-extract, spec-impact, spec-plan, spec-sync, spec-check, spec-reconcile
-.github/workflows/spec-check.yml
+.claude/skills/                 spec-init, spec-extract, spec-grill, spec-ideas, spec-propose,
+                                spec-impact, spec-sync, spec-check, spec-reconcile
+.github/workflows/spec-check.yml   check bloqueante + revisão consultiva por agente
+.github/ISSUE_TEMPLATE/requirement.yml
 ```
 
 As instruções ficam só em `AGENTS.md`. Não crie `CLAUDE.md`: quando ele existe, o Claude Code ignora os `AGENTS.md`.
@@ -43,11 +50,16 @@ As instruções ficam só em `AGENTS.md`. Não crie `CLAUDE.md`: quando ele exis
 
 **Projeto novo**: crie o repositório com "Use this template" no GitHub e rode `/spec-init`.
 
-**Repositório existente**: copie para ele `AGENTS.md`, `.gitattributes`, `spec/AGENTS.md`, `scripts/spec.mjs`, `scripts/spec.test.mjs`, `scripts/spec-fixtures/`, `.claude/skills/` e `.github/workflows/spec-check.yml`. Depois rode `/spec-init` e, se já houver código, `/spec-extract`.
+**Repositório existente**: copie para ele `AGENTS.md`, `REVIEW.md`, `.gitattributes`, `spec/AGENTS.md`, `scripts/spec.mjs`, `scripts/spec.test.mjs`, `scripts/spec-fixtures/`, `.claude/skills/`, `.github/workflows/spec-check.yml` e `.github/ISSUE_TEMPLATE/requirement.yml`. Depois rode `/spec-init` e, se já houver código, `/spec-extract`.
 
-Em ambos os casos:
-1. Proteja a `main`: exija PR e o check `spec-check` (Settings → Branches ou Rulesets).
-2. Crie a label `spec-only`, para PRs que só alteram a spec.
+O `/spec-init` cria as labels e orienta a configuração da `main`:
+- exigir PR e o check `spec-check`;
+- exigir branch atualizada antes do merge;
+- descartar aprovações quando houver commits novos.
+
+A revisão consultiva por agente é opcional e nunca bloqueia o merge. Pode ser feita por um dos dois, ou pelos dois:
+- **Copilot code review**: ruleset com revisão automática e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot.
+- **Claude**: job `spec-review` do workflow, que roda quando existe o secret `ANTHROPIC_API_KEY`.
 
 ## Comandos
 
@@ -65,4 +77,7 @@ node --test scripts/spec.test.mjs
 
 Todos aceitam `--spec <pasta>` para operar noutra pasta de spec, como `--spec tabularium-spec`.
 
-O `check` valida o formato do `product.md` e das decisões, verifica se os mapas estão atualizados e lista os `⇢` em aberto. Com `--base`, também confere se o PR que resolve um `⇢` ou altera um item `✓` inclui alteração de código.
+O `check` valida o formato do `product.md` e das decisões, verifica se os mapas estão atualizados e lista os `⇢` e os itens comprometidos em aberto. Com `--base`, também aplica as regras de PR:
+- resolver `⇢` ou marcar `✓` exige código;
+- criar, alterar ou desfazer `⇢` exige decisão alterada;
+- PR com código não mexe em `⇢` nem em decisões, salvo com `spec-mismatch`.

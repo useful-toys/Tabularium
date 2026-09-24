@@ -1,29 +1,24 @@
 ---
 name: spec-sync
-description: Sincroniza a spec com o código entregue, no mesmo PR da implementação - marca ✓ nos itens entregues, resolve marcações ⇢, atualiza decisões e mapas e limpa resíduos temporais. Use ao terminar a implementação de uma task, antes de abrir ou atualizar o PR.
+description: Sincroniza a spec com o código entregue, no mesmo PR da implementação - marca ✓ nos itens entregues e resolve as marcações ⇢. Use ao terminar a implementação de um compromisso, antes de abrir ou atualizar o PR de código.
 ---
 
 # spec-sync
 
-Entrada: ID da task (o plano está em `spec/plans/<TASK-ID>-*.md`). Regras de formato: `spec/AGENTS.md`.
+Regras de formato: `spec/AGENTS.md`. Os compromissos já estão na `main` (itens sem `✓` e `⇢`), vindos de um PR de proposta aceito.
 
 ## Passos
-1. **O que foi entregue**: leia o plano e o diff da branch (`git diff <base>...HEAD`). Liste os itens do plano que o código de fato implementa.
-2. **Divergências**: compare o que foi entregue com o que estava comprometido. Se algo foi implementado de forma diferente, ou ficou de fora, pergunte ao usuário antes de mexer na spec.
-   - Ficou de fora: o item continua sem `✓` (ou com `⇢`).
-   - Feito diferente: ajuste o texto ao que foi entregue, com confirmação do usuário.
-3. **product.md**:
+1. **O que foi entregue**: compare o diff da branch (`git diff origin/main...HEAD`) com os itens sem `✓` e os `⇢` do `spec/product.md`. Liste os que o código de fato implementa.
+2. **product.md**:
    - Item sem `✓` entregue: acrescente `✓`.
    - Item com `⇢` entregue: reescreva a linha com o texto desejado, com `✓` e sem `⇢`. Numa remoção (`⇢ (removido)`), apague a linha.
-   - Remova resíduos temporais ("antigo", "passa a", "removido"…) e detalhes de implementação que tenham entrado.
-4. **Decisões**: acrescente ao histórico das decisões tocadas `AAAA-MM-DD <TASK-ID>: <o que foi entregue>` quando a entrega mudar algo em relação ao compromisso. Rode `node scripts/spec.mjs build-map`.
-5. **Plano**: registre em `## Pendências` o que ficou de fora. O arquivo permanece em `spec/plans/` como registro da task.
-6. **Valide**: `node scripts/spec.mjs check --base <base>`. Deve passar sem a label `spec-only`, porque o PR contém código.
+   - O que não foi entregue continua como está.
+3. **Divergência**: se o código faz algo diferente do comprometido, pergunte ao usuário.
+   - **Pequena** (detalhe que não muda a intenção): ajuste o texto do item e, se preciso, a decisão, com uma entrada no histórico `AAAA-MM-DD <issue ou #PR>: <o que divergiu>`. O PR precisa da label `spec-mismatch`, e o revisor avalia.
+   - **Grande**: pare. A divergência vira uma nova proposta (`/spec-grill` → `/spec-propose`), aceita antes desta entrega.
+4. **Mudança pequena com código**: acréscimos e ajustes que não contradizem nada e não mexem em decisões podem entrar direto neste PR, já com `✓`.
+5. **Valide**: `node scripts/spec.mjs check --base origin/main`, sem a label `spec-only`, porque o PR tem código.
 
-## Saída
-Resumo no chat, para colar na descrição do PR:
-- itens marcados `✓`;
-- `⇢` resolvidos;
-- decisões atualizadas;
-- divergências confirmadas;
-- pendências.
+## PR
+- A descrição cita a issue com `Closes #N`, se houver: a issue fecha na entrega.
+- Resumo para a descrição: itens marcados `✓`, `⇢` resolvidos, divergências e o que ficou comprometido.

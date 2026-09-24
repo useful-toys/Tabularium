@@ -16,7 +16,7 @@ Escolha o escopo com o usuário: a spec inteira, um domínio, ou os itens tocado
 - **Código sem item**: comportamento observável relevante que o `product.md` não descreve.
 - **Divergência**: o código faz diferente do que o item `✓` afirma.
 - **Forma**: implementação, tela ou navegação no `product.md`; conceito repetido em duas seções; justificativa técnica.
-- **Compromissos antigos**: item sem `✓` ou `⇢` sem plano correspondente em `spec/plans/`.
+- **Compromissos parados**: itens sem `✓` e `⇢` listados pelo check. Pergunte ao usuário se continuam valendo. Desistir é um PR que remove o item (ou o move para Fora de escopo) e desfaz o `⇢`, com a decisão ajustada.
 
 ## Saída
 Achados numerados, cada um com:

@@ -41,6 +41,9 @@ export const LOCALES = {
 };
 
 export const DONE = '✓';
+export const LABEL_SPEC_ONLY = 'spec-only';
+export const LABEL_MISMATCH = 'spec-mismatch';
+export const LABEL_REQUIREMENT = 'requirement';
 export const CHANGE = '⇢';
 
 // Posição do ⇢ fora de trechos em `código` (-1 se não houver).
@@ -132,7 +135,8 @@ export function checkDecision(file, text, { locale, taskPattern }) {
   if (lines.slice(h + 1).some((l) => l.startsWith('## '))) {
     errors.push(`${file}: \`${locale.historyHeading}\` deve ser a última seção`);
   }
-  const entry = new RegExp(`^- \\d{4}-\\d{2}-\\d{2} (${taskPattern}|${locale.reorgLabel}): \\S`);
+  // #N (issue ou PR do GitHub) é sempre aceito, além do padrão do tracker.
+  const entry = new RegExp(`^- \\d{4}-\\d{2}-\\d{2} (${taskPattern}|#\\d+|${locale.reorgLabel}): \\S`);
   const entries = lines.slice(h + 1).filter((l) => l.startsWith('- '));
   if (entries.length === 0) errors.push(`${file}: histórico vazio`);
   for (const e of entries) {
@@ -200,6 +204,15 @@ export function openChanges(text) {
     .map(({ n, line }) => `product.md:${n}: ${line.trim()}`);
 }
 
+// Itens comprometidos (sem ✓) nas seções que levam estado.
+export function commitments(text, locale) {
+  return sectionsOf(text)
+    .filter(({ line, section }) =>
+      section && !locale.unmarkedSections.includes(section) &&
+      itemRe.test(line) && !doneRe.test(line) && !/^s*- Nota:/.test(line))
+    .map(({ n, line }) => `product.md:${n}: ${line.trim()}`);
+}
+
 // Parte "o que vale hoje" de uma linha ✓ (sem o ⇢ e o desejado), normalizada.
 const leftOf = (line) => {
   const i = changeIndex(line);
@@ -210,6 +223,7 @@ const leftOf = (line) => {
 // - resolutions: ⇢ removido e item reescrito (entrega) → sempre exige código.
 // - rewrites: lado esquerdo de linha ✓ alterado ou removido → exige código ou label spec-only.
 // - marks: linha ✓ nova (item entregue) → exige código ou label spec-only.
+// - changeEdits: ⇢ criado, editado ou desfeito (não entregue) → exige decisão alterada no PR.
 export function classifyProductDiff(before, after) {
   const doneLines = (t) => t.replace(/\r\n/g, '\n').split('\n').filter((l) => doneRe.test(l));
   const oldDone = doneLines(before);
@@ -238,7 +252,15 @@ export function classifyProductDiff(before, after) {
     else rewrites.push(line.trim());
   }
   const marks = added.map((a) => a.line.trim());
-  return { resolutions, rewrites, marks };
+
+  const changeLines = (lines) => lines.filter(hasChange).map((l) => l.trim());
+  const oldChanges = changeLines(oldDone);
+  const newChanges = changeLines(newDone);
+  const changeEdits = [
+    ...newChanges.filter((l) => !oldChanges.includes(l)),
+    ...oldChanges.filter((l) => !newChanges.includes(l) && !resolutions.includes(l)),
+  ];
+  return { resolutions, rewrites, marks, changeEdits };
 }
 
 export function isCode(path, nonCodePaths) {
@@ -278,6 +300,8 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
 
   const changes = openChanges(product);
   if (changes.length) info.push(`Mudanças comprometidas (${CHANGE}) em aberto:`, ...changes.map((c) => `  ${c}`));
+  const pending = commitments(product, locale);
+  if (pending.length) info.push('Itens comprometidos, ainda não implementados:', ...pending.map((c) => `  ${c}`));
 
   for (const f of ['CLAUDE.md', join(spec, 'CLAUDE.md')]) {
     if (existsSync(join(root, f))) warnings.push(`${f} existe: o Claude Code ignora os AGENTS.md quando há CLAUDE.md`);
@@ -292,12 +316,20 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
     }
     const changed = git(root, ['diff', '--name-only', `${base}...HEAD`]).split('\n').filter(Boolean);
     const touchesCode = changed.some((f) => isCode(f, config.nonCodePaths));
-    const { resolutions, rewrites, marks } = classifyProductDiff(before, product);
+    const decisionsChanged = changed.filter((f) => f.startsWith(`${spec}/decisions/`) && !f.endsWith('/README.md'));
+    const { resolutions, rewrites, marks, changeEdits } = classifyProductDiff(before, product);
+    if (changeEdits.length && !decisionsChanged.length) {
+      for (const c of changeEdits) errors.push(`${CHANGE} criado, alterado ou desfeito sem decisão alterada no PR: ${c}`);
+    }
+    if (touchesCode && !labels.includes(LABEL_MISMATCH)) {
+      for (const c of changeEdits) errors.push(`PR com código não pode criar ou alterar ${CHANGE} (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${c}`);
+      for (const d of decisionsChanged) errors.push(`PR com código não pode alterar decisões (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${d}`);
+    }
     if (!touchesCode) {
       for (const r of resolutions) errors.push(`${CHANGE} resolvido sem alteração de código: ${r}`);
-      if (!labels.includes('spec-only')) {
-        for (const r of rewrites) errors.push(`item ${DONE} alterado ou removido sem código (label spec-only se for só redação): ${r}`);
-        for (const m of marks) errors.push(`item marcado ${DONE} sem código (label spec-only se já estava implementado): ${m}`);
+      if (!labels.includes(LABEL_SPEC_ONLY)) {
+        for (const r of rewrites) errors.push(`item ${DONE} alterado ou removido sem código (label ${LABEL_SPEC_ONLY} se for só redação): ${r}`);
+        for (const m of marks) errors.push(`item marcado ${DONE} sem código (label ${LABEL_SPEC_ONLY} se já estava implementado): ${m}`);
       }
     }
   }

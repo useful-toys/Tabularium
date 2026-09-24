@@ -1,0 +1,28 @@
+name: Proposta de requisito
+description: Ideia de requisito novo ou de mudança num requisito existente, para amadurecer antes de virar PR.
+labels: [requirement]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema ou necessidade
+      description: O que o usuário não consegue fazer hoje, ou faz mal. Sem solução ainda.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: Comportamento desejado, observável pelo usuário. Sem tela nem implementação.
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+      description: Outras formas de atender a necessidade e por que não servem.
+  - type: textarea
+    id: duvidas
+    attributes:
+      label: Dúvidas em aberto
+      description: O que ainda precisa ser decidido. Use /spec-grill e /spec-ideas para amadurecer.

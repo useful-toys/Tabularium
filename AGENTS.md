@@ -1,14 +1,20 @@
 # Processo
 
-Este repositório mantém uma spec viva em `spec/`. As regras de formato estão em `spec/AGENTS.md`.
+Este repositório mantém uma spec viva em `spec/`. As regras de formato e de mudança estão em `spec/AGENTS.md`.
 
-- A spec é a fonte da verdade do comportamento. `spec/product.md` com `✓` descreve o que o código faz. Sem `✓`, ou depois de `⇢`, está o que foi comprometido.
-- Toda mudança de comportamento segue o ciclo:
-  1. `/spec-impact <task>`: analisa o impacto a partir da spec.
-  2. `/spec-plan <task>`: escreve o plano e registra o compromisso na spec (item sem `✓` ou `⇢`, e decisão).
-  3. Implementação.
-  4. `/spec-sync`: no mesmo PR do código, marca `✓`, resolve `⇢` e atualiza as decisões.
+- A spec é a fonte da verdade do comportamento. Em `spec/product.md`:
+  - item com `✓` descreve o que o código faz;
+  - item sem `✓`, ou texto depois de `⇢`, é compromisso aceito.
+- Evolução de requisitos:
+  1. **Amadurecer** numa issue com label `requirement`, ou na conversa: `/spec-grill` esmiúça e `/spec-ideas` sugere alternativas. Os resumos ficam na issue.
+  2. **Propor**: `/spec-propose` abre ou atualiza o PR de proposta (draft, labels `requirement` e `spec-only`) com o texto final do `product.md` e das decisões.
+  3. **Validar**: no CI, o agente roda `/spec-impact` em modo PR e comenta, sem bloquear. Quem decide é o revisor.
+  4. **Aceitar**: o merge torna a proposta compromisso.
+  5. **Entregar**: implemente, rode `/spec-sync` no mesmo PR do código e cite a issue com `Closes #N`.
 - Não implemente comportamento que não esteja comprometido na spec.
-- Toda mudança entra por PR. PR que só altera a spec leva a label `spec-only`.
-- Antes de abrir um PR, rode `node scripts/spec.mjs check`.
-- Outras skills: `/spec-init` (estrutura e preferências), `/spec-extract` (spec a partir de código existente), `/spec-check` (drift), `/spec-reconcile` (organizar decisões).
+- Toda mudança entra por PR. Antes de abrir um PR, rode `node scripts/spec.mjs check --base origin/main`.
+- Outras skills:
+  - `/spec-init`: estrutura e preferências;
+  - `/spec-extract`: spec a partir de código existente;
+  - `/spec-check`: drift entre spec e código;
+  - `/spec-reconcile`: organização das decisões.

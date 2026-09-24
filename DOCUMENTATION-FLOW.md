@@ -27,35 +27,40 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 
 ---
 
-## Resumo para quem não é especialista
+## Visão geral
 
-Pense no repositório como a oficina de um produto. Nela há um **caderno oficial** que diz o que o produto é e como ele se comporta. O fluxo existe para que esse caderno **nunca minta**.
+*Para quem conhece o básico de desenvolvimento (Git, pull requests, CI), mas não este fluxo.*
 
-**O que há no caderno**
-- **Descrição do produto**: o que ele faz, em frases curtas. Cada linha tem uma marca:
-  - `✓`: já funciona assim;
-  - sem marca: foi aprovado e ainda vai ser feito;
-  - `✓ hoje ⇢ desejado`: funciona de um jeito hoje e foi aprovado mudar para outro.
-- **Modelo conceitual**: as "coisas" do produto e como se relacionam. Por exemplo, "uma coleção pertence a uma conta".
-- **Decisões**: para cada escolha importante, o que foi decidido, por quê e o que foi descartado.
+**A ideia central.** A especificação do produto é versionada no próprio repositório, junto com o código, e evolui pelo mesmo mecanismo: pull requests revisados e verificados pelo CI. Ela é escrita de forma compacta, em listas curtas, para que um agente de IA consiga lê-la inteira antes de mexer em qualquer coisa.
 
-**Como uma ideia vira produto**
-1. **Conversar.** Alguém tem uma ideia e conversa com um assistente de IA. O assistente faz perguntas até tudo ficar claro e sugere alternativas e casos que ninguém pensou. Se a conversa precisar continuar outro dia, ela é guardada num "chamado" (issue).
-2. **Propor.** Quando a ideia está madura, o assistente escreve a mudança do caderno como texto final, pronto. Ela vira uma proposta de alteração (pull request).
-3. **Revisar.** Uma verificação automática confere as regras do caderno, e uma IA revisora comenta o que pode estar faltando. Quem decide é uma pessoa.
-4. **Aprovar.** A proposta aceita vira compromisso no caderno.
-5. **Fazer.** Alguém implementa. No mesmo pacote de mudança do código, o caderno é atualizado para "já funciona assim".
+**O que fica versionado em `spec/`**
+- **Descrição do produto** (`product.md`): glossário, requisitos e regras de negócio, só comportamento observável, sem detalhes de implementação. Cada linha carrega um status:
+  - `✓`: implementado;
+  - sem marca: aprovado, ainda não implementado;
+  - `✓ atual ⇢ desejado`: implementado, com mudança aprovada ainda por fazer.
+- **Modelo conceitual** (`model.md`): entidades, relações, estados e restrições do domínio. É um modelo de conceitos, não de banco de dados.
+- **Registros de decisão** (`decisions/`): um arquivo curto por escolha relevante, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. São parecidos com ADRs, mas só as decisões em vigor ficam na pasta.
 
-**O que o fluxo garante**
-- O caderno só muda por proposta revisada.
-- Nada é marcado como feito sem código junto.
-- Mudar algo que já existe exige explicar o porquê.
+**Como uma mudança de requisito acontece**
+1. **Discussão**: numa conversa com o agente, a ideia é refinada. O agente faz perguntas, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. Se for preciso continuar depois, a discussão é guardada numa issue.
+2. **Proposta**: com a ideia madura, o agente abre um pull request que altera só a spec, já com o texto final. Nada de rascunho de ideias.
+3. **Revisão**:
+   - um check de CI valida as regras da spec e **bloqueia** o merge se algo estiver errado;
+   - um agente revisor (Copilot ou Claude) comenta possíveis lacunas, sem bloquear;
+   - quem aprova é uma pessoa.
+4. **Aceite**: o merge do PR transforma a proposta em compromisso. Os itens entram na spec sem `✓`, ou com `⇢`.
+5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens como `✓`. O check do CI impede marcar algo como implementado num PR sem código.
 
-Documentos tradicionais (visão, casos de uso, diagramas, histórias de usuário) não são mantidos à mão. Quando alguém precisa de um, pede ao assistente que o gere a partir do caderno, como foi feito com este arquivo.
+**Garantias**
+- A spec na branch principal reflete o código: o que tem `✓` está implementado.
+- Mudança em algo já implementado exige um registro de decisão explicando o porquê.
+- Nenhuma mudança entra sem PR, e a branch principal é protegida.
+
+**E a documentação tradicional?** Visão, casos de uso, diagramas e histórias de usuário não são mantidos à mão, porque duplicariam a spec e ficariam desatualizados. Quando alguém precisa de um deles, pede ao agente que o gere a partir da spec, como foi feito com este arquivo.
 
 ---
 
-## Descrição detalhada para especialistas
+## Descrição detalhada
 
 ### Artefatos
 

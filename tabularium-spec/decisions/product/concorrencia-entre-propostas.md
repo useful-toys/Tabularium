@@ -12,10 +12,10 @@ carregar-quando: mudança em proteção de branch, conflitos entre propostas, re
   - Fila de merge: mais configuração para o volume típico de propostas
   - Atualizar a proposta por merge da principal, sem reescrever: histórico mais poluído para revisar a versão final
 - Consequências
-  - Ganha: toda proposta é aceita sobre a spec vigente, fiel à intenção que o revisor aprovou
+  - Ganha: toda proposta é aceita sobre a spec vigente, fiel à intenção que a pessoa que integra aceitou
   - Aceita: reaprovação a cada atualização, quando a equipe exige aprovação; descrição do PR precisa explicar cada alteração
 
 ## Histórico
-- 2026-09-24 #10: descarte de aprovação só quando a equipe exige aprovação
+- 2026-09-24 #10: descarte de aprovação só quando a equipe exige aprovação; sem o termo revisor
 - 2026-09-24 #7: rebase guiado pela descrição do PR
 - 2026-09-24 plano-inicial: decisão criada

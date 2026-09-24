@@ -40,7 +40,7 @@
   - ✓ estados: rascunho | pronta | aceita | recusada
   - ✓ rascunho → pronta: o autor trata a revisão consultiva
   - ✓ pronta → rascunho: a proposta volta a ser discutida
-  - ✓ pronta → aceita: um revisor aprova e integra
+  - ✓ pronta → aceita: um revisor aprova e integra ⇢ pronta → aceita: um humano integra, ou o agente a pedido dele
   - ✓ pronta → recusada: fechada sem integrar
 - ✓ **Entrega**
   - ✓ fecha 0..1 **Issue de requisito**

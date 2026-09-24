@@ -98,7 +98,7 @@ flowchart LR
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
-1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Confronta a ideia com glossário, modelo, regras transversais, não funcionais, decisões e código. Classifica a mudança (acréscimo, ajuste de compromisso ou mudança significativa) e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
+1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Confronta a ideia com glossário, regras transversais, não funcionais, decisões e código (e com o modelo conceitual, após a entrega da #1). Classifica a mudança (acréscimo, ajuste de compromisso ou mudança significativa) e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
 2. **Sugerir (`/spec-ideas`)**: alternativas, cenários de borda, cascata esquecida, riscos e recortes. As sugestões descartadas, com motivo, viram "Alternativas descartadas". Também só na conversa.
 3. **Guardar (`/spec-issue`, a pedido)**: publica os resumos numa issue `requirement`, nova ou existente, como memória entre sessões.
 4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista, e abre ou atualiza o PR. PR novo nasce em draft; PR existente é rebaseado na `main` com `--force-with-lease`. Issue e PR se referenciam com `Refs #N`.

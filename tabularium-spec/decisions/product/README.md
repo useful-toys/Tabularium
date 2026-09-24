@@ -2,6 +2,7 @@
 <!-- Gerado por `node scripts/spec.mjs build-map`. Não edite à mão. -->
 
 - adocao-em-duas-etapas.md — Adoção da spec num repositório: Duas etapas - estrutura e preferências reexecutável; extração a partir de código com perguntas durante. Carregar quando: mudança em adoção, configuração do projeto ou extração da spec de código existente
+- afinidade-com-git.md — Plataforma e processo em que o template se apoia: Git e GitHub - issue como fila, PR como proposta, merge como aceitação, Actions e Copilot; amarração consciente. Carregar quando: mudança em plataforma, hub git, tracker, CI, provedor de modelo ou em novo estado ou fluxo de processo
 - camadas-de-decisao.md — Organização das decisões por natureza: Uma pasta por camada sob a pasta de decisões, todas com o mesmo esquema. Carregar quando: mudança em camadas de decisão, na organização das pastas ou em decisões técnicas
 - ciclo-com-skills-e-ci.md — Como o ciclo de mudança é executado: Skills para cada etapa, check determinístico bloqueante e revisão por agente só consultiva, feita pelo Copilot, pelo Claude ou pelos dois. Carregar quando: mudança nas etapas do ciclo, nas skills, no papel do CI ou em agentes no CI
 - concorrencia-entre-propostas.md — Propostas concorrentes e defasagem: Branch atualizada antes do merge, revalidação e aprovação descartada; rediscussão sobre a base atual. Carregar quando: mudança em proteção de branch, conflitos entre propostas, rediscussão ou atualização de PR

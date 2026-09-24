@@ -29,6 +29,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Issue de requisito**: issue do tracker que guarda uma ideia em amadurecimento até estar pronta para proposta
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
+- **Documento exportado**: documento em formato convencional gerado a partir da spec, a pedido
 - **Tracker**: sistema externo de solicitações (GitHub Issues ou Jira)
 
 ## Requisitos
@@ -165,6 +166,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Ideias em amadurecimento vivem na conversa ou no tracker, nunca na spec; a spec recebe só texto final aceito
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
+- Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado
 
 ## Não funcionais
@@ -178,4 +180,5 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Histórico de decisões revogadas na spec** — permanente: a spec guarda só o vigente; a história está no versionamento
 - **IDs ou âncoras nos itens do documento de produto** — permanente: cada referência vira manutenção
 - **Solicitações e backlog de ideias na spec** — permanente: pertencem ao tracker
+- **Documentação em formatos convencionais mantida na spec** — permanente: visão, casos de uso, diagramas, histórias e BDD consomem muitos tokens e divergem; são exportados a pedido
 - **Script de instalação** — nesta versão: adoção por template do GitHub ou cópia de arquivos

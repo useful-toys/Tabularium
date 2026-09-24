@@ -215,3 +215,10 @@ test('check avisa quando existe CLAUDE.md', () => {
     r.cleanup();
   }
 });
+
+test('trechos em código não contam como marcador, link ou ⇢', () => {
+  const ok = product.replace('- ✓ Vai de 0 a 9', '- ✓ Vai de 0 a 9; marca `- ✓` e `⇢` em `spec/decisions/`');
+  assert.deepEqual(checkProduct(ok, locale).errors, []);
+  assert.deepEqual(openChanges(ok), []);
+  assert.deepEqual(classifyProductDiff('- ✓ A `⇢` B\n', '- ✓ A `⇢` B\n  - novo\n'), { resolutions: [], rewrites: [], marks: [] });
+});

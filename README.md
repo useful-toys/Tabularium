@@ -4,6 +4,8 @@ Template para manter, dentro do repositório, uma **especificação viva**: o qu
 
 O exemplo incluído (`spec/`) é o Iconula, um app de figurinhas da Copa 2026. Substitua-o ao adotar o template.
 
+A spec do próprio tabularium3 (requisitos do template e as decisões que o moldaram) fica em `tabularium-spec/`, com as mesmas convenções. Apague essa pasta ao adotar o template.
+
 ## O ciclo
 
 ```mermaid
@@ -60,5 +62,7 @@ node scripts/spec.mjs check --base origin/main
 ```bash
 node --test scripts/spec.test.mjs
 ```
+
+Todos aceitam `--spec <pasta>` para operar noutra pasta de spec, como `--spec tabularium-spec`.
 
 O `check` valida o formato do `product.md` e das decisões, verifica se os mapas estão atualizados e lista os `⇢` em aberto. Com `--base`, também confere se o PR que resolve um `⇢` ou altera um item `✓` inclui alteração de código.

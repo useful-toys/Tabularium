@@ -25,6 +25,7 @@ Grave em `spec/config.json`.
 ## 3. Estrutura
 Crie o que faltar, sem sobrescrever nada:
 - `spec/product.md` a partir de `assets/product.md`. Se o `product.md` existente for o exemplo do template (Iconula), pergunte se ele e as decisões de exemplo devem ser substituídos pelo esqueleto.
+- Se existir `tabularium-spec/` (a spec do próprio template), pergunte se deve ser apagada. Em seguida, remova `tabularium-spec/` de `nonCodePaths` e o passo correspondente do workflow.
 - `spec/decisions/<camada>/` para cada camada, e `spec/plans/.gitkeep`.
 - Rode `node scripts/spec.mjs build-map`.
 

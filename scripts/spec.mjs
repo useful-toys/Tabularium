@@ -3,6 +3,7 @@
 //
 //   node scripts/spec.mjs build-map                  regera os mapas de decisões
 //   node scripts/spec.mjs check [--base <ref>] [--labels a,b]
+//   --spec <pasta>  pasta da spec (padrão: spec)
 //
 // Regras de formato: spec/AGENTS.md.
 
@@ -41,12 +42,23 @@ export const LOCALES = {
 
 export const DONE = '✓';
 export const CHANGE = '⇢';
+
+// Posição do ⇢ fora de trechos em `código` (-1 se não houver).
+export function changeIndex(line) {
+  let inCode = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '`') inCode = !inCode;
+    else if (!inCode && line.startsWith(CHANGE, i)) return i;
+  }
+  return -1;
+}
+const hasChange = (line) => changeIndex(line) >= 0;
 const FRONTMATTER_KEYS = ['tema', 'decisao', 'carregar-quando'];
 
 // ---------- leitura ----------
 
-export function loadConfig(root) {
-  const config = JSON.parse(readFileSync(join(root, 'spec', 'config.json'), 'utf8'));
+export function loadConfig(root, spec = 'spec') {
+  const config = JSON.parse(readFileSync(join(root, spec, 'config.json'), 'utf8'));
   const locale = LOCALES[config.language];
   if (!locale) throw new Error(`Idioma sem textos definidos em scripts/spec.mjs (LOCALES): ${config.language}`);
   return { ...config, locale };
@@ -63,8 +75,8 @@ export function parseFrontmatter(text) {
   return { data, body: m[2] };
 }
 
-function decisionFiles(root, layer) {
-  const dir = join(root, 'spec', 'decisions', layer);
+function decisionFiles(root, layer, spec) {
+  const dir = join(root, spec, 'decisions', layer);
   if (!existsSync(dir)) return [];
   return readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'README.md').sort();
 }
@@ -79,18 +91,18 @@ export function renderMap(layer, decisions, locale) {
   return lines.join('\n') + '\n';
 }
 
-function mapFor(root, layer, locale) {
-  const decisions = decisionFiles(root, layer).map((file) => ({
+function mapFor(root, layer, locale, spec) {
+  const decisions = decisionFiles(root, layer, spec).map((file) => ({
     file,
-    data: parseFrontmatter(readFileSync(join(root, 'spec', 'decisions', layer, file), 'utf8')).data ?? {},
+    data: parseFrontmatter(readFileSync(join(root, spec, 'decisions', layer, file), 'utf8')).data ?? {},
   }));
   return renderMap(layer, decisions, locale);
 }
 
-export function buildMaps(root) {
-  const { layers, locale } = loadConfig(root);
+export function buildMaps(root, spec = 'spec') {
+  const { layers, locale } = loadConfig(root, spec);
   for (const layer of layers) {
-    writeFileSync(join(root, 'spec', 'decisions', layer, 'README.md'), mapFor(root, layer, locale));
+    writeFileSync(join(root, spec, 'decisions', layer, 'README.md'), mapFor(root, layer, locale, spec));
   }
   return layers;
 }
@@ -156,8 +168,10 @@ export function checkProduct(text, locale) {
     errors.push(`product.md: seções devem ser, nesta ordem: ${expected.join(', ')} (encontradas: ${found.join(', ')})`);
   }
 
-  for (const { n, line, section } of lines) {
+  for (const { n, line: raw, section } of lines) {
     const at = `product.md:${n}`;
+    // Trechos em `código` são texto literal: não contam como link, marcador ou referência.
+    const line = raw.replace(/`[^`]*`/g, '');
     if (/\]\([^)]*\)|https?:\/\//.test(line)) errors.push(`${at}: link não é permitido (product.md é autocontido)`);
     if (/\b(ADR|IDR|TDR|MDR|DDR|PDR)[\s-]?\d+|decisions\//.test(line)) {
       errors.push(`${at}: referência a decisão não é permitida`);
@@ -182,12 +196,15 @@ export function checkProduct(text, locale) {
 
 export function openChanges(text) {
   return sectionsOf(text)
-    .filter(({ line }) => doneRe.test(line) && line.includes(CHANGE))
+    .filter(({ line }) => doneRe.test(line) && hasChange(line))
     .map(({ n, line }) => `product.md:${n}: ${line.trim()}`);
 }
 
 // Parte "o que vale hoje" de uma linha ✓ (sem o ⇢ e o desejado), normalizada.
-const leftOf = (line) => line.split(CHANGE)[0].trim();
+const leftOf = (line) => {
+  const i = changeIndex(line);
+  return (i < 0 ? line : line.slice(0, i)).trim();
+};
 
 // Compara duas versões do product.md e aponta o que exige código no mesmo PR.
 // - resolutions: ⇢ removido e item reescrito (entrega) → sempre exige código.
@@ -217,7 +234,7 @@ export function classifyProductDiff(before, after) {
       added.splice(j, 1);
       continue;
     }
-    if (line.includes(CHANGE)) resolutions.push(line.trim());
+    if (hasChange(line)) resolutions.push(line.trim());
     else rewrites.push(line.trim());
   }
   const marks = added.map((a) => a.line.trim());
@@ -234,26 +251,26 @@ function git(root, args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' });
 }
 
-export function check(root, { base, labels = [] } = {}) {
-  const config = loadConfig(root);
+export function check(root, { base, labels = [], spec = 'spec' } = {}) {
+  const config = loadConfig(root, spec);
   const { locale } = config;
   const errors = [];
   const warnings = [];
   const info = [];
 
   for (const layer of config.layers) {
-    const mapPath = join(root, 'spec', 'decisions', layer, 'README.md');
+    const mapPath = join(root, spec, 'decisions', layer, 'README.md');
     const current = existsSync(mapPath) ? readFileSync(mapPath, 'utf8').replace(/\r\n/g, '\n') : '';
-    if (current !== mapFor(root, layer, locale)) {
-      errors.push(`spec/decisions/${layer}/README.md desatualizado: rode \`node scripts/spec.mjs build-map\``);
+    if (current !== mapFor(root, layer, locale, spec)) {
+      errors.push(`${spec}/decisions/${layer}/README.md desatualizado: rode \`node scripts/spec.mjs build-map\``);
     }
-    for (const file of decisionFiles(root, layer)) {
-      const text = readFileSync(join(root, 'spec', 'decisions', layer, file), 'utf8');
+    for (const file of decisionFiles(root, layer, spec)) {
+      const text = readFileSync(join(root, spec, 'decisions', layer, file), 'utf8');
       errors.push(...checkDecision(`decisions/${layer}/${file}`, text, { locale, taskPattern: config.tracker.taskPattern }));
     }
   }
 
-  const productPath = join(root, 'spec', 'product.md');
+  const productPath = join(root, spec, 'product.md');
   const product = readFileSync(productPath, 'utf8');
   const p = checkProduct(product, locale);
   errors.push(...p.errors);
@@ -262,14 +279,14 @@ export function check(root, { base, labels = [] } = {}) {
   const changes = openChanges(product);
   if (changes.length) info.push(`Mudanças comprometidas (${CHANGE}) em aberto:`, ...changes.map((c) => `  ${c}`));
 
-  for (const f of ['CLAUDE.md', join('spec', 'CLAUDE.md')]) {
+  for (const f of ['CLAUDE.md', join(spec, 'CLAUDE.md')]) {
     if (existsSync(join(root, f))) warnings.push(`${f} existe: o Claude Code ignora os AGENTS.md quando há CLAUDE.md`);
   }
 
   if (base) {
     let before = '';
     try {
-      before = git(root, ['show', `${base}:spec/product.md`]);
+      before = git(root, ['show', `${base}:${spec}/product.md`]);
     } catch {
       // product.md novo neste PR: nada a comparar.
     }
@@ -297,22 +314,23 @@ function arg(argv, name) {
 
 function main(argv) {
   const root = resolve(arg(argv, '--root') ?? process.cwd());
+  const spec = arg(argv, '--spec') ?? 'spec';
   const cmd = argv[0];
   if (cmd === 'build-map') {
-    const layers = buildMaps(root);
+    const layers = buildMaps(root, spec);
     console.log(`Mapas regerados: ${layers.join(', ')}`);
     return 0;
   }
   if (cmd === 'check') {
     const labels = (arg(argv, '--labels') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-    const { errors, warnings, info } = check(root, { base: arg(argv, '--base'), labels });
+    const { errors, warnings, info } = check(root, { base: arg(argv, '--base'), labels, spec });
     for (const i of info) console.log(i);
     for (const w of warnings) console.log(`aviso: ${w}`);
     for (const e of errors) console.error(`erro: ${e}`);
     console.log(errors.length ? `${errors.length} erro(s).` : 'spec ok.');
     return errors.length ? 1 : 0;
   }
-  console.error('uso: node scripts/spec.mjs <build-map | check [--base <ref>] [--labels a,b]> [--root <dir>]');
+  console.error('uso: node scripts/spec.mjs <build-map | check [--base <ref>] [--labels a,b]> [--root <dir>] [--spec <pasta>]');
   return 2;
 }
 

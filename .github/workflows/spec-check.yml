@@ -27,3 +27,10 @@ jobs:
           BASE_REF: origin/${{ github.base_ref }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         run: node scripts/spec.mjs check --base "$BASE_REF" --labels "$LABELS"
+
+      - name: Check da spec do próprio template
+        if: hashFiles('tabularium-spec/config.json') != ''
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: node scripts/spec.mjs check --spec tabularium-spec --base "$BASE_REF" --labels "$LABELS"

@@ -1,0 +1,9 @@
+{
+  "language": "pt-BR",
+  "tracker": {
+    "type": "github",
+    "taskPattern": "plano-inicial|#\\d+"
+  },
+  "layers": ["product"],
+  "nonCodePaths": ["tabularium-spec/", "spec/product.md", "spec/decisions/", "spec/plans/", "spec/config.json", "README.md"]
+}

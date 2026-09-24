@@ -13,6 +13,7 @@
     "AGENTS.md",
     ".github/",
     ".claude/",
-    "scripts/spec"
+    "scripts/spec",
+    "tabularium-spec/"
   ]
 }

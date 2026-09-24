@@ -126,6 +126,8 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
+  - Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
+  - Na atualização, a descrição guia o reencaixe do diff na nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e issue de requisito mencionam uma à outra; a issue recebe as decisões adicionais
 - ✓ Revisar uma proposta de forma consultiva, comentando classificação, cascata, decisões, conflitos e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pelo revisor de código do Copilot, por um agente no CI com chave própria, ou pelos dois

@@ -11,7 +11,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 
 ## Glossário
 - **Spec**: pasta com o documento de produto, o modelo conceitual, os registros de decisão e a configuração de um projeto
-- **Documento de produto**: arquivo único que descreve o que o produto é e seu comportamento observável
+- **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
@@ -57,7 +57,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 
 ### Documento de produto
-- ✓ Descrever o produto num único arquivo, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo ⇢ Descrever o produto em dois arquivos lidos juntos: o documento de produto, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo; e o modelo conceitual, opcional
+- ✓ Descrever o produto num único arquivo, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo ⇢ Descrever o produto no documento de produto, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo; e, quando houver estrutura relevante, também no modelo conceitual, lido sempre junto com ele
   - ✓ Requisitos e regras em listas aninhadas, sem IDs nem âncoras
   - ✓ Domínios subdivididos quando crescem demais ou misturam assuntos, a julgamento
   - ✓ Cada conceito tem uma única casa; nenhuma afirmação se repete entre seções

@@ -29,7 +29,7 @@
   - ✓ em dia → pendente: publicação de versão com mudança material
 - ✓ **Coleção**
   - ✓ pertence a 1 **Conta**
-  - ✓ uma **Contagem** por **Figurinha** do catálogo
+  - ✓ contagem por **Figurinha** do catálogo: **Contagem**
   - ✓ estados por figurinha: Faltante (derivado), Colada (derivado), Repetida (derivado)
 - ✓ **Link do catálogo**
   - ✓ pertence a 1 **Conta**

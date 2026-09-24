@@ -1,6 +1,6 @@
 # tabularium3: template de spec viva
 
-Template para manter, dentro do repositório, uma **especificação viva**: o que o produto é, como se comporta e as decisões que o moldaram. A spec anda sincronizada com o código. Cada mudança de requisito amadurece numa issue, vira um PR com o texto final, é aceita no merge e é entregue junto com o código.
+Template para manter, dentro do repositório, uma **especificação viva**: o que o produto é, como se comporta e as decisões que o moldaram. A spec anda sincronizada com o código. Cada mudança de requisito amadurece na conversa (e, se preciso, numa issue), vira um PR com o texto final, é aceita no merge e é entregue junto com o código.
 
 O exemplo incluído (`spec/`) é o Iconula, um app de figurinhas da Copa 2026. Substitua-o ao adotar o template.
 
@@ -10,7 +10,9 @@ A spec do próprio tabularium3 (requisitos do template e as decisões que o mold
 
 ```mermaid
 flowchart LR
-  I["Issue requirement<br/>/spec-grill · /spec-ideas"] --> P["/spec-propose<br/>PR com texto final<br/>(draft, requirement, spec-only)"]
+  G["Conversa<br/>/spec-grill · /spec-ideas"] --> P["/spec-propose<br/>PR com texto final<br/>(draft, requirement, spec-only)"]
+  G -.->|a pedido| I["/spec-issue<br/>issue requirement"]
+  I -.-> G
   P --> R["CI: check bloqueante<br/>+ revisão consultiva<br/>(Copilot e/ou Claude)"]
   R --> A["Revisor aprova<br/>merge = compromisso"]
   A --> C["Implementação + /spec-sync<br/>✓ e ⇢ resolvidos<br/>Closes #issue"]
@@ -38,8 +40,8 @@ spec/product.md                 o que o produto é e como se comporta
 spec/config.json                preferências: tracker, padrão de task, camadas, idioma
 spec/decisions/<camada>/        uma decisão vigente por arquivo + mapa gerado (README.md)
 scripts/spec.mjs                build-map e check (Node, sem dependências)
-.claude/skills/                 spec-init, spec-extract, spec-grill, spec-ideas, spec-propose,
-                                spec-impact, spec-sync, spec-check, spec-reconcile
+.claude/skills/                 spec-init, spec-extract, spec-grill, spec-ideas, spec-issue,
+                                spec-propose, spec-impact, spec-sync, spec-check, spec-reconcile
 .github/workflows/spec-check.yml   check bloqueante + revisão consultiva por agente
 .github/ISSUE_TEMPLATE/requirement.yml
 ```

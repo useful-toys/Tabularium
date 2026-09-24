@@ -3,7 +3,7 @@ tema: Papéis da issue e do PR na evolução de requisitos
 decisao: Issue amadurece a ideia; PR traz o texto final; merge é a aceitação
 carregar-quando: mudança em como requisitos são propostos, discutidos, aceitos ou recusados
 ---
-- Decisão: a issue de requisito é o espaço para discutir e amadurecer; o PR de proposta traz o diff final do documento de produto e as operações nas decisões, nunca ideias soltas; PR aberto é proposta, merge é aceitação, fechado sem merge é recusa; PR sem issue vale quando a ideia já está madura, usando o próprio número como identificador; qualquer revisor pode aceitar
+- Decisão: a ideia amadurece na conversa, e a issue de requisito guarda a discussão quando o usuário pede; o PR de proposta traz o diff final do documento de produto e as operações nas decisões, nunca ideias soltas; PR aberto é proposta, merge é aceitação, fechado sem merge é recusa; PR sem issue vale quando a ideia já está madura, usando o próprio número como identificador; qualquer revisor pode aceitar
 - Contexto: propostas precisam chegar prontas para serem comprometidas, e a discussão exploratória precisa de um lugar que não seja a spec
 - Alternativas descartadas
   - Aceitação na issue antes do PR: dois atos de aceite para a mesma coisa
@@ -15,4 +15,5 @@ carregar-quando: mudança em como requisitos são propostos, discutidos, aceitos
   - Aceita: recusas ficam só no PR fechado, salvo se viram item de fora de escopo
 
 ## Histórico
+- 2026-09-24 #3: amadurecimento na conversa; issue só a pedido
 - 2026-09-24 plano-inicial: decisão criada

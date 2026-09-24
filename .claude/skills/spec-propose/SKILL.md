@@ -12,7 +12,8 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 ## 1. Fontes
 - Origem issue: `gh issue view <N> --comments`, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`.
 - Origem PR: `gh pr view <N> --comments` e `gh pr diff <N>`, com os mesmos resumos.
-- Origem texto livre: o que foi decidido nesta conversa.
+- Origem texto livre: o que foi decidido nesta conversa, inclusive os resumos de spec-grill e spec-ideas apresentados nela.
+- Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.
 - Se algo necessário não estiver decidido, pare e sugira `/spec-grill`.
 
 ## 2. Branch
@@ -37,9 +38,7 @@ Depois rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check --b
 
 ## 4. PR
 - Commit e push. O PR leva as labels `requirement` e `spec-only` e nunca inclui código. Proposta com código só vale para mudança pequena, feita direto no PR de implementação.
-- **Draft**:
-  - PR novo: abra em draft (`gh pr create --draft`). O agente consultivo do CI comenta. O autor trata os achados e marca como pronto (`gh pr ready`).
-  - Origem PR em rediscussão (deixado em draft pelo `/spec-grill`): marque como pronto ao registrar (`gh pr ready <N>`).
+- **Draft**: PR novo abre em draft (`gh pr create --draft`). O agente consultivo do CI comenta. O autor trata os achados e marca como pronto (`gh pr ready`). PR existente mantém o estado em que está.
 - Descrição do PR:
 ```markdown
 Proposta de requisito. Refs #<issue>

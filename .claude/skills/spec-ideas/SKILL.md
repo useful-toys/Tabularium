@@ -1,16 +1,18 @@
 ---
 name: spec-ideas
-description: Sugere alternativas, cenários de borda, efeitos em cascata e simplificações para uma ideia de requisito já esmiuçada, para o humano aceitar ou descartar com motivo. Entrada - texto livre, issue ou PR de proposta. Use depois de /spec-grill e antes de /spec-propose.
+description: Sugere alternativas, cenários de borda, efeitos em cascata e simplificações para uma ideia de requisito já esmiuçada, para o humano aceitar ou descartar com motivo. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, issue ou PR de proposta. Use depois de /spec-grill e antes de /spec-propose.
 ---
 
 # spec-ideas
 
-Etapa 2 de 3 da proposta: esmiuçar (spec-grill) → **sugerir** (spec-ideas) → registrar (spec-propose). Esta etapa diverge: você propõe o que ninguém levantou, e o humano aceita ou descarta. Não edite arquivos da spec.
+Etapa 2 de 3 da proposta: esmiuçar (spec-grill) → **sugerir** (spec-ideas) → registrar (spec-propose). Esta etapa diverge: você propõe o que ninguém levantou, e o humano aceita ou descarta.
+
+Trabalhe só na conversa. Não edite arquivos da spec e não crie nem altere nada no tracker. Issue e PR de origem são só lidos. Publicar é pedido explícito do usuário, via `/spec-issue` ou `/spec-propose`.
 
 Regras de formato: `spec/AGENTS.md`.
 
 ## 1. Origem e contexto
-- Leia a origem (texto, `gh issue view <N> --comments` ou `gh pr view <N> --comments` + `gh pr diff <N>`), inclusive o resumo `<!-- spec-grill -->`.
+- Leia a origem (texto, `gh issue view <N> --comments` ou `gh pr view <N> --comments` + `gh pr diff <N>`) e o resumo `<!-- spec-grill -->`, que pode estar na conversa ou nos comentários da origem.
 - Leia `spec/product.md`, o mapa de decisões e as decisões relevantes pelo `carregar-quando`.
 
 ## 2. Sugestões
@@ -30,7 +32,7 @@ Apresente as sugestões com a ferramenta de pergunta interativa (até 4 por cham
 - **Fora de escopo**: vira candidata a item de Fora de escopo, com motivo.
 
 ## 4. Memória
-Publique o resumo onde o spec-grill publicou (issue, PR ou conversa):
+Apresente o resumo na conversa, sem publicá-lo. Para guardá-lo, o usuário usa `/spec-issue` ou `/spec-propose`.
 ```markdown
 <!-- spec-ideas -->
 ## Sugestões

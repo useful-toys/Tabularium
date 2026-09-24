@@ -51,7 +51,7 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 
 ### Mudanças
 - Toda mudança entra por PR. A `main` é protegida: exige branch atualizada e descarta aprovações quando há commits novos.
-- Uma ideia amadurece numa issue (label `requirement`), com `/spec-grill` e `/spec-ideas`. O PR de proposta traz o **texto final** do `product.md` e das decisões, nunca ideias soltas. PR sem issue vale se a ideia já estiver madura.
+- Uma ideia amadurece na conversa, com `/spec-grill` e `/spec-ideas`. Quando precisa de memória entre sessões, vai a pedido para uma issue (label `requirement`) com `/spec-issue`. O PR de proposta traz o **texto final** do `product.md` e das decisões, nunca ideias soltas. PR sem issue vale se a ideia já estiver madura.
 - PR de proposta: labels `requirement` e `spec-only`, sem código. PR aberto é proposta; o merge é a aceitação e torna o conteúdo compromisso. PR fechado sem merge é proposta recusada.
 - Acréscimo que não contradiz nada entra sem `✓`. O PR da entrega adiciona o `✓`.
 - Item sem `✓`, ou o lado direito de um `⇢`, pode ser ajustado num PR de proposta.

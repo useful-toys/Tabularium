@@ -6,7 +6,7 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - `product.md`: o que o produto é e como se comporta. Fonte da verdade do comportamento.
 - `decisions/<camada>/*.md`: uma decisão vigente por arquivo. Camadas em `config.json`.
 - `decisions/<camada>/README.md`: mapa gerado por `node scripts/spec.mjs build-map`. Nunca editar à mão.
-- `config.json`: preferências do projeto (tracker, padrão de task, camadas, idioma). Alterado só pela skill `spec-init`.
+- `config.json`: preferências do projeto (camadas, idioma, caminhos que não são código). Alterado só pela skill `spec-init`.
 
 ## product.md
 
@@ -97,7 +97,7 @@ carregar-quando: <situações em que vale abrir este arquivo>
   - Aceita: <…>
 
 ## Histórico
-- AAAA-MM-DD <task do tracker ou #N da issue/PR>: <o que mudou>
+- AAAA-MM-DD <#N da issue ou do PR>: <o que mudou>
 ```
 - O histórico é a última seção, com a entrada mais recente no topo.
 - Quando a decisão muda, a escolha anterior entra em "Alternativas descartadas" com o motivo do abandono, e o histórico ganha uma entrada.

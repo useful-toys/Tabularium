@@ -5,7 +5,7 @@
 
 ## Entidades
 - ✓ **Spec**
-  - ✓ preferências: tracker, padrão de task, camadas e idioma do conteúdo
+  - ✓ preferências: camadas, idioma do conteúdo e caminhos que não são código
 - ✓ **Documento de produto**
   - ✓ pertence a 1 **Spec**
 - **Modelo conceitual**

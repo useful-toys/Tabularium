@@ -70,7 +70,7 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 | `spec/model.md` | Modelo conceitual, opcional: `## Tipos` e `## Entidades` (atributos, relações com cardinalidade, estados, transições, invariantes) | Sem implementação; tipos de domínio com natureza de lista fechada; toda entidade em negrito definida no glossário, todo tipo citado declarado. *Formato aceito na #1; a verificação automática está em entrega.* |
 | `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo: `tema`, `decisao`, `carregar-quando`, depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas" |
 | `spec/decisions/<camada>/README.md` | Mapa gerado | O agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
-| `spec/config.json` | Tracker, padrão de task, camadas, idioma, caminhos que não são código | Alterado pelo `/spec-init` |
+| `spec/config.json` | Camadas, idioma, caminhos que não são código | Alterado pelo `/spec-init` |
 | `AGENTS.md`, `spec/AGENTS.md` | Processo; regras de formato e de mudança (fonte única) | Sem `CLAUDE.md`: a presença dele anula os `AGENTS.md` no Claude Code |
 | `REVIEW.md` | Checklist para agentes revisores (Copilot code review) | Revisão consultiva |
 

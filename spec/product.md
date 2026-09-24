@@ -10,14 +10,14 @@ App web para quem coleciona o álbum oficial Panini da Copa do Mundo FIFA 2026: 
 
 ## Glossário
 - **Catálogo**: todas as figurinhas do álbum (códigos, nomes, seções); fixo, igual para todos os usuários
-- **Figurinha**: item do catálogo, identificada pelo código = sigla da seção + posição com dois dígitos (`BRA05`, `FWC12`)
+- **Figurinha**: item do catálogo, identificada pelo código (`BRA05`, `FWC12`)
 - **Seção**: grupo de figurinhas com a mesma sigla; é uma seleção ou um especial
   - **Seleção**: um dos 48 times classificados, sigla FIFA (BRA, ARG…), 20 figurinhas; 01 é o escudo, 13 a foto do time, as demais são jogadores
   - **Especial**: Extras FIFA (`FWC`, 20 figurinhas: troféu, mascotes, campeãs do passado) e Coca-Cola (`COC`, 14)
 - **Grupo da Copa**: os 12 grupos do torneio (A–L), com 4 seleções cada
 - **Conta**: usuário do app, identificado pela conta Google
 - **Coleção**: a contagem de cada figurinha do catálogo para um usuário
-- **Contagem**: unidades registradas de uma figurinha (0 a 99)
+- **Contagem**: unidades registradas de uma figurinha
 - **Faltante**: contagem 0
 - **Colada**: contagem ≥ 1; presume-se que a primeira unidade está no álbum
 - **Repetida**: figurinha com contagem ≥ 2; as **unidades sobrando** (contagem − 1) são o que está disponível para troca

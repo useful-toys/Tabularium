@@ -1,5 +1,9 @@
 # tabularium3 — Modelo conceitual
 
+## Tipos
+- ✓ **Slug de decisão**: texto; minúsculas sem acento, dígitos e hífens; resume o tema
+
+## Entidades
 - ✓ **Spec**
   - ✓ preferências: tracker, padrão de task, camadas e idioma do conteúdo
 - ✓ **Documento de produto**
@@ -20,7 +24,7 @@
   - ✓ pertence a 1 **Spec**
 - ✓ **Decisão**
   - ✓ pertence a 1 **Camada**
-  - ✓ identidade: o slug do tema
+  - ✓ nome: **Slug de decisão**; identidade
   - ✓ só existe enquanto vigente, salvo quando explica um item de fora de escopo
 - ✓ **Mapa de decisões**
   - ✓ pertence a 1 **Camada**

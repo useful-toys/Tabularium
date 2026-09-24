@@ -15,6 +15,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
+- **Tipo de domínio**: conjunto de valores válidos de um atributo, com natureza, restrições de negócio e unidade
 - **Item**: linha do documento de produto: requisito, regra, regra transversal ou não funcional
   - **Requisito**: capacidade do produto, na forma verbo + objeto
   - **Regra**: fato testável que restringe um requisito
@@ -74,6 +75,11 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - Termo definido pela própria condição mantém a condição no glossário; o modelo só cita o estado
   - Sem informação de implementação; identificador só quando é conceito de negócio
   - Atributos só quando têm regra ou importam ao usuário
+  - Duas seções: tipos, depois entidades
+  - Tipos de domínio declarados uma vez, com natureza, restrições de negócio e unidade de medida quando aplicável; atributos citam o tipo
+  - Natureza de uma lista fechada: texto, inteiro, decimal, sim/não, data, data e hora local, instante, duração, enumeração, quantidade com unidade
+  - Tamanho, precisão e formato só quando são regra de negócio
+  - Tipo definido só no modelo; termo homônimo no glossário guarda só o significado
   - Invariantes do domínio vivem no modelo; regras transversais ficam com o comportamento
   - Um bloco por entidade, em lista plana; agrupamento por domínio só quando a lista crescer
   - Relação com verbo, cardinalidade (1, 0..1, N, 0..N) e entidade-alvo, escrita uma vez, no bloco da entidade dependente; relação N:N no bloco da entidade mais central
@@ -144,7 +150,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
 - Validar o modelo conceitual, quando existir, com as mesmas regras do documento de produto
-- Barrar entidade do modelo conceitual ausente do glossário; termo do glossário fora do modelo é permitido
+- Barrar nome em destaque no modelo conceitual que não seja entidade do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - Avisar sobre termos de implementação no modelo conceitual
 - Exigir atualização da spec quando o PR altera código ligado a ela
 - Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão

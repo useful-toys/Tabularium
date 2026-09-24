@@ -1,18 +1,26 @@
 # Iconula — Modelo conceitual
 
+## Tipos
+- ✓ **Sigla de seção**: texto; 3 letras maiúsculas
+- ✓ **Código de figurinha**: texto; **Sigla de seção** seguida da posição na seção com 2 dígitos
+- ✓ **Letra de grupo**: texto; uma letra de A a L
+- ✓ **Contagem**: inteiro; de 0 a 99
+- ✓ **Página do álbum**: inteiro; a partir de 0
+
+## Entidades
 - ✓ **Catálogo**
   - ✓ igual para todas as contas; não muda durante o uso
 - ✓ **Seção**
-  - ✓ sigla: identidade; imutável
+  - ✓ sigla: **Sigla de seção**; identidade; imutável
   - ✓ pertence a 1 **Catálogo**
   - ✓ tipos: **Seleção** | **Especial**
   - ✓ **Seleção** pertence a 1 **Grupo da Copa**
-  - ✓ posição no álbum físico: define a ordem do álbum
+  - ✓ páginas no álbum físico: **Página do álbum**; definem a ordem do álbum
 - ✓ **Figurinha**
-  - ✓ código: identidade; imutável
+  - ✓ código: **Código de figurinha**; identidade; imutável
   - ✓ pertence a 1 **Seção**
 - ✓ **Grupo da Copa**
-  - ✓ letra: identidade
+  - ✓ letra: **Letra de grupo**; identidade
 - ✓ **Conta**
   - ✓ estados de atestação: pendente | atestada
   - ✓ pendente → atestada: o usuário atesta no primeiro acesso

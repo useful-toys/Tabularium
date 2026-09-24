@@ -42,7 +42,7 @@ Crie o que faltar, sem sobrescrever nada:
   - exigir PR;
   - exigir o check `spec-check`;
   - exigir branch atualizada com a `main` antes do merge;
-  - descartar aprovações quando houver commits novos.
+  - não é preciso exigir aprovação: a aceitação é o merge decidido por um humano. Se a equipe quiser exigir aprovação, oriente também descartar aprovações quando houver commits novos.
 - Revisão consultiva por agente (opcional). Pergunte qual usar; pode ser mais de um, ou nenhum:
   - **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md`. Usa a assinatura do Copilot, sem secret.
   - **Claude**: o job `spec-review` do workflow roda o `spec-impact` quando existe o secret `ANTHROPIC_API_KEY`; sem ele, o job é pulado.

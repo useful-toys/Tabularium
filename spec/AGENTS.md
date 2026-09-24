@@ -50,9 +50,9 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - Glossário, Fora de escopo e `Nota:` não levam marcador.
 
 ### Mudanças
-- Toda mudança entra por PR. A `main` é protegida: exige branch atualizada e descarta aprovações quando há commits novos.
+- Toda mudança entra por PR. A `main` é protegida: exige branch atualizada antes do merge. Se a equipe exigir aprovação, as aprovações são descartadas quando há commits novos.
 - Uma ideia amadurece na conversa, com `/spec-grill` e `/spec-ideas`. Quando precisa de memória entre sessões, vai a pedido para uma issue (label `requirement`) com `/spec-issue`. O PR de proposta traz o **texto final** do `product.md` e das decisões, nunca ideias soltas. PR sem issue vale se a ideia já estiver madura.
-- PR de proposta: labels `requirement` e `spec-only`, sem código. PR aberto é proposta; o merge é a aceitação e torna o conteúdo compromisso. PR fechado sem merge é proposta recusada.
+- PR de proposta: labels `requirement` e `spec-only`, sem código. PR aberto é proposta; o merge, decidido por um humano, é a aceitação e torna o conteúdo compromisso; não há aprovação formal obrigatória. O agente só integra a pedido explícito do humano, PR a PR. PR fechado sem merge é proposta recusada.
 - Acréscimo que não contradiz nada entra sem `✓`. O PR da entrega adiciona o `✓`.
 - Item sem `✓`, ou o lado direito de um `⇢`, pode ser ajustado num PR de proposta.
 - Mudança significativa: altera o sentido de um item `✓`, contradiz um item existente (inclusive transversal ou NF) ou vai contra uma decisão. Mudar a redação sem mudar o sentido não conta.
@@ -63,7 +63,7 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - Requisito abandonado: apagar, ou transformar em item de Fora de escopo com motivo.
 - PR de código:
   - Resolver um `⇢` ou marcar `✓` exige código no mesmo PR.
-  - Não cria nem altera `⇢` e não altera decisões. Exceção: pequena divergência entre entrega e compromisso, com a label `spec-mismatch` e o aval do revisor.
+  - Não cria nem altera `⇢` e não altera decisões. Exceção: pequena divergência entre entrega e compromisso, com a label `spec-mismatch` e o aval da pessoa que integra.
   - Mudança pequena (acréscimo ou ajuste sem `⇢` e sem mexer em decisões) pode vir junto com o código, já com `✓`.
   - Cita a issue com `Closes #N`: a issue fecha na entrega.
 - Alterar o lado esquerdo de uma linha `✓` sem código só com a label `spec-only` (correção de redação).

@@ -14,7 +14,7 @@ flowchart LR
   G -.->|a pedido| I["/spec-issue<br/>issue requirement"]
   I -.-> G
   P --> R["CI: check bloqueante<br/>+ revisão consultiva<br/>(Copilot e/ou Claude)"]
-  R --> A["Revisor aprova<br/>merge = compromisso"]
+  R --> A["Humano decide o merge<br/>merge = compromisso"]
   A --> C["Implementação + /spec-sync<br/>✓ e ⇢ resolvidos<br/>Closes #issue"]
 ```
 
@@ -34,7 +34,7 @@ flowchart LR
 
 ```
 AGENTS.md                       processo (lido por qualquer agente)
-REVIEW.md                       instruções de revisão para agentes revisores (ex.: Copilot code review)
+REVIEW.md                       instruções para agentes de revisão (ex.: Copilot code review)
 spec/AGENTS.md                  regras de formato e de mudança da spec
 spec/product.md                 o que o produto é e como se comporta
 spec/config.json                preferências: camadas, idioma, caminhos que não são código
@@ -57,7 +57,8 @@ As instruções ficam só em `AGENTS.md`. Não crie `CLAUDE.md`: quando ele exis
 O `/spec-init` cria as labels e orienta a configuração da `main`:
 - exigir PR e o check `spec-check`;
 - exigir branch atualizada antes do merge;
-- descartar aprovações quando houver commits novos.
+
+Não há aprovação formal obrigatória: a aceitação é o merge decidido por um humano. Se a equipe exigir aprovação, descarte as aprovações quando houver commits novos.
 
 A revisão consultiva por agente é opcional e nunca bloqueia o merge. Pode ser feita por um dos dois, ou pelos dois:
 - **Copilot code review**: ruleset com revisão automática e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot.

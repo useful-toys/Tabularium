@@ -1,11 +1,13 @@
 ---
 name: spec-grill
-description: Esmiúça uma ideia de requisito ou de mudança de requisito contra a spec viva (glossário, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
+description: Esmiúça uma ideia de requisito ou de mudança de requisito contra a spec viva (glossário, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
 ---
 
 # spec-grill
 
-Etapa 1 de 3 da proposta: **esmiuçar** (spec-grill) → sugerir (spec-ideas) → registrar (spec-propose). Esta etapa converge: você pergunta, o humano decide. Não edite arquivos da spec.
+Etapa 1 de 3 da proposta: **esmiuçar** (spec-grill) → sugerir (spec-ideas) → registrar (spec-propose). Esta etapa converge: você pergunta, o humano decide.
+
+Trabalhe só na conversa. Não edite arquivos da spec e não crie nem altere nada no tracker: nada de issue, comentário ou mudança de estado de PR. Issue e PR de origem são só lidos. Publicar é pedido explícito do usuário, via `/spec-issue` ou `/spec-propose`.
 
 Regras de formato: `spec/AGENTS.md`.
 
@@ -13,7 +15,6 @@ Regras de formato: `spec/AGENTS.md`.
 - **Texto livre**: a ideia descrita pelo usuário.
 - **Issue** (`#N` ou link): `gh issue view <N> --comments`. Leia o formulário e os resumos já publicados por spec-grill e spec-ideas; o que já está decidido ali não é perguntado de novo.
 - **PR de proposta** (`#N` ou link): `gh pr view <N> --comments` e `gh pr diff <N>`. Compare também com a `main` atual (`git fetch` e `git diff <base-do-PR>..origin/main -- spec/`): o que mudou na `main` desde que o PR foi aberto e que colide com a proposta é a **defasagem**, e entra como pergunta.
-  - Se o PR estiver pronto para revisão, volte-o para draft (`gh pr ready <N> --undo`) e comente que está em rediscussão. O `/spec-propose` o marca como pronto ao registrar.
 
 ## 2. Contexto
 - Leia `spec/product.md` inteiro e o mapa de decisões de cada camada. Abra só as decisões cujo `carregar-quando` corresponda à ideia.
@@ -39,10 +40,9 @@ O que perguntar:
 - **Fronteira de conteúdo**: o que é produto e o que é interface ou implementação (critério em `spec/AGENTS.md`).
 
 ## 4. Memória
-Ao fim da sessão, ou quando o usuário pedir, publique um resumo:
-- **Issue**: comentário na issue (`gh issue comment`).
-- **PR**: comentário no PR (`gh pr comment`).
-- **Texto livre**: depois da primeira rodada, ofereça abrir uma issue com o resumo (`gh issue create`, no formato do formulário de proposta). Se o usuário recusar, o resumo fica na conversa e irá na descrição do PR.
+Ao fim da sessão, ou quando o usuário pedir, apresente o resumo **na conversa**. Não o publique nem ofereça abrir issue por conta própria. Se o usuário quiser guardá-lo:
+- numa issue nova ou existente: `/spec-issue`;
+- como proposta: `/spec-propose`.
 
 Formato do resumo:
 ```markdown
@@ -57,4 +57,4 @@ Formato do resumo:
 ```
 
 ## 5. Próximo passo
-Sugira `/spec-ideas` para abrir alternativas e cenários, ou `/spec-propose` se nada mais faltar.
+Sugira `/spec-ideas` para abrir alternativas e cenários, ou `/spec-propose` se nada mais faltar. Se a discussão precisar continuar em outra sessão, mencione `/spec-issue`.

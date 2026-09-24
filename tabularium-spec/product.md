@@ -26,7 +26,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Decisão**: registro de uma escolha não óbvia vigente, com contexto, alternativas descartadas, consequências e histórico
 - **Camada**: grupo de decisões de mesma natureza (produto, interface, arquitetura…)
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
-- **Issue de requisito**: issue do tracker onde uma ideia amadurece até estar pronta para proposta
+- **Issue de requisito**: issue do tracker que guarda uma ideia em amadurecimento até estar pronta para proposta
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
 - **Tracker**: sistema externo de solicitações (GitHub Issues ou Jira)
@@ -108,11 +108,12 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Aceita como entrada texto livre, issue de requisito ou proposta aberta
   - ✓ Confronta a ideia com glossário, regras transversais, não funcionais, decisões vigentes e código ⇢ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
   - ✓ Classifica a ideia como acréscimo, ajuste de compromisso ou mudança significativa e levanta a cascata
-  - ✓ Proposta rediscutida volta a rascunho, e a defasagem em relação à branch principal vira pergunta
-  - ✓ Ideia em texto livre ganha a oferta de abrir uma issue de requisito
+  - ✓ Na rediscussão de uma proposta, a defasagem em relação à branch principal vira pergunta
+  - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
 - ✓ Sugerir alternativas, cenários de borda, cascata esquecida e recortes para o humano aceitar ou descartar com motivo
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
-- ✓ Registrar na issue ou na proposta o resumo do que foi decidido e sugerido, como memória entre sessões
+  - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
+- ✓ Levar a pedido o resumo do que foi decidido e sugerido para uma issue de requisito nova ou existente, como memória entre sessões
 - ✓ Oferecer formulário de issue de requisito: problema, proposta, alternativas e dúvidas
 
 ### Proposta
@@ -161,7 +162,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Qualquer revisor pode aceitar uma proposta
 - ✓ Rótulos de issues e PRs em inglês
 - ✓ A spec descreve a branch principal: item implementado é verdade no código; comprometido é intenção registrada
-- ✓ Ideias em amadurecimento vivem no tracker; a spec recebe só texto final aceito
+- ✓ Ideias em amadurecimento vivem na conversa ou no tracker, nunca na spec; a spec recebe só texto final aceito
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado

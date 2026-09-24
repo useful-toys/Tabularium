@@ -53,7 +53,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Item só documentado vira pergunta: compromisso ou documentação desatualizada
   - ✓ Divergência entre código e documentação vira pergunta; se valer o documentado, vira mudança comprometida
   - ✓ Dúvidas são perguntadas durante a extração, uma a uma
-  - ✓ Decisões preexistentes de produto vigentes são convertidas ao formato; técnicas e obsoletas ficam de fora e são relatadas
+  - ✓ Decisões preexistentes de produto vigentes são convertidas ao formato; técnicas e obsoletas ficam de fora e são relatadas ⇢ Decisões preexistentes vigentes são convertidas ao formato, na camada de produto ou na camada técnica configurada; técnicas sem camada e obsoletas ficam de fora e são relatadas
   - ✓ Documentação preexistente permanece intocada
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 
@@ -151,6 +151,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Barrar PR que altera ou marca item implementado sem alterar código, salvo quando rotulado como só-spec
 - ✓ Barrar mudança comprometida criada, alterada ou desfeita sem decisão alterada no mesmo PR
 - ✓ Barrar PR de código que cria mudança comprometida ou altera decisões, salvo com rótulo de divergência
+- Barrar PR rotulado como só-spec que altera código
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
 - Validar o modelo conceitual, quando existir, com as mesmas regras do documento de produto

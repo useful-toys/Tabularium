@@ -180,6 +180,17 @@ test('changeType deduz o tipo mínimo e os pontos ambíguos', () => {
   assert.ok(changeType({ docs: [], ...spec, decisionsChanged: ['x.md'] }).ambiguous.length);
 });
 
+test('changeType: ajustar o lado desejado de ⇢ é compatível; criar ou desfazer é incompatível', () => {
+  const d = (before, after) => [{ file: 'product.md', d: classifyDocDiff(doc(before), doc(after), UNMARKED) }];
+  const spec = { touchesSpec: true };
+  assert.equal(changeType({ docs: d('- ✓ A ⇢ A2\n', '- ✓ A ⇢ A3\n'), ...spec }).min, 'compatible');
+  assert.equal(changeType({ docs: d('- ✓ A ⇢ A2\n', '- ✓ A\n'), ...spec }).min, 'incompatible');
+  assert.equal(changeType({ docs: d('- ✓ A\n', '- ✓ A ⇢ A2\n'), ...spec }).min, 'incompatible');
+  const adj = classifyDocDiff(doc('- ✓ A ⇢ A2\n'), doc('- ✓ A ⇢ A3\n'), UNMARKED);
+  assert.deepEqual(adj.changeAdjusts, ['- ✓ A ⇢ A3']);
+  assert.deepEqual(adj.redefinitions, []);
+});
+
 // ---------- modelo conceitual e documentos técnicos ----------
 
 test('definedTerms lê o glossário e os tipos', () => {
@@ -367,6 +378,37 @@ test('check: mais de uma label de tipo é erro; incompatível exige decisão', (
     assert.ok(two.some((e) => e.includes('mais de uma label de tipo')));
     const inc = check(r.dir, { base: 'HEAD~1', labels: ['spec-incompatible'] }).errors;
     assert.ok(inc.some((e) => e.includes('incompatível sem decisão')));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: ajustar o lado desejado de ⇢ é compatível e exige decisão', () => {
+  const r = repo();
+  try {
+    r.edit(OLD, PROPOSED);
+    touchDecision(r);
+    r.commit('proposta');
+    r.git('tag', 'proposta');
+    r.edit(PROPOSED, `${OLD} ⇢ Desfazer contagens: até as 7 últimas`);
+    r.commit('ajuste sem decisão');
+    const res = check(r.dir, { base: 'proposta', requireType: true });
+    assert.ok(res.errors.some((e) => e.includes('sem decisão criada ou alterada')));
+    assert.ok(res.info.includes('Tipo da mudança: spec-compatible (deduzido do diff)'));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: outro arquivo da spec alterado não é ambíguo', () => {
+  const r = repo();
+  try {
+    const cfg = join(r.dir, 'spec', 'config.json');
+    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"README.md",', '"README.md",\n    "docs/",'));
+    r.commit('config');
+    const res = check(r.dir, { base: 'HEAD~1', requireType: true });
+    assert.deepEqual(res.errors, []);
+    assert.ok(res.info.includes('Tipo da mudança: spec-editorial (deduzido do diff)'));
   } finally {
     r.cleanup();
   }

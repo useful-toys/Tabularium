@@ -61,7 +61,7 @@ Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou
 
 Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`.
 
-**O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
+**O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`, casados por prefixo. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
 
 **Garantias**
 - Na branch principal, o que tem `✓` está implementado; o que não tem é intenção registrada.
@@ -281,7 +281,7 @@ A spec do tabularium3 fica em `tabularium-spec/`. A **definição do template** 
 - No CI, `tabularium-spec/` é verificada só na forma, sem as regras de PR. Por isso, a lista de caminhos de código dela fica vazia e não é lida.
 - Num PR `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
 
-O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta. Quem adota o template apaga `tabularium-spec/` e `tabularium-docs/`.
+O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta. Ele não tem código: a lista de caminhos de código dele é vazia, e a entrega não pode ser experimentada com ele; as regras de entrega são exercitadas pelos testes do script. Quem adota o template apaga `tabularium-spec/` e `tabularium-docs/`.
 
 ### Documentos derivados
 

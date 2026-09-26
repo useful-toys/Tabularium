@@ -10,7 +10,7 @@ Spec do próprio tabularium3, isto é, do template. Não confunda com `spec/`, q
   - Se a mudança exigir adaptar o exemplo em `spec/`, a adaptação vem no mesmo PR.
   - `/spec-grill` e `/spec-ideas` amadurecem a mudança na conversa; `/spec-propose` valida a consistência de `tabularium-spec/` e abre o PR.
   - O merge, decidido por um humano, é aceite e entrega.
-- O CI verifica esta pasta só na forma e exige a label `tabularium` no PR que a toca. Num PR com a label `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
+- O CI verifica esta pasta só na forma e exige a label `tabularium` no PR que toca esta pasta ou `tabularium-docs/`. Num PR com a label `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
 - Comandos: `node scripts/spec.mjs build-map --spec tabularium-spec` e `node scripts/spec.mjs check --spec tabularium-spec`.
 - `tabularium-docs/` guarda os documentos derivados da definição, como `spec-flow.md`. Eles e o `README.md` são regerados a cada PR `tabularium` a partir dos arquivos finais, conforme `/spec-propose`, e nunca são fonte.
 - Quem adota o template apaga esta pasta e `tabularium-docs/`.

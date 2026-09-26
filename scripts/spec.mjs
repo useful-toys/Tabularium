@@ -362,18 +362,29 @@ export function classifyDocDiff(before, after, unmarked = []) {
   const deliveredTexts = delivered.map(textOf);
   const removedCommitments = removedAll.filter((l) => !deliveredTexts.includes(textOf(l)));
   const otherText = [...minus(old.other, now.other), ...minus(now.other, old.other)];
-  return { ...base, delivered, newDone, addedCommitments, removedCommitments, otherText };
+  // ⇢ que manteve o lado esquerdo e mudou só o desejado é ajuste; os demais criam ou desfazem a redefinição.
+  const changeLines = (t) => t.replace(/\r\n/g, '\n').split('\n').filter((l) => doneRe.test(l) && hasChange(l)).map((l) => l.trim());
+  const addedChanges = minus(changeLines(after), changeLines(before));
+  const removedChanges = minus(changeLines(before), changeLines(after)).filter((l) => !base.resolutions.includes(l));
+  const lefts = (ls) => ls.map(leftOf);
+  const changeAdjusts = addedChanges.filter((l) => lefts(removedChanges).includes(leftOf(l)));
+  const redefinitions = [
+    ...addedChanges.filter((l) => !lefts(removedChanges).includes(leftOf(l))),
+    ...removedChanges.filter((l) => !lefts(addedChanges).includes(leftOf(l))),
+  ];
+  return { ...base, delivered, newDone, addedCommitments, removedCommitments, otherText, changeAdjusts, redefinitions };
 }
 
 // Tipo mínimo que o diff prova e os pontos que só um julgamento de sentido resolve.
-// Entrada: diffs dos documentos com itens, se o PR tem código, decisões criadas e
-// alteradas (ou apagadas) e outros arquivos da spec alterados.
-export function changeType({ docs, touchesCode, touchesSpec, decisionsAdded = [], decisionsChanged = [], otherFiles = [] }) {
+// Entrada: diffs dos documentos com itens, se o PR tem código e decisões criadas e
+// alteradas (ou apagadas). Regras em spec/AGENTS.md, seção Mudanças.
+export function changeType({ docs, touchesCode, touchesSpec, decisionsAdded = [], decisionsChanged = [] }) {
   let min = touchesCode || !touchesSpec ? 'neutral' : 'editorial';
   const ambiguous = [];
   const raise = (t) => { min = maxType(min, t); };
   for (const { file, d } of docs) {
-    if (d.changeEdits.length) raise('incompatible');
+    if (d.redefinitions.length) raise('incompatible');
+    if (d.changeAdjusts.length) raise('compatible');
     if (d.addedCommitments.length && !d.removedCommitments.length) raise('compatible');
     if (touchesCode && d.newDone.length) raise('compatible');
     if (d.rewrites.length) ambiguous.push(`${file}: item ${DONE} alterado ou removido sem ${CHANGE}`);
@@ -383,7 +394,6 @@ export function changeType({ docs, touchesCode, touchesSpec, decisionsAdded = []
   }
   if (decisionsAdded.length) raise('compatible');
   if (decisionsChanged.length) ambiguous.push('decisão existente alterada ou apagada');
-  if (otherFiles.length) ambiguous.push(`outro arquivo da spec alterado: ${otherFiles.join(', ')}`);
   // Acima de incompatível não há o que julgar.
   return { min, ambiguous: min === 'incompatible' ? [] : ambiguous };
 }
@@ -495,8 +505,6 @@ export function classifyPR(root, { base, spec = 'spec', config = loadConfig(root
   const decisionsAdded = status.filter(([s, f]) => s === 'A' && isDecision(f) && !f.endsWith('/README.md')).map(([, f]) => f);
   const decisionsChanged = status.filter(([s, f]) => s !== 'A' && isDecision(f) && !f.endsWith('/README.md')).map(([, f]) => f);
   const specDocsNow = docs ?? specDocs(root, spec, config).map((d) => ({ ...d, text: readFileSync(join(root, spec, d.file), 'utf8') }));
-  const docFiles = specDocsNow.map((d) => `${spec}/${d.file}`);
-  const otherFiles = changed.filter((f) => f.startsWith(`${spec}/`) && !isDecision(f) && !docFiles.includes(f));
   const diffs = specDocsNow.map(({ file, kind, text }) => {
     let before = '';
     try {
@@ -507,8 +515,8 @@ export function classifyPR(root, { base, spec = 'spec', config = loadConfig(root
     const unmarked = kind === 'product' ? config.locale.unmarkedSections : [];
     return { file, d: classifyDocDiff(before, text, unmarked) };
   });
-  const { min, ambiguous } = changeType({ docs: diffs, touchesCode, touchesSpec, decisionsAdded, decisionsChanged, otherFiles });
-  return { changed, touchesCode, touchesSpec, decisionsAdded, decisionsChanged, otherFiles, docs: diffs, min, ambiguous };
+  const { min, ambiguous } = changeType({ docs: diffs, touchesCode, touchesSpec, decisionsAdded, decisionsChanged });
+  return { changed, touchesCode, touchesSpec, decisionsAdded, decisionsChanged, docs: diffs, min, ambiguous };
 }
 
 // ---------- CLI ----------

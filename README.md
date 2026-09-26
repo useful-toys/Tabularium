@@ -54,7 +54,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maio
 |---|---|
 | `spec-editorial` | só texto da spec, sem mudar sentido; único tipo que altera ou marca item `✓` sem código |
 | `spec-neutral` | não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso |
-| `spec-compatible` | cria requisito, altera item sem `✓` ou cria decisão, sem contradizer item nem decisão vigente |
+| `spec-compatible` | cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente |
 | `spec-incompatible` | altera o sentido de item `✓`, contradiz item ou vai contra decisão; exige `⇢` e decisão criada ou alterada no mesmo PR |
 | `requirement` | issue de requisito |
 | `tabularium` | só neste repositório: PR que muda a definição do próprio template, sem label de tipo |
@@ -64,7 +64,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maio
 Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
 **Adoção**
-- `/spec-init`: cria a estrutura e grava as preferências (camadas, idioma, caminhos que não são código) em `spec/config.json`; reexecutável; cria as labels e orienta a proteção da `main` e a revisão consultiva.
+- `/spec-init`: cria a estrutura e grava as preferências (camadas, idioma, caminhos de código) em `spec/config.json`; reexecutável, sempre pergunta os caminhos de código se a lista estiver vazia; cria as labels e orienta a proteção da `main` e a revisão consultiva.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
 
 **Amadurecimento** (só na conversa)
@@ -93,7 +93,7 @@ spec/AGENTS.md                     regras de formato e de mudança da spec
 spec/product.md                    o que o produto é e como se comporta
 spec/model.md                      modelo conceitual (opcional): tipos e entidades do domínio
 spec/<camada>.md                   documento técnico de uma camada (opcional)
-spec/config.json                   preferências: camadas, idioma, caminhos que não são código
+spec/config.json                   preferências: camadas, idioma, caminhos de código (codePaths)
 spec/decisions/<camada>/           uma decisão vigente por arquivo + mapa gerado (README.md)
 scripts/spec.mjs                   build-map, classify e check (Node, sem dependências)
 scripts/spec.test.mjs              testes do script
@@ -111,6 +111,8 @@ tabularium-docs/                   documentos derivados do template (apagar ao a
 **Projeto novo**: crie o repositório com "Use this template" no GitHub e rode `/spec-init`.
 
 **Repositório existente**: copie `AGENTS.md`, `REVIEW.md`, `.gitattributes`, `spec/AGENTS.md`, `scripts/spec.mjs`, `scripts/spec.test.mjs`, `scripts/spec-fixtures/`, `.claude/skills/`, `.github/workflows/spec-check.yml` e `.github/ISSUE_TEMPLATE/requirement.yml`. Depois rode `/spec-init` e, se já houver código, `/spec-extract`.
+
+Os caminhos de código (`codePaths` em `spec/config.json`) são as pastas ou arquivos do código do produto (ex.: `src/`, `app/`), casados por prefixo; só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código, como o exemplo; configuração sem a lista é recusada pelo script. O `/spec-init` sugere a lista a partir das pastas do repositório, pergunta-a sempre que estiver vazia e a atualiza quando o código muda de lugar.
 
 O `/spec-init` cria as labels `requirement`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
 - exigir PR;

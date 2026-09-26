@@ -48,7 +48,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 ### Adoção
 - ✓ Criar projeto a partir do template, com estrutura, regras, verificação e exemplo prontos
 - ✓ Adotar a spec num repositório existente copiando um conjunto definido de arquivos
-- ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos que não são código
+- ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Configuração pode ser refeita a qualquer momento; o existente é preservado e cada mudança é confirmada
   - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
   - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido

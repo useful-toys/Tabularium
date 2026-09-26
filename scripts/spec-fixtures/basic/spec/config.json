@@ -3,13 +3,8 @@
   "layers": [
     "product"
   ],
-  "nonCodePaths": [
-    "spec/",
-    "README.md",
-    "AGENTS.md",
-    "REVIEW.md",
-    ".github/",
-    ".claude/",
-    "scripts/spec"
+  "codePaths": [
+    "app.js",
+    "src/"
   ]
 }

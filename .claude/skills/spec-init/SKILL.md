@@ -1,6 +1,6 @@
 ---
 name: spec-init
-description: Cria a estrutura da spec viva e grava as preferências do projeto (camadas de decisão, idioma, caminhos que não são código) em spec/config.json. Use para adotar a spec num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
+description: Cria a estrutura da spec viva e grava as preferências do projeto (camadas de decisão, idioma, caminhos de código) em spec/config.json. Use para adotar a spec num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
 ---
 
 # spec-init
@@ -13,10 +13,10 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR; o CI deduz
 - Se existir `CLAUDE.md` na raiz ou em `spec/`, avise: com ele presente, o Claude Code ignora os `AGENTS.md`. Sugira mover o conteúdo para `AGENTS.md`.
 
 ## 2. Preferências
-Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar. Senão, pergunte tudo:
+Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar; se `codePaths` estiver vazio (é o caso do exemplo do template), pergunte-o sempre. Senão, pergunte tudo:
 - **Camadas de decisão** além de `product`: `interface`, `architecture`, `data` (modelo de dados), `operations` ou outras. Nenhuma se chama `model`, nome reservado ao modelo conceitual.
 - **Idioma do conteúdo** (ex.: `pt-BR`). A estrutura fica sempre em inglês. O idioma precisa existir em `LOCALES` em `scripts/spec.mjs`; se não existir, avise e adicione a entrada, traduzindo os textos de `pt-BR`.
-- **Caminhos que não são código** (`nonCodePaths`): mantenha o padrão (`spec/`, `README.md`, `AGENTS.md`, `REVIEW.md`, `.github/`, `.claude/`, `scripts/spec`) e acrescente o que o usuário indicar.
+- **Caminhos de código** (`codePaths`): as pastas ou arquivos onde está o código do produto (ex.: `src/`, `app/`, `lib/`), casados por prefixo. Sugira a lista a partir das pastas do repositório e confirme. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia: projeto sem código. Quando o código mudar de lugar, a lista é atualizada por aqui.
 
 Grave em `spec/config.json`.
 
@@ -25,7 +25,7 @@ Crie o que faltar, sem sobrescrever nada:
 - `spec/product.md` a partir de `assets/product.md`. Se o `product.md` existente for o exemplo do template (Iconula), pergunte se ele, o `model.md` e as decisões de exemplo devem ser substituídos pelo esqueleto.
 - `spec/model.md` a partir de `assets/model.md`, só se o usuário quiser: pergunte se o domínio tem estrutura relevante (entidades com relações, estados ou invariantes). Produto sem estrutura relevante dispensa o modelo.
 - Para cada camada além de `product`, pergunte se ela terá documento técnico. Se sim, crie `spec/<camada>.md` só com o título `# <Produto> — <Camada>`.
-- Se existir `tabularium-spec/` (a spec do próprio template), pergunte se ela e `tabularium-docs/` (documentos derivados do template) devem ser apagadas. Em seguida, remova as duas de `nonCodePaths` e, do workflow, os passos "Check da spec do próprio template" e "Label do PR do próprio template"; sem a pasta, eles e a condição da label `tabularium` ficam inertes.
+- Se existir `tabularium-spec/` (a spec do próprio template), pergunte se ela e `tabularium-docs/` (documentos derivados do template) devem ser apagadas. Em seguida, remova do workflow os passos "Check da spec do próprio template" e "Label do PR do próprio template"; sem a pasta, eles e a condição da label `tabularium` ficam inertes.
 - `spec/decisions/<camada>/` para cada camada.
 - Rode `node scripts/spec.mjs build-map`.
 

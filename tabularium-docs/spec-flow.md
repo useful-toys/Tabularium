@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `8f1d270` da `main`, com as mudanças do PR #15. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `6a732e3` da `main`, com as mudanças do PR #17. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
 
 ## O problema e o contexto
 
@@ -45,7 +45,7 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 - **Modelo conceitual** (`model.md`, opcional): tipos e entidades do domínio, com relações, estados e invariantes. É um modelo de conceitos, não de banco de dados. Quando existe, é lido sempre junto com o `product.md`.
 - **Documentos técnicos** (`<camada>.md`, opcionais): estado atual de uma camada técnica, como interface ou arquitetura.
 - **Registros de decisão** (`decisions/<camada>/`): um arquivo curto por escolha não óbvia, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. Parecem ADRs, mas só as decisões em vigor ficam na pasta.
-- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos que não são código.
+- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto.
 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa issue.
 
@@ -60,6 +60,8 @@ Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou
 5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens com `✓`. O CI impede resolver um `⇢` num PR sem código.
 
 Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`.
+
+**O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
 
 **Garantias**
 - Na branch principal, o que tem `✓` está implementado; o que não tem é intenção registrada.
@@ -84,7 +86,7 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 | `spec/<camada>.md` | Documento técnico opcional de uma camada além de `product`, com seções livres | Autocontido e atemporal; mesmos estados e regras de mudança dos itens |
 | `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo, nomeado pelo slug: frontmatter `tema`, `decisao`, `carregar-quando`; depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas"; o porquê vem do humano |
 | `spec/decisions/<camada>/README.md` | Mapa de decisões, gerado por `node scripts/spec.mjs build-map` | Nunca editado à mão; o agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
-| `spec/config.json` | Camadas, idioma, caminhos que não são código (`nonCodePaths`) | Alterado só pelo `/spec-init`; nenhuma camada se chama `model` |
+| `spec/config.json` | Camadas, idioma, caminhos de código (`codePaths`) | Alterado só pelo `/spec-init`; nenhuma camada se chama `model`; caminhos casados por prefixo; lista vazia é projeto sem código; config sem a lista é recusada pelo script |
 | `AGENTS.md` | Processo | Sem `CLAUDE.md`: a presença dele faz o Claude Code ignorar os `AGENTS.md` |
 | `spec/AGENTS.md` | Regras de formato e de mudança | Fonte única; carregado quando o agente trabalha na spec |
 | `REVIEW.md` | Checklist para agentes de revisão, como o Copilot code review | Revisão consultiva; não se aplica a PR `tabularium` |
@@ -111,6 +113,7 @@ stateDiagram-v2
 - **Redefinido**: `✓ <o que vale hoje> ⇢ <texto completo desejado>`. Numa remoção, `⇢ (removido)`. O lado esquerdo nunca é alterado na proposta.
 - O `⇢` vai na linha mais baixa afetada: na regra, se só a regra muda; no requisito, se ele muda inteiro. Se algo novo contradiz um item `✓`, o `⇢` vai no item contradito.
 - Na entrega, o item é reescrito com o texto desejado, mantém o `✓` e o `⇢` some. Numa remoção, a linha é apagada.
+- Ajustar só o lado desejado mantém o item redefinido. É mudança compatível, mas exige decisão criada ou alterada no PR.
 - Na desistência, a decisão volta à escolha anterior.
 
 ### Tipos de mudança e labels
@@ -125,6 +128,8 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 | Incompatível | Altera o sentido de um item `✓`, contradiz um item existente (inclusive transversal ou não funcional) ou vai contra uma decisão. Entra como `⇢` e **sempre** cria ou altera uma decisão no mesmo PR | `spec-incompatible` |
 
 - PR com vários tipos recebe o maior, nesta ordem. Por isso, uma mudança editorial em item `✓` vai num PR próprio.
+- Num `⇢`, criar ou desfazer é incompatível. Ajustar só o lado desejado é compatível. Nos três casos, o PR cria ou altera uma decisão.
+- "Código" é o que está nos caminhos de código da configuração.
 - **Proposta** é o PR sem código com `spec-compatible` ou `spec-incompatible`.
 - Outras labels:
   - `requirement`: issue de requisito;
@@ -137,8 +142,9 @@ O job `spec-check` roda quando o PR é aberto, reaberto, atualizado, marcado com
 
 1. **Tipo mínimo.** `node scripts/spec.mjs classify` compara o PR com a base e deduz o menor tipo que o diff prova:
    - só spec: editorial; com código, ou sem tocar a spec: neutra;
-   - item comprometido novo, decisão nova, ou `✓` novo que não era compromisso num PR com código: compatível;
-   - `⇢` criado, alterado ou desfeito: incompatível.
+   - código é todo arquivo alterado cujo caminho começa por um dos caminhos de código; com a lista vazia, nenhum PR tem código;
+   - item comprometido acrescentado sem outro removido, decisão nova, `✓` novo que não era compromisso num PR com código, ou `⇢` com só o lado desejado ajustado: compatível;
+   - `⇢` criado ou desfeito: incompatível.
 2. **Caso ambíguo.** O diff não mostra se o sentido mudou quando:
    - o texto de um item `✓` é alterado sem `⇢`;
    - um item comprometido é reescrito ou removido;
@@ -207,15 +213,16 @@ flowchart LR
 
 ### Regras verificadas pelo CI (`scripts/spec.mjs check --base`)
 
-Valem para o `product.md`, o `model.md` e os documentos técnicos. Antes do check, o CI roda os testes do script.
+Valem para o `product.md`, o `model.md` e os documentos técnicos. Antes do check, o CI roda os testes do script. "Código" é o que está nos caminhos de código da configuração.
 
 | Situação | Resultado |
 |---|---|
+| Configuração sem a lista `codePaths` | recusada: o script para |
 | Label de tipo abaixo do mínimo deduzido do diff, ou mais de uma | erro |
 | Caso ambíguo sem classificação por IA nem label de uma pessoa | erro |
 | Resolver `⇢` sem alterar código | erro, sempre |
 | Marcar `✓`, ou alterar ou remover item `✓`, sem código | erro, salvo em PR `spec-editorial` |
-| Criar, alterar ou desfazer `⇢` sem decisão criada ou alterada no PR | erro |
+| Criar, ajustar ou desfazer `⇢` sem decisão criada ou alterada no PR | erro |
 | Mudança incompatível sem decisão criada ou alterada no PR | erro |
 | Mapa de decisões desatualizado | erro |
 | Decisão sem frontmatter completo, sem as seções na ordem, com Histórico fora do fim ou entrada de histórico fora do padrão | erro |
@@ -251,7 +258,10 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Item `✓` vence o conflito; nos demais casos, pergunta. Lacunas ganham rascunho, sem inventar o porquê.
   - Nunca altera o sentido de item `✓`: isso vira proposta.
   - Nada muda sem aprovação, em lote ou item a item. Aplica numa branch própria e abre um PR.
-- **`/spec-init`**: cria a estrutura e grava as preferências. Pode ser refeito para mudar a configuração. Oferece trocar o exemplo pelo esqueleto, cria as labels e orienta a proteção da `main` e a revisão consultiva.
+- **`/spec-init`**: cria a estrutura e grava as preferências. Pode ser refeito para mudar a configuração.
+  - Sugere os caminhos de código a partir das pastas do repositório e confirma. Pergunta sempre por eles quando a lista está vazia, como no exemplo do template.
+  - Quando o código muda de lugar, a lista é atualizada por ele.
+  - Oferece trocar o exemplo pelo esqueleto, cria as labels e orienta a proteção da `main` e a revisão consultiva.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
 ### Definição do próprio template
@@ -268,7 +278,8 @@ A spec do tabularium3 fica em `tabularium-spec/`. A **definição do template** 
   - Sem subagentes, os mesmos passos rodam em sequência.
 - Depois, valida a consistência de `tabularium-spec/` e roda `build-map` e `check` nas duas specs.
 - O PR nasce pronto, não em draft. O merge, decidido por um humano, é aceite e entrega.
-- No CI, `tabularium-spec/` é verificada só na forma, sem as regras de PR. Num PR `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
+- No CI, `tabularium-spec/` é verificada só na forma, sem as regras de PR. Por isso, a lista de caminhos de código dela fica vazia e não é lida.
+- Num PR `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
 
 O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta. Quem adota o template apaga `tabularium-spec/` e `tabularium-docs/`.
 

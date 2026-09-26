@@ -234,12 +234,13 @@ test('documento técnico tem seções livres e as regras comuns', () => {
     .some((e) => e.includes('referência a decisão')));
 });
 
-test('isCode respeita nonCodePaths', () => {
-  const nonCode = ['spec/', 'README.md', 'scripts/spec'];
-  assert.equal(isCode('src/app.js', nonCode), true);
-  assert.equal(isCode('spec/product.md', nonCode), false);
-  assert.equal(isCode('scripts/spec.mjs', nonCode), false);
-  assert.equal(isCode('scripts/build.mjs', nonCode), true);
+test('isCode respeita codePaths', () => {
+  const code = ['src/', 'app.js'];
+  assert.equal(isCode('src/app.js', code), true);
+  assert.equal(isCode('app.js', code), true);
+  assert.equal(isCode('spec/product.md', code), false);
+  assert.equal(isCode('.github/workflows/ci.yml', code), false);
+  assert.equal(isCode('src/app.js', []), false);
 });
 
 // ---------- check integrado (repositório git temporário) ----------
@@ -404,11 +405,24 @@ test('check: outro arquivo da spec alterado não é ambíguo', () => {
   const r = repo();
   try {
     const cfg = join(r.dir, 'spec', 'config.json');
-    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"README.md",', '"README.md",\n    "docs/",'));
+    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"src/"', '"src/",\n    "lib/"'));
     r.commit('config');
     const res = check(r.dir, { base: 'HEAD~1', requireType: true });
     assert.deepEqual(res.errors, []);
     assert.ok(res.info.includes('Tipo da mudança: spec-editorial (deduzido do diff)'));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('config.json sem codePaths é recusado', () => {
+  const r = repo();
+  try {
+    const cfg = join(r.dir, 'spec', 'config.json');
+    const c = JSON.parse(readFileSync(cfg, 'utf8'));
+    delete c.codePaths;
+    writeFileSync(cfg, JSON.stringify(c));
+    assert.throws(() => check(r.dir), /sem `codePaths`/);
   } finally {
     r.cleanup();
   }

@@ -2,19 +2,21 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  LOCALES, buildMaps, check, checkDecision, checkProduct, classifyProductDiff,
-  isCode, openChanges, parseFrontmatter, renderMap,
+  LOCALES, buildMaps, check, checkDecision, checkItems, checkModel, checkProduct, classifyProductDiff,
+  definedTerms, isCode, openChanges, parseFrontmatter, renderMap,
 } from './spec.mjs';
 
 const locale = LOCALES['pt-BR'];
 const fixture = fileURLToPath(new URL('./spec-fixtures/basic', import.meta.url));
 const product = readFileSync(join(fixture, 'spec', 'product.md'), 'utf8');
+const model = readFileSync(join(fixture, 'spec', 'model.md'), 'utf8');
+const glossary = definedTerms(product, locale.glossarySection);
 const decision = readFileSync(join(fixture, 'spec', 'decisions', 'product', 'desfazer.md'), 'utf8');
 const opts = { locale };
 
@@ -141,6 +143,49 @@ test('reescrever ou remover item ✓ e marcar ✓ são detectados', () => {
   assert.deepEqual(classifyProductDiff(base, '- ✓ A\n  - ✓ B mudado\n- C\n').rewrites, ['- ✓ B']);
   assert.deepEqual(classifyProductDiff(base, '- ✓ A\n- C\n').rewrites, ['- ✓ B']);
   assert.deepEqual(classifyProductDiff(base, '- ✓ A\n  - ✓ B\n- ✓ C\n').marks, ['- ✓ C']);
+});
+
+// ---------- modelo conceitual e documentos técnicos ----------
+
+test('definedTerms lê o glossário e os tipos', () => {
+  assert.deepEqual(glossary, ['Item']);
+  assert.deepEqual(definedTerms(model, 'Tipos'), ['Contagem']);
+});
+
+test('model.md do fixture é válido', () => {
+  assert.deepEqual(checkModel(model, glossary, locale), { errors: [], warnings: [] });
+});
+
+test('model.md exige Tipos e Entidades, nesta ordem', () => {
+  const bad = model.replace('## Tipos', '## Entidades2');
+  assert.ok(checkModel(bad, glossary, locale).errors.some((e) => e.includes('seções devem ser')));
+});
+
+test('model.md barra nome em destaque fora do glossário e dos tipos', () => {
+  const bad = model.replace('  - ✓ quantidade: **Contagem**', '  - ✓ quantidade: **Contagem**\n  - ✓ pertence a 1 **Caixa**');
+  const { errors } = checkModel(bad, glossary, locale);
+  assert.deepEqual(errors, ['model.md:9: **Caixa** não é termo do glossário nem tipo declarado']);
+});
+
+test('model.md avisa sobre termos de implementação', () => {
+  const bad = model.replace('  - ✓ quantidade: **Contagem**', '  - ✓ quantidade: **Contagem**\n  - ✓ id da tabela de itens');
+  const { warnings } = checkModel(bad, glossary, locale);
+  assert.ok(warnings.some((w) => w.includes('("id")')));
+  assert.ok(warnings.some((w) => w.includes('("tabela")')));
+});
+
+test('model.md segue as regras de marca e de link do product.md', () => {
+  const bad = model.replace('- ✓ **Item**', '- **Item** ⇢ outra coisa\n- ver [x](http://x)');
+  const { errors } = checkModel(bad, glossary, locale);
+  assert.ok(errors.some((e) => e.includes('só em item ✓')));
+  assert.ok(errors.some((e) => e.includes('link não é permitido (model.md é autocontido)')));
+});
+
+test('documento técnico tem seções livres e as regras comuns', () => {
+  const doc = '# Exemplo — Interface\n\n## Telas\n- ✓ Tela única\n- ✓ Botão ⇢ Botão maior\n';
+  assert.deepEqual(checkItems(doc, locale, { name: 'interface.md' }).errors, []);
+  assert.ok(checkItems(`${doc}- ver decisions/x.md\n`, locale, { name: 'interface.md' }).errors
+    .some((e) => e.includes('referência a decisão')));
 });
 
 test('isCode respeita nonCodePaths', () => {
@@ -273,6 +318,52 @@ test('check: redação de item ✓ exige código ou label spec-only', () => {
     r.commit('redação');
     assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('alterado ou removido sem código')));
     assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-only'] }).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: PR com código sem alteração na spec exige no-spec-change', () => {
+  const r = repo();
+  try {
+    writeFileSync(join(r.dir, 'app.js'), 'export const x = 1;\n');
+    r.commit('refatoração');
+    assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('sem alteração na spec')));
+    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['no-spec-change'] }).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: regras de PR valem para model.md', () => {
+  const r = repo();
+  try {
+    const p = join(r.dir, 'spec', 'model.md');
+    writeFileSync(p, readFileSync(p, 'utf8').replace('- ✓ **Item**', '- ✓ **Item**\n  - ✓ nasce zerado'));
+    r.commit('marca sem código');
+    const errors = check(r.dir, { base: 'HEAD~1' }).errors;
+    assert.ok(errors.some((e) => e.includes('model.md: - ✓ nasce zerado')));
+    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-only'] }).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: documento técnico de camada é validado e segue as regras de PR', () => {
+  const r = repo();
+  try {
+    const cfg = join(r.dir, 'spec', 'config.json');
+    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"product"', '"product",\n    "interface"'));
+    mkdirSync(join(r.dir, 'spec', 'decisions', 'interface'));
+    buildMaps(r.dir);
+    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- Tela única\n');
+    r.commit('camada interface');
+    assert.deepEqual(check(r.dir).errors, []);
+    assert.ok(check(r.dir).info.some((i) => i.includes('interface.md:4: - Tela única')));
+    r.git('tag', 'antes');
+    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- ✓ Tela única\n');
+    r.commit('marca sem código');
+    assert.ok(check(r.dir, { base: 'antes' }).errors.some((e) => e.includes('interface.md: - ✓ Tela única')));
   } finally {
     r.cleanup();
   }

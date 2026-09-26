@@ -1,7 +1,8 @@
 {
   "language": "pt-BR",
   "layers": [
-    "product"
+    "product",
+    "model"
   ],
   "nonCodePaths": [
     "spec/",

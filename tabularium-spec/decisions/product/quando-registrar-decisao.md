@@ -3,7 +3,7 @@ tema: Critério para registrar uma decisão
 decisao: Toda escolha não óbvia; nasce junto com o compromisso que justifica
 carregar-quando: dúvida se uma escolha merece registro ou sobre o momento de criá-lo
 ---
-- Decisão: toda escolha não óbvia ganha registro, criado junto com o item comprometido ou a mudança comprometida que ela justifica; o porquê vem do humano
+- Decisão: toda escolha não óbvia ganha registro, criado junto com o item comprometido ou redefinido que ela justifica; o porquê vem do humano
 - Contexto: o registro existe para impedir que alguém reabra uma discussão já feita sem conhecer as alternativas descartadas
 - Alternativas descartadas
   - Só quando houver alternativa descartada relevante: critério estreito, deixa escolhas relevantes sem explicação
@@ -13,4 +13,5 @@ carregar-quando: dúvida se uma escolha merece registro ou sobre o momento de cr
   - Aceita: mais registros, compensados pela organização periódica
 
 ## Histórico
+- 2026-09-26 #14: termo item redefinido
 - 2026-09-24 plano-inicial: decisão criada

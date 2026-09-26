@@ -8,8 +8,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  LOCALES, buildMaps, check, checkDecision, checkItems, checkModel, checkProduct, classifyProductDiff,
-  definedTerms, isCode, openChanges, parseFrontmatter, renderMap,
+  LOCALES, buildMaps, changeType, check, checkDecision, checkItems, checkModel, checkProduct, classifyDocDiff,
+  classifyPR, classifyProductDiff, definedTerms, isCode, maxType, openChanges, parseFrontmatter, renderMap,
 } from './spec.mjs';
 
 const locale = LOCALES['pt-BR'];
@@ -145,6 +145,41 @@ test('reescrever ou remover item ✓ e marcar ✓ são detectados', () => {
   assert.deepEqual(classifyProductDiff(base, '- ✓ A\n  - ✓ B\n- ✓ C\n').marks, ['- ✓ C']);
 });
 
+const UNMARKED = ['Glossário'];
+const doc = (body) => `## Glossário\n- **Item**: coisa\n\n## Requisitos\n${body}`;
+
+test('classifyDocDiff separa entrega, ✓ novo, compromissos e texto fora dos itens', () => {
+  const before = doc('- ✓ A ⇢ A2\n- B\n- C\n');
+  const after = doc('- ✓ A2\n- ✓ B\n- ✓ D\n- C mudado\n- E\n');
+  const d = classifyDocDiff(before, after, UNMARKED);
+  assert.deepEqual(d.delivered, ['- ✓ A2', '- ✓ B']);
+  assert.deepEqual(d.newDone, ['- ✓ D']);
+  assert.deepEqual(d.addedCommitments, ['- C mudado', '- E']);
+  assert.deepEqual(d.removedCommitments, ['- C']);
+  assert.deepEqual(d.otherText, []);
+  assert.equal(classifyDocDiff(before, before.replace('coisa', 'coisa contada'), UNMARKED).otherText.length, 2);
+});
+
+test('maxType escolhe o maior tipo', () => {
+  assert.equal(maxType('editorial', 'compatible', 'neutral'), 'compatible');
+  assert.equal(maxType('neutral', undefined), 'neutral');
+});
+
+test('changeType deduz o tipo mínimo e os pontos ambíguos', () => {
+  const d = (before, after) => [{ file: 'product.md', d: classifyDocDiff(doc(before), doc(after), UNMARKED) }];
+  const spec = { touchesSpec: true };
+  assert.deepEqual(changeType({ docs: [], touchesCode: true, touchesSpec: false }), { min: 'neutral', ambiguous: [] });
+  assert.deepEqual(changeType({ docs: d('- ✓ A\n', '- ✓ A ⇢ A2\n'), ...spec }), { min: 'incompatible', ambiguous: [] });
+  assert.deepEqual(changeType({ docs: d('- ✓ A\n', '- ✓ A\n- B\n'), ...spec }), { min: 'compatible', ambiguous: [] });
+  assert.deepEqual(changeType({ docs: d('- B\n', '- ✓ B\n'), touchesCode: true, ...spec }), { min: 'neutral', ambiguous: [] });
+  assert.deepEqual(changeType({ docs: d('- ✓ A\n', '- ✓ A\n- ✓ B\n'), touchesCode: true, ...spec }), { min: 'compatible', ambiguous: [] });
+  assert.deepEqual(changeType({ docs: [], ...spec, decisionsAdded: ['x.md'] }), { min: 'compatible', ambiguous: [] });
+  const reworded = changeType({ docs: d('- ✓ A\n', '- ✓ A mudado\n'), ...spec });
+  assert.equal(reworded.min, 'editorial');
+  assert.ok(reworded.ambiguous.some((a) => a.includes('alterado ou removido sem ⇢')));
+  assert.ok(changeType({ docs: [], ...spec, decisionsChanged: ['x.md'] }).ambiguous.length);
+});
+
 // ---------- modelo conceitual e documentos técnicos ----------
 
 test('definedTerms lê o glossário e os tipos', () => {
@@ -244,7 +279,7 @@ test('check: ⇢ novo exige decisão alterada no mesmo PR', () => {
   try {
     r.edit(OLD, PROPOSED);
     r.commit('proposta sem decisão');
-    assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('sem decisão alterada')));
+    assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('sem decisão criada ou alterada')));
     touchDecision(r);
     r.commit('decisão');
     assert.deepEqual(check(r.dir, { base: 'HEAD~2' }).errors, []);
@@ -263,40 +298,75 @@ test('check: entrega de ⇢ sem código falha, com código passa', () => {
 
     r.edit(PROPOSED, DELIVERED);
     r.commit('entrega sem código');
-    const errors = check(r.dir, { base: 'proposta', labels: ['spec-only'] }).errors;
+    const errors = check(r.dir, { base: 'proposta', labels: ['spec-editorial'] }).errors;
     assert.ok(errors.some((e) => e.includes('resolvido sem alteração de código')));
 
     writeFileSync(join(r.dir, 'app.js'), 'export const undo = 5;\n');
     r.commit('código');
-    assert.deepEqual(check(r.dir, { base: 'proposta' }).errors, []);
+    const res = check(r.dir, { base: 'proposta', requireType: true });
+    assert.deepEqual(res.errors, []);
+    assert.ok(res.info.includes('Tipo da mudança: spec-neutral (deduzido do diff)'));
   } finally {
     r.cleanup();
   }
 });
 
-test('check: PR com código não cria ⇢ nem altera decisão, salvo com spec-mismatch', () => {
+test('check: PR com código que cria ⇢ é incompatível e passa com decisão alterada', () => {
   const r = repo();
   try {
     r.edit(OLD, PROPOSED);
     touchDecision(r);
     writeFileSync(join(r.dir, 'app.js'), 'export const x = 1;\n');
-    r.commit('proposta e código juntos');
-    const errors = check(r.dir, { base: 'HEAD~1' }).errors;
-    assert.ok(errors.some((e) => e.includes('não pode criar ou alterar ⇢')));
-    assert.ok(errors.some((e) => e.includes('não pode alterar decisões')));
-    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-mismatch'] }).errors, []);
+    r.commit('ajuste de divergência na entrega');
+    const res = check(r.dir, { base: 'HEAD~1', requireType: true });
+    assert.deepEqual(res.errors, []);
+    assert.ok(res.info.includes('Tipo da mudança: spec-incompatible (deduzido do diff)'));
+    const low = check(r.dir, { base: 'HEAD~1', labels: ['spec-compatible'] }).errors;
+    assert.ok(low.some((e) => e.includes('abaixo do tipo mínimo')));
   } finally {
     r.cleanup();
   }
 });
 
-test('check: acréscimo pequeno com código no mesmo PR passa', () => {
+test('check: mudança compatível com código e decisão nova no mesmo PR passa', () => {
   const r = repo();
   try {
     r.edit('- ✓ Falha nunca trava o produto', '- ✓ Falha nunca trava o produto\n- ✓ Falha é sempre informada');
+    const src = join(r.dir, 'spec', 'decisions', 'product', 'desfazer.md');
+    writeFileSync(join(r.dir, 'spec', 'decisions', 'product', 'falhas.md'), readFileSync(src, 'utf8').replace('Correção de contagens', 'Falhas'));
+    buildMaps(r.dir);
     writeFileSync(join(r.dir, 'app.js'), 'export const x = 1;\n');
     r.commit('acréscimo com código');
-    assert.deepEqual(check(r.dir, { base: 'HEAD~1' }).errors, []);
+    const res = check(r.dir, { base: 'HEAD~1', requireType: true });
+    assert.deepEqual(res.errors, []);
+    assert.ok(res.info.includes('Tipo da mudança: spec-compatible (deduzido do diff)'));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: decisão existente alterada em PR de código é ambígua', () => {
+  const r = repo();
+  try {
+    touchDecision(r);
+    writeFileSync(join(r.dir, 'app.js'), 'export const x = 1;\n');
+    r.commit('código e decisão');
+    assert.ok(check(r.dir, { base: 'HEAD~1', requireType: true }).errors.some((e) => e.includes('tipo ambíguo')));
+    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-incompatible'] }).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: mais de uma label de tipo é erro; incompatível exige decisão', () => {
+  const r = repo();
+  try {
+    r.edit('- ✓ Contar itens', '- ✓ Contar os itens');
+    r.commit('redação');
+    const two = check(r.dir, { base: 'HEAD~1', labels: ['spec-editorial', 'spec-compatible'] }).errors;
+    assert.ok(two.some((e) => e.includes('mais de uma label de tipo')));
+    const inc = check(r.dir, { base: 'HEAD~1', labels: ['spec-incompatible'] }).errors;
+    assert.ok(inc.some((e) => e.includes('incompatível sem decisão')));
   } finally {
     r.cleanup();
   }
@@ -311,25 +381,30 @@ test('check lista itens comprometidos', () => {
   }
 });
 
-test('check: redação de item ✓ exige código ou label spec-only', () => {
+test('check: redação de item ✓ sem código é ambígua e só passa como spec-editorial', () => {
   const r = repo();
   try {
     r.edit('- ✓ Contar itens', '- ✓ Contar os itens');
     r.commit('redação');
-    assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('alterado ou removido sem código')));
-    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-only'] }).errors, []);
+    assert.ok(check(r.dir, { base: 'HEAD~1', requireType: true }).errors.some((e) => e.includes('tipo ambíguo')));
+    assert.ok(check(r.dir, { base: 'HEAD~1' }).warnings.some((w) => w.includes('tipo ambíguo')));
+    const compat = check(r.dir, { base: 'HEAD~1', labels: ['spec-compatible'] }).errors;
+    assert.ok(compat.some((e) => e.includes('só em PR spec-editorial')));
+    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-editorial'] }).errors, []);
   } finally {
     r.cleanup();
   }
 });
 
-test('check: PR com código sem alteração na spec exige no-spec-change', () => {
+test('check: PR com código sem alteração na spec é neutro', () => {
   const r = repo();
   try {
     writeFileSync(join(r.dir, 'app.js'), 'export const x = 1;\n');
     r.commit('refatoração');
-    assert.ok(check(r.dir, { base: 'HEAD~1' }).errors.some((e) => e.includes('sem alteração na spec')));
-    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['no-spec-change'] }).errors, []);
+    const res = check(r.dir, { base: 'HEAD~1', requireType: true });
+    assert.deepEqual(res.errors, []);
+    assert.ok(res.info.includes('Tipo da mudança: spec-neutral (deduzido do diff)'));
+    assert.equal(classifyPR(r.dir, { base: 'HEAD~1' }).min, 'neutral');
   } finally {
     r.cleanup();
   }
@@ -341,9 +416,9 @@ test('check: regras de PR valem para model.md', () => {
     const p = join(r.dir, 'spec', 'model.md');
     writeFileSync(p, readFileSync(p, 'utf8').replace('- ✓ **Item**', '- ✓ **Item**\n  - ✓ nasce zerado'));
     r.commit('marca sem código');
-    const errors = check(r.dir, { base: 'HEAD~1' }).errors;
+    const errors = check(r.dir, { base: 'HEAD~1', labels: ['spec-compatible'] }).errors;
     assert.ok(errors.some((e) => e.includes('model.md: - ✓ nasce zerado')));
-    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-only'] }).errors, []);
+    assert.deepEqual(check(r.dir, { base: 'HEAD~1', labels: ['spec-editorial'] }).errors, []);
   } finally {
     r.cleanup();
   }
@@ -363,7 +438,7 @@ test('check: documento técnico de camada é validado e segue as regras de PR', 
     r.git('tag', 'antes');
     writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- ✓ Tela única\n');
     r.commit('marca sem código');
-    assert.ok(check(r.dir, { base: 'antes' }).errors.some((e) => e.includes('interface.md: - ✓ Tela única')));
+    assert.ok(check(r.dir, { base: 'antes', labels: ['spec-compatible'] }).errors.some((e) => e.includes('interface.md: - ✓ Tela única')));
   } finally {
     r.cleanup();
   }

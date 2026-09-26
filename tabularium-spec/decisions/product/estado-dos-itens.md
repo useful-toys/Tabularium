@@ -1,7 +1,7 @@
 ---
 tema: Marcação do estado dos itens
 decisao: Marca de visto no implementado; sem marca é comprometido
-carregar-quando: mudança na marcação de implementado, planejado ou em mudança
+carregar-quando: mudança na marcação de implementado, comprometido ou redefinido
 ---
 - Decisão: item implementado começa com a marca de visto; item sem marca é compromisso decidido e ainda não implementado; ideias não comprometidas não entram
 - Contexto: o documento precisa refletir o código e, ao mesmo tempo, mostrar para onde o produto vai, sem virar backlog
@@ -14,4 +14,5 @@ carregar-quando: mudança na marcação de implementado, planejado ou em mudanç
   - Aceita: a maior parte das linhas leva a marca
 
 ## Histórico
+- 2026-09-26 #14: termo redefinido
 - 2026-09-24 plano-inicial: decisão criada

@@ -2,6 +2,7 @@
 
 ## Tipos
 - ✓ **Slug de decisão**: texto; minúsculas sem acento, dígitos e hífens; resume o tema
+- ✓ **Tipo de mudança**: enumeração; editorial | neutra | compatível | incompatível, em ordem crescente
 
 ## Entidades
 - ✓ **Spec**
@@ -18,11 +19,11 @@
   - ✓ pertence a 1 **Documento de produto**
   - ✓ tipos: **Requisito** | **Regra** | regra transversal | não funcional
   - ✓ **Regra** pertence a 1 **Requisito**
-  - ✓ estados: comprometido | implementado | mudança comprometida
+  - ✓ estados: comprometido | implementado | redefinido
   - ✓ comprometido → implementado: a entrega marca o item
-  - ✓ implementado → mudança comprometida: uma proposta aceita anexa o texto desejado
-  - ✓ mudança comprometida → implementado: a entrega reescreve o item com o texto desejado
-  - ✓ mudança comprometida → implementado: a desistência descarta o texto desejado
+  - ✓ implementado → redefinido: uma mudança incompatível aceita anexa o texto desejado
+  - ✓ redefinido → implementado: a entrega reescreve o item com o texto desejado
+  - ✓ redefinido → implementado: a desistência descarta o texto desejado
 - ✓ **Camada**
   - ✓ pertence a 1 **Spec**
 - ✓ **Decisão**
@@ -40,6 +41,7 @@
   - ✓ altera 1 **Spec**
   - ✓ refere 0..1 **Issue de requisito**
   - ✓ nunca contém código
+  - ✓ tipo: **Tipo de mudança**; compatível ou incompatível
   - ✓ estados: rascunho | pronta | aceita | recusada
   - ✓ rascunho → pronta: o autor trata a revisão consultiva
   - ✓ pronta → rascunho: a proposta volta a ser discutida
@@ -49,3 +51,5 @@
   - ✓ fecha 0..1 **Issue de requisito**
   - ✓ implementa N **Item**
   - ✓ sempre contém código
+  - ✓ tipo: **Tipo de mudança**; neutra, ou compatível ou incompatível quando traz mudança junto com o código
+  - ✓ o merge aceita a mudança compatível ou incompatível que ela traz

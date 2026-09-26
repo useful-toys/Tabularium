@@ -2,7 +2,8 @@
 // Ferramentas da spec viva. Sem dependências: só módulos nativos do Node.
 //
 //   node scripts/spec.mjs build-map                  regera os mapas de decisões
-//   node scripts/spec.mjs check [--base <ref>] [--labels a,b]
+//   node scripts/spec.mjs classify --base <ref>        tipo mínimo da mudança e pontos ambíguos (JSON)
+//   node scripts/spec.mjs check [--base <ref>] [--labels a,b] [--require-type]
 //   --spec <pasta>  pasta da spec (padrão: spec)
 //
 // Documentos com itens: product.md, model.md (modelo conceitual, opcional) e
@@ -48,11 +49,14 @@ export const LOCALES = {
 };
 
 export const DONE = '✓';
-export const LABEL_SPEC_ONLY = 'spec-only';
-export const LABEL_MISMATCH = 'spec-mismatch';
-export const LABEL_REQUIREMENT = 'requirement';
-export const LABEL_NO_SPEC_CHANGE = 'no-spec-change';
 export const CHANGE = '⇢';
+
+// Tipos de mudança, do menor ao maior. PR com vários tipos recebe o maior.
+export const TYPES = ['editorial', 'neutral', 'compatible', 'incompatible'];
+export const typeLabel = (type) => `spec-${type}`;
+export const TYPE_LABELS = TYPES.map(typeLabel);
+const rank = (type) => TYPES.indexOf(type);
+export const maxType = (...types) => types.filter(Boolean).reduce((a, b) => (rank(b) > rank(a) ? b : a));
 
 // Posição do ⇢ fora de trechos em `código` (-1 se não houver).
 export function changeIndex(line) {
@@ -266,10 +270,10 @@ const leftOf = (line) => {
   return (i < 0 ? line : line.slice(0, i)).trim();
 };
 
-// Compara duas versões do product.md e aponta o que exige código no mesmo PR.
+// Compara duas versões de um documento com itens e aponta o que exige código no mesmo PR.
 // - resolutions: ⇢ removido e item reescrito (entrega) → sempre exige código.
-// - rewrites: lado esquerdo de linha ✓ alterado ou removido → exige código ou label spec-only.
-// - marks: linha ✓ nova (item entregue) → exige código ou label spec-only.
+// - rewrites: lado esquerdo de linha ✓ alterado ou removido → exige código ou PR spec-editorial.
+// - marks: linha ✓ nova (item entregue) → exige código ou PR spec-editorial.
 // - changeEdits: ⇢ criado, editado ou desfeito (não entregue) → exige decisão alterada no PR.
 export function classifyProductDiff(before, after) {
   const doneLines = (t) => t.replace(/\r\n/g, '\n').split('\n').filter((l) => doneRe.test(l));
@@ -291,7 +295,7 @@ export function classifyProductDiff(before, after) {
   for (const line of removed) {
     const j = added.findIndex((a) => a.left === leftOf(line));
     if (j >= 0) {
-      // Lado esquerdo preservado: criou/editou/desistiu de um ⇢ → spec-only.
+      // Lado esquerdo preservado: criou/editou/desistiu de um ⇢ → mudança incompatível, sem código.
       added.splice(j, 1);
       continue;
     }
@@ -308,6 +312,80 @@ export function classifyProductDiff(before, after) {
     ...oldChanges.filter((l) => !newChanges.includes(l) && !resolutions.includes(l)),
   ];
   return { resolutions, rewrites, marks, changeEdits };
+}
+
+// Linhas presentes em `a` e ausentes em `b`, contando repetições.
+function minus(a, b) {
+  const rest = [...b];
+  return a.filter((l) => {
+    const i = rest.indexOf(l);
+    if (i < 0) return true;
+    rest.splice(i, 1);
+    return false;
+  });
+}
+
+const textOf = (line) => line.trim().replace(new RegExp(`^- (${DONE} )?`), '').trim();
+
+// Completa classifyProductDiff com o que o tipo da mudança precisa:
+// - delivered: ✓ novo cujo texto era item comprometido, ou lado desejado de ⇢ resolvido (entrega);
+// - newDone: ✓ novo que não existia como compromisso;
+// - addedCommitments / removedCommitments: itens sem ✓ nas seções que levam estado;
+// - otherText: demais linhas (descrição, glossário, fora de escopo, notas, títulos).
+export function classifyDocDiff(before, after, unmarked = []) {
+  const base = classifyProductDiff(before, after);
+  const parts = (t) => {
+    const committed = [];
+    const other = [];
+    for (const { line, section } of sectionsOf(t)) {
+      if (!line.trim() || doneRe.test(line)) continue;
+      const isCommitment = section && !unmarked.includes(section) && itemRe.test(line) && !/^\s*- Nota:/.test(line);
+      (isCommitment ? committed : other).push(line.trim());
+    }
+    return { committed, other };
+  };
+  const old = parts(before);
+  const now = parts(after);
+  const removedAll = minus(old.committed, now.committed);
+  const addedCommitments = minus(now.committed, old.committed);
+  const resolvedTexts = base.resolutions.map((l) => l.slice(changeIndex(l) + CHANGE.length).trim());
+  const pool = [...removedAll.map(textOf), ...resolvedTexts];
+  const delivered = [];
+  const newDone = [];
+  for (const m of base.marks) {
+    const i = pool.indexOf(textOf(m));
+    if (i >= 0) {
+      pool.splice(i, 1);
+      delivered.push(m);
+    } else newDone.push(m);
+  }
+  const deliveredTexts = delivered.map(textOf);
+  const removedCommitments = removedAll.filter((l) => !deliveredTexts.includes(textOf(l)));
+  const otherText = [...minus(old.other, now.other), ...minus(now.other, old.other)];
+  return { ...base, delivered, newDone, addedCommitments, removedCommitments, otherText };
+}
+
+// Tipo mínimo que o diff prova e os pontos que só um julgamento de sentido resolve.
+// Entrada: diffs dos documentos com itens, se o PR tem código, decisões criadas e
+// alteradas (ou apagadas) e outros arquivos da spec alterados.
+export function changeType({ docs, touchesCode, touchesSpec, decisionsAdded = [], decisionsChanged = [], otherFiles = [] }) {
+  let min = touchesCode || !touchesSpec ? 'neutral' : 'editorial';
+  const ambiguous = [];
+  const raise = (t) => { min = maxType(min, t); };
+  for (const { file, d } of docs) {
+    if (d.changeEdits.length) raise('incompatible');
+    if (d.addedCommitments.length && !d.removedCommitments.length) raise('compatible');
+    if (touchesCode && d.newDone.length) raise('compatible');
+    if (d.rewrites.length) ambiguous.push(`${file}: item ${DONE} alterado ou removido sem ${CHANGE}`);
+    if (!touchesCode && d.marks.length) ambiguous.push(`${file}: item marcado ${DONE} sem código`);
+    if (d.removedCommitments.length) ambiguous.push(`${file}: item comprometido alterado ou removido`);
+    if (d.otherText.length) ambiguous.push(`${file}: texto fora dos itens alterado`);
+  }
+  if (decisionsAdded.length) raise('compatible');
+  if (decisionsChanged.length) ambiguous.push('decisão existente alterada ou apagada');
+  if (otherFiles.length) ambiguous.push(`outro arquivo da spec alterado: ${otherFiles.join(', ')}`);
+  // Acima de incompatível não há o que julgar.
+  return { min, ambiguous: min === 'incompatible' ? [] : ambiguous };
 }
 
 export function isCode(path, nonCodePaths) {
@@ -329,7 +407,7 @@ export function specDocs(root, spec, config) {
   return docs.filter((d) => d.kind === 'product' || existsSync(join(root, spec, d.file)));
 }
 
-export function check(root, { base, labels = [], spec = 'spec' } = {}) {
+export function check(root, { base, labels = [], spec = 'spec', requireType = false } = {}) {
   const config = loadConfig(root, spec);
   const { locale } = config;
   const errors = [];
@@ -362,7 +440,7 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
     changes.push(...openChanges(text, file));
     pending.push(...commitments(text, locale, file, kind === 'product' ? locale.unmarkedSections : []));
   }
-  if (changes.length) info.push(`Mudanças comprometidas (${CHANGE}) em aberto:`, ...changes.map((c) => `  ${c}`));
+  if (changes.length) info.push(`Itens redefinidos (${CHANGE}) em aberto:`, ...changes.map((c) => `  ${c}`));
   if (pending.length) info.push('Itens comprometidos, ainda não implementados:', ...pending.map((c) => `  ${c}`));
 
   for (const f of ['CLAUDE.md', join(spec, 'CLAUDE.md')]) {
@@ -370,42 +448,67 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
   }
 
   if (base) {
-    const changed = git(root, ['diff', '--name-only', `${base}...HEAD`]).split('\n').filter(Boolean);
-    const touchesCode = changed.some((f) => isCode(f, config.nonCodePaths));
-    const touchesSpec = changed.some((f) => f.startsWith(`${spec}/`));
-    const decisionsChanged = changed.filter((f) => f.startsWith(`${spec}/decisions/`) && !f.endsWith('/README.md'));
-    const diff = { resolutions: [], rewrites: [], marks: [], changeEdits: [] };
-    for (const { file, text } of docs) {
-      let before = '';
-      try {
-        before = git(root, ['show', `${base}:${spec}/${file}`]);
-      } catch {
-        // Documento novo neste PR: nada a comparar.
-      }
-      const d = classifyProductDiff(before, text);
-      for (const k of Object.keys(diff)) diff[k].push(...d[k].map((l) => (file === 'product.md' ? l : `${file}: ${l}`)));
+    const pr = classifyPR(root, { base, spec, config, docs });
+    const { touchesCode, decisionsAdded, decisionsChanged, min, ambiguous } = pr;
+    const at = (file, l) => (file === 'product.md' ? l : `${file}: ${l}`);
+    const all = (k) => pr.docs.flatMap(({ file, d }) => d[k].map((l) => at(file, l)));
+
+    // Tipo: a label de tipo do PR, que não pode ficar abaixo do mínimo do diff.
+    const declared = labels.filter((l) => TYPE_LABELS.includes(l));
+    let type = min;
+    if (declared.length > 1) errors.push(`PR com mais de uma label de tipo: ${declared.join(', ')}`);
+    if (declared.length === 1) {
+      type = declared[0].slice('spec-'.length);
+      if (rank(type) < rank(min)) errors.push(`label ${declared[0]} abaixo do tipo mínimo deduzido do diff: ${typeLabel(min)}`);
+    } else if (ambiguous.length) {
+      const msg = `tipo ambíguo acima de ${typeLabel(min)} (${ambiguous.join('; ')}): a IA classifica no CI, ou uma pessoa aplica a label de tipo`;
+      (requireType ? errors : warnings).push(msg);
     }
-    const { resolutions, rewrites, marks, changeEdits } = diff;
-    if (changeEdits.length && !decisionsChanged.length) {
-      for (const c of changeEdits) errors.push(`${CHANGE} criado, alterado ou desfeito sem decisão alterada no PR: ${c}`);
+    info.push(`Tipo da mudança: ${typeLabel(type)}${declared.length ? '' : ' (deduzido do diff)'}`);
+
+    for (const c of all('changeEdits')) {
+      if (!decisionsAdded.length && !decisionsChanged.length) errors.push(`${CHANGE} criado, alterado ou desfeito sem decisão criada ou alterada no PR: ${c}`);
     }
-    if (touchesCode && !labels.includes(LABEL_MISMATCH)) {
-      for (const c of changeEdits) errors.push(`PR com código não pode criar ou alterar ${CHANGE} (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${c}`);
-      for (const d of decisionsChanged) errors.push(`PR com código não pode alterar decisões (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${d}`);
-    }
-    if (touchesCode && !touchesSpec && !labels.includes(LABEL_NO_SPEC_CHANGE)) {
-      errors.push(`PR com código sem alteração na spec (label ${LABEL_NO_SPEC_CHANGE} se não muda comportamento)`);
+    if (type === 'incompatible' && !decisionsAdded.length && !decisionsChanged.length && !all('changeEdits').length) {
+      errors.push('mudança incompatível sem decisão criada ou alterada no PR');
     }
     if (!touchesCode) {
-      for (const r of resolutions) errors.push(`${CHANGE} resolvido sem alteração de código: ${r}`);
-      if (!labels.includes(LABEL_SPEC_ONLY)) {
-        for (const r of rewrites) errors.push(`item ${DONE} alterado ou removido sem código (label ${LABEL_SPEC_ONLY} se for só redação): ${r}`);
-        for (const m of marks) errors.push(`item marcado ${DONE} sem código (label ${LABEL_SPEC_ONLY} se já estava implementado): ${m}`);
+      for (const r of all('resolutions')) errors.push(`${CHANGE} resolvido sem alteração de código: ${r}`);
+      if (type !== 'editorial') {
+        for (const r of all('rewrites')) errors.push(`item ${DONE} alterado ou removido sem código só em PR ${typeLabel('editorial')}; mudança de sentido entra como ${CHANGE}: ${r}`);
+        for (const m of all('marks')) errors.push(`item marcado ${DONE} sem código só em PR ${typeLabel('editorial')} (já estava implementado): ${m}`);
       }
     }
   }
 
   return { errors, warnings, info };
+}
+
+// Diferença do PR em relação à base: arquivos, diffs dos documentos com itens e tipo.
+export function classifyPR(root, { base, spec = 'spec', config = loadConfig(root, spec), docs } = {}) {
+  const status = git(root, ['diff', '--name-status', '--no-renames', `${base}...HEAD`])
+    .split('\n').filter(Boolean).map((l) => l.split('\t'));
+  const changed = status.map(([, f]) => f);
+  const touchesCode = changed.some((f) => isCode(f, config.nonCodePaths));
+  const touchesSpec = changed.some((f) => f.startsWith(`${spec}/`));
+  const isDecision = (f) => f.startsWith(`${spec}/decisions/`);
+  const decisionsAdded = status.filter(([s, f]) => s === 'A' && isDecision(f) && !f.endsWith('/README.md')).map(([, f]) => f);
+  const decisionsChanged = status.filter(([s, f]) => s !== 'A' && isDecision(f) && !f.endsWith('/README.md')).map(([, f]) => f);
+  const specDocsNow = docs ?? specDocs(root, spec, config).map((d) => ({ ...d, text: readFileSync(join(root, spec, d.file), 'utf8') }));
+  const docFiles = specDocsNow.map((d) => `${spec}/${d.file}`);
+  const otherFiles = changed.filter((f) => f.startsWith(`${spec}/`) && !isDecision(f) && !docFiles.includes(f));
+  const diffs = specDocsNow.map(({ file, kind, text }) => {
+    let before = '';
+    try {
+      before = git(root, ['show', `${base}:${spec}/${file}`]);
+    } catch {
+      // Documento novo neste PR: nada a comparar.
+    }
+    const unmarked = kind === 'product' ? config.locale.unmarkedSections : [];
+    return { file, d: classifyDocDiff(before, text, unmarked) };
+  });
+  const { min, ambiguous } = changeType({ docs: diffs, touchesCode, touchesSpec, decisionsAdded, decisionsChanged, otherFiles });
+  return { changed, touchesCode, touchesSpec, decisionsAdded, decisionsChanged, otherFiles, docs: diffs, min, ambiguous };
 }
 
 // ---------- CLI ----------
@@ -424,16 +527,27 @@ function main(argv) {
     console.log(`Mapas regerados: ${layers.join(', ')}`);
     return 0;
   }
+  if (cmd === 'classify') {
+    const base = arg(argv, '--base');
+    if (!base) {
+      console.error('uso: node scripts/spec.mjs classify --base <ref>');
+      return 2;
+    }
+    const { min, ambiguous, touchesCode, touchesSpec } = classifyPR(root, { base, spec });
+    console.log(JSON.stringify({ min, ambiguous, touchesCode, touchesSpec }));
+    return 0;
+  }
   if (cmd === 'check') {
     const labels = (arg(argv, '--labels') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-    const { errors, warnings, info } = check(root, { base: arg(argv, '--base'), labels, spec });
+    const requireType = argv.includes('--require-type');
+    const { errors, warnings, info } = check(root, { base: arg(argv, '--base'), labels, spec, requireType });
     for (const i of info) console.log(i);
     for (const w of warnings) console.log(`aviso: ${w}`);
     for (const e of errors) console.error(`erro: ${e}`);
     console.log(errors.length ? `${errors.length} erro(s).` : 'spec ok.');
     return errors.length ? 1 : 0;
   }
-  console.error('uso: node scripts/spec.mjs <build-map | check [--base <ref>] [--labels a,b]> [--root <dir>] [--spec <pasta>]');
+  console.error('uso: node scripts/spec.mjs <build-map | classify --base <ref> | check [--base <ref>] [--labels a,b] [--require-type]> [--root <dir>] [--spec <pasta>]');
   return 2;
 }
 

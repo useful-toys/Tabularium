@@ -1,16 +1,18 @@
 ---
 tema: PR de código que não altera a spec
-decisao: Bloqueado pela verificação, salvo com o rótulo no-spec-change; qualquer código conta
-carregar-quando: mudança na exigência de atualizar a spec em PR de código, no rótulo no-spec-change ou no que conta como código
+decisao: Classificado como neutro pelo CI, sem julgamento de comportamento por ora; qualquer código conta
+carregar-quando: mudança no tratamento de PR de código sem alteração na spec ou no que conta como código
 ---
-- Decisão: PR que altera código, isto é, qualquer arquivo fora dos caminhos que não são código, e não altera nenhum arquivo da spec falha na verificação; o rótulo no-spec-change libera o PR e afirma que ele não muda comportamento, como numa refatoração, num teste ou numa correção sem efeito no que a spec descreve
-- Contexto: a spec nunca mente; PR de código sem spec é o caminho mais comum de drift, e o rótulo torna explícita a afirmação de que o comportamento não muda
+- Decisão: PR que altera código, isto é, qualquer arquivo fora dos caminhos que não são código, e não altera nenhum arquivo da spec é classificado pelo CI como mudança neutra, com a label spec-neutral; se ele muda comportamento sem mudar a spec é assunto de outra discussão, e por ora só a revisão e a verificação de drift o apontam
+- Contexto: a classificação passou a cobrir só o que o PR faz com a spec; julgar se o código muda comportamento é outro problema, com custo e falso positivo próprios
 - Alternativas descartadas
+  - Bloquear, salvo com o rótulo no-spec-change afirmando que o comportamento não muda: a afirmação só era conferida pela revisão, e o tipo agora é deduzido pelo CI
   - Mapa de caminhos de código para domínios na configuração: mais configuração a manter, e desatualiza quando o código ou os domínios se reorganizam
-  - Só a revisão consultiva cobra a spec: a revisão por agente pode faltar ou errar, e drift é justamente o que a spec viva não tolera
+  - IA julgando todo PR de código sem spec: custo e falso positivo em quase todo PR de código
 - Consequências
-  - Ganha: nenhum PR de código passa sem que alguém afirme se ele muda ou não o comportamento
-  - Aceita: um rótulo a mais em refatorações e testes; a afirmação do rótulo só é conferida pela revisão
+  - Ganha: refatorações e testes sem rótulo manual
+  - Aceita: PR de código que muda comportamento sem mudar a spec passa na verificação; o drift fica para a revisão e para a verificação sob demanda
 
 ## Histórico
+- 2026-09-26 #14: classificado como neutro pelo CI; sai o rótulo no-spec-change
 - 2026-09-26 #13: decisão criada

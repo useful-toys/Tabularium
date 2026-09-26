@@ -1,6 +1,6 @@
 ---
 name: spec-propose
-description: Registra uma proposta já esmiuçada como texto final - diff do spec/product.md (e do modelo conceitual e dos documentos técnicos) e operações nas decisões (criar, alterar, fundir, dividir, remover) - e abre ou atualiza o PR de proposta, vinculando-o à issue. Sem entrevista; só pergunta o que bloquear. Use depois de /spec-grill e /spec-ideas.
+description: Registra uma proposta já esmiuçada como texto final - diff do spec/product.md (e do modelo conceitual e dos documentos técnicos) e operações nas decisões (criar, alterar, fundir, dividir, remover) -, valida a consistência da spec resultante e abre ou atualiza o PR de proposta, vinculando-o à issue. Sem entrevista; só pergunta o que bloquear. Use depois de /spec-grill e /spec-ideas.
 ---
 
 # spec-propose
@@ -26,9 +26,9 @@ Mudança no próprio template (`tabularium-spec/`, só no repositório do templa
 
 ## 3. Texto final
 Nos documentos com itens (`spec/product.md` e, quando existem, `spec/model.md` e os documentos técnicos):
-- Acréscimo: item novo sem `✓`, no domínio certo.
-- Ajuste de compromisso: edite o item sem `✓` ou o lado direito do `⇢`.
-- Mudança significativa: `✓ <o que vale hoje> ⇢ <texto completo desejado>`, na linha mais baixa afetada; numa remoção, `⇢ (removido)`. Nunca altere o lado esquerdo.
+- Compatível: item novo sem `✓`, no domínio certo; ou edite o item sem `✓` ou o lado direito do `⇢`.
+- Incompatível: `✓ <o que vale hoje> ⇢ <texto completo desejado>`, na linha mais baixa afetada; numa remoção, `⇢ (removido)`. Nunca altere o lado esquerdo.
+- Editorial (redação de item `✓` sem mudar o sentido) não entra numa proposta: vai num PR próprio, só com essa mudança.
 - Abandono: apague o item, ou mova-o para Fora de escopo com motivo, conforme decidido.
 - Glossário, modelo conceitual, transversais, não funcionais e fora de escopo afetados pela cascata.
 
@@ -36,12 +36,21 @@ Nas decisões:
 - **Criar**: arquivo novo, com o porquê e as alternativas descartadas (as do resumo `spec-ideas` entram aqui).
 - **Alterar**: a decisão passa a descrever o desejado, a escolha anterior vai para "Alternativas descartadas" com o motivo, e o histórico ganha `AAAA-MM-DD <issue ou #PR>: <o que mudou>`.
 - **Fundir, dividir, mover, remover**: como em `spec/AGENTS.md`, com a entrada de organização no histórico.
-- Mudança significativa **sempre** cria ou altera uma decisão.
+- Mudança incompatível **sempre** cria ou altera uma decisão. Decisão nova de mudança compatível não pode violar decisão vigente.
 
-Depois rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check --base origin/main`, e corrija o que falhar.
+Depois rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check --base origin/main`, e corrija o que falhar. O `check` informa o tipo que o diff prova.
+
+## 3a. Consistência
+Antes de criar ou atualizar o PR, valide a spec resultante: o diff aplicado sobre a `main` atual. Confronte os itens tocados e a cascata deles com o `product.md`, o `model.md`, os documentos técnicos e as decisões relevantes pelo mapa, procurando:
+- contradição entre itens, entre documentos ou com decisões vigentes (inclusive requisito × fora de escopo);
+- conceito repetido em duas casas;
+- termo usado fora do sentido do glossário, sinônimo não canônico ou termo de domínio sem definição;
+- lacuna de cascata: item que depende de outro inexistente ou removido.
+
+Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o reencaixe.
 
 ## 4. PR
-- Commit e push. O PR leva as labels `requirement` e `spec-only` e nunca inclui código. Proposta com código só vale para mudança pequena, feita direto no PR de implementação.
+- Commit e push. O PR nunca inclui código e não leva label de tipo: o CI deduz o tipo (`spec-compatible` ou `spec-incompatible`) e aplica a label. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.
 - **Draft**: PR novo abre em draft (`gh pr create --draft`). O agente consultivo do CI comenta. O autor trata os achados e marca como pronto (`gh pr ready`). PR existente mantém o estado em que está.
 - Descrição do PR:
 ```markdown
@@ -68,6 +77,6 @@ A definição do template é `tabularium-spec/` junto com tudo o que o template 
 - Branch a partir da `main` atual. Nada de issue.
 - No mesmo PR: `tabularium-spec/` (documentos e decisões) e todos os arquivos da definição alinhados a ela: instruções, skills, script e testes, workflow e documentação. Se a mudança exigir, adapte também o exemplo em `spec/`.
 - Todo item de `tabularium-spec/` fica com `✓`; sem item comprometido e sem `⇢`. Decisões seguem as mesmas operações do passo 3.
-- Valide: `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
-- PR pronto (sem draft), só com a label `tabularium`: sem `requirement` nem `spec-only`. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
+- Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
+- PR pronto (sem draft), só com a label `tabularium`: sem label de tipo. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
 - O merge, decidido por um humano, é aceite e entrega. Não há revisão consultiva nem `/spec-sync`.

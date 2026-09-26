@@ -84,28 +84,38 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 ## Status
 - `- ✓ <texto>`: implementado. Vale para todo item dos documentos com itens: no `product.md`, requisito, regra, transversal e não funcional; no `model.md`, cada linha de tipo e de entidade.
 - `- <texto>` (sem marcador): planejado e comprometido. Ideia não comprometida vai para o tracker.
-- `- ✓ <o que vale hoje> ⇢ <o desejado>`: mudança significativa comprometida sobre algo implementado. O lado direito é o texto completo que substituirá a linha. Numa remoção, `⇢ (removido)`.
+- `- ✓ <o que vale hoje> ⇢ <o desejado>`: redefinido, isto é, implementado com mudança incompatível comprometida. Vale o lado esquerdo até a entrega. O lado direito é o texto completo que substituirá a linha. Numa remoção, `⇢ (removido)`.
 - O que é, Diferenciais, Glossário, Fora de escopo e `Nota:` não levam marcador.
 
 ## Mudanças
 - Toda mudança entra por PR. A `main` é protegida: exige branch atualizada antes do merge. Se a equipe exigir aprovação, as aprovações são descartadas quando há commits novos.
 - Uma ideia amadurece na conversa, com `/spec-grill` e `/spec-ideas`. Quando precisa de memória entre sessões, vai a pedido para uma issue (label `requirement`) com `/spec-issue`. O PR de proposta traz o **texto final** dos documentos com itens e das decisões, nunca ideias soltas. PR sem issue vale se a ideia já estiver madura.
-- PR de proposta: labels `requirement` e `spec-only`, sem código. PR aberto é proposta; o merge, decidido por um humano, é a aceitação e torna o conteúdo compromisso; não há aprovação formal obrigatória. O agente só integra a pedido explícito do humano, PR a PR. PR fechado sem merge é proposta recusada.
-- Acréscimo que não contradiz nada entra sem `✓`. O PR da entrega adiciona o `✓`.
-- Item sem `✓`, ou o lado direito de um `⇢`, pode ser ajustado num PR de proposta.
-- Mudança significativa: altera o sentido de um item `✓`, contradiz um item existente (inclusive transversal ou NF) ou vai contra uma decisão. Mudar a redação sem mudar o sentido não conta.
+- PR de proposta: sem código, em draft até o autor tratar a revisão consultiva. PR aberto é proposta; o merge, decidido por um humano, é a aceitação e torna o conteúdo compromisso; não há aprovação formal obrigatória. O agente só integra a pedido explícito do humano, PR a PR. PR fechado sem merge é proposta recusada.
+- A proposta só é publicada sobre uma spec consistente: `/spec-propose` valida a spec resultante e não publica se houver contradição, conceito repetido, termo inconsistente ou lacuna de cascata, mesmo preexistente.
+
+### Tipos
+Todo PR tem um tipo, pelo que faz com a spec vigente. PR com mais de um tipo recebe o maior, nesta ordem:
+- **editorial**: só texto da spec, sem mudar sentido (redação, organização, `✓` de item que o código já implementa). Sem código.
+- **neutra**: não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso (marca `✓`, resolve `⇢`).
+- **compatível**: cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente. Pode vir numa proposta ou junto com o código, já com `✓`.
+- **incompatível**: altera o sentido de um item `✓`, contradiz um item existente (inclusive transversal ou NF) ou vai contra uma decisão. Mudar a redação sem mudar o sentido não conta.
   - Entra antes do código, como `⇢` na linha mais baixa afetada: na regra, se só a regra muda; no requisito, se ele muda inteiro. Se algo novo contradiz um item `✓`, o `⇢` vai no item contradito.
-  - Criar, alterar ou desfazer um `⇢` exige decisão alterada no mesmo PR. O CI verifica.
+  - Sempre cria ou altera uma decisão no mesmo PR. O CI verifica.
   - Entrega: o item é reescrito conforme a nova realidade, mantém o `✓` e o `⇢` some, no mesmo PR do código.
   - Desistência: remove-se o `⇢` e o lado direito, e a decisão volta à escolha anterior.
+  - Pequena divergência entre entrega e compromisso: ajustada no PR de código, como mudança incompatível, com o aval da pessoa que integra. Divergência grande vira nova proposta, aceita antes da entrega.
+
+### Label de tipo
+- O CI deduz o tipo mínimo que o diff prova e aplica a label: `spec-editorial`, `spec-neutral`, `spec-compatible` ou `spec-incompatible`.
+- Quando o diff é ambíguo (texto de item `✓` ou fora dos itens alterado, item sem `✓` reescrito ou removido, decisão existente alterada, `✓` marcado sem código), a IA julga se o sentido mudou e o CI aplica o maior entre o mínimo e o julgado. Se o tipo julgado torna o PR inválido, o check bloqueia.
+- Label de tipo aplicada por uma pessoa vence a dedução e a IA, e o bot nunca a troca. Abaixo do tipo mínimo do diff, é erro. Sem IA disponível (PR de fork ou sem chave), o caso ambíguo exige label aplicada por uma pessoa.
+
+### Regras de PR
+- Resolver um `⇢` exige código no mesmo PR.
+- Criar, alterar ou desfazer um `⇢` exige decisão criada ou alterada no mesmo PR.
+- Alterar ou marcar item `✓` sem código só em PR editorial.
 - Requisito abandonado: apagar, ou transformar em item de Fora de escopo com motivo.
-- PR de código:
-  - Resolver um `⇢` ou marcar `✓` exige código no mesmo PR.
-  - Não cria nem altera `⇢` e não altera decisões. Exceção: pequena divergência entre entrega e compromisso, com a label `spec-mismatch` e o aval da pessoa que integra.
-  - Mudança pequena (acréscimo ou ajuste sem `⇢` e sem mexer em decisões) pode vir junto com o código, já com `✓`.
-  - Altera a spec. PR de código que não muda comportamento (refatoração, teste, correção sem efeito no que a spec descreve) leva a label `no-spec-change`. O CI verifica.
-  - Cita a issue com `Closes #N`: a issue fecha na entrega.
-- Alterar o lado esquerdo de uma linha `✓` sem código só com a label `spec-only` (correção de redação).
+- PR de código cita a issue com `Closes #N`: a issue fecha na entrega.
 
 ## Decisões
 
@@ -152,4 +162,5 @@ carregar-quando: <situações em que vale abrir este arquivo>
 - Nunca use um documento exportado como fonte ao trabalhar na spec ou no código.
 
 ## Inconsistências
-- Ao notar, em qualquer atividade, uma inconsistência entre decisões e os documentos com itens, sugira ao usuário rodar `/spec-reconcile`. Não corrija fora desse fluxo.
+- A spec é consistente consigo mesma: sem contradição entre itens, entre documentos ou com decisões, sem conceito repetido, sem termo fora do sentido do glossário e sem lacuna de cascata.
+- Ao notar, em qualquer atividade, uma inconsistência, sugira ao usuário rodar `/spec-reconcile`. Não corrija fora desse fluxo.

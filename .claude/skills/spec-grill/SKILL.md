@@ -17,9 +17,10 @@ Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-
 - **PR de proposta** (`#N` ou link): `gh pr view <N> --comments` e `gh pr diff <N>`. Compare também com a `main` atual (`git fetch` e `git diff <base-do-PR>..origin/main -- spec/`): o que mudou na `main` desde que o PR foi aberto e que colide com a proposta é a **defasagem**, e entra como pergunta.
 
 ## 2. Contexto
-- Leia `spec/product.md` inteiro, o `spec/model.md` e os documentos técnicos que existirem, e o mapa de decisões de cada camada. Abra só as decisões cujo `carregar-quando` corresponda à ideia.
+- Leia sempre `spec/product.md` inteiro e o `spec/model.md`, se existir: a cascata exige o todo. Leia também o mapa de decisões de cada camada.
+- Abra os documentos técnicos e as decisões cujo `carregar-quando` corresponda à ideia à medida que a árvore de decisões os alcançar, inclusive em rodadas posteriores.
 - Rode `node scripts/spec.mjs check` para ver os `⇢` e os itens comprometidos em aberto.
-- Rode `gh pr list --label requirement --state open --json number,title,files` e veja se outras propostas abertas tocam a mesma área.
+- Rode `gh pr list --state open --search "label:spec-compatible,spec-incompatible" --json number,title,files` e veja se outras propostas abertas tocam a mesma área.
 - Consulte o código quando a ideia afirmar algo sobre o comportamento atual.
 
 ## 3. Árvore de decisões
@@ -32,9 +33,10 @@ O que perguntar:
 - **Contra o glossário**: termo usado com outro sentido, ou termo novo. "O glossário define X como…, e você parece querer dizer…". Proponha o termo canônico.
 - **Contra o modelo conceitual**: relações, cardinalidades, estados, transições e invariantes que a ideia cria, muda ou contradiz. Entidade nova pede termo no glossário e bloco no modelo.
 - **Contra regras transversais e não funcionais**: a ideia respeita cada uma que a alcança?
-- **Contra decisões vigentes**: a ideia contraria alguma? Se sim, é mudança significativa: confirme e pergunte o porquê da virada.
+- **Contra decisões vigentes**: a ideia contraria alguma? Se sim, é mudança incompatível: confirme e pergunte o porquê da virada.
 - **Contra o código**: o que a ideia afirma sobre o comportamento atual confere?
-- **Classificação**: acréscimo, ajuste de compromisso ou mudança significativa (`⇢`)?
+- **Tipo**: incompatível (`⇢`), compatível ou editorial (tipos em `spec/AGENTS.md`)?
+- **Consistência**: a ideia deixa a spec com contradição entre itens, entre documentos ou com decisões, conceito repetido, termo fora do sentido do glossário ou lacuna de cascata? Inconsistência que já existe na área tocada também vira pergunta: a proposta não publica sobre uma spec inconsistente.
 - **Cascata**: requisitos, regras, glossário, modelo conceitual, fora de escopo e decisões que mudam junto.
 - **Cenários de borda**: invente casos concretos que forcem a precisão (limites, vazio, erro, concorrência).
 - **Decisões**: toda escolha não óbvia pede o porquê e as alternativas consideradas. Nunca invente.
@@ -49,7 +51,7 @@ Formato do resumo:
 ```markdown
 <!-- spec-grill -->
 ## Esmiuçado
-- Classificação: <acréscimo | ajuste | mudança significativa>
+- Tipo: <incompatível | compatível | editorial>
 - Decidido: <item → decisão, uma linha cada>
 - Porquês e alternativas: <para as decisões>
 - Cascata: <itens afetados>

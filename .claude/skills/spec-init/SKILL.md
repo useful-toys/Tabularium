@@ -13,7 +13,7 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR; o CI deduz
 - Se existir `CLAUDE.md` na raiz ou em `spec/`, avise: com ele presente, o Claude Code ignora os `AGENTS.md`. Sugira mover o conteúdo para `AGENTS.md`.
 
 ## 2. Preferências
-Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar. Senão, pergunte tudo:
+Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar; se `codePaths` estiver vazio (é o caso do exemplo do template), pergunte-o sempre. Senão, pergunte tudo:
 - **Camadas de decisão** além de `product`: `interface`, `architecture`, `data` (modelo de dados), `operations` ou outras. Nenhuma se chama `model`, nome reservado ao modelo conceitual.
 - **Idioma do conteúdo** (ex.: `pt-BR`). A estrutura fica sempre em inglês. O idioma precisa existir em `LOCALES` em `scripts/spec.mjs`; se não existir, avise e adicione a entrada, traduzindo os textos de `pt-BR`.
 - **Caminhos de código** (`codePaths`): as pastas ou arquivos onde está o código do produto (ex.: `src/`, `app/`, `lib/`), casados por prefixo. Sugira a lista a partir das pastas do repositório e confirme. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia: projeto sem código. Quando o código mudar de lugar, a lista é atualizada por aqui.

@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `3a0f79d` da `main`, com as mudanças do PR #14. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `8f1d270` da `main`. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
 
 ## O problema e o contexto
 

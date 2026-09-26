@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `b78784b` da `main`, com as mudanças do PR #13. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `3a0f79d` da `main`, com as mudanças do PR #14. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
 
 ## O problema e o contexto
 
@@ -23,7 +23,7 @@ Tudo isso num único arquivo, caro de ler e difícil de manter confiável.
 - é verificada automaticamente;
 - é escrita de forma **densa**, para caber inteira no contexto de um agente.
 
-Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda por fazer). Cada escolha não óbvia tem um registro curto do porquê. Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o uso. As escolhas deste, com as alternativas descartadas, estão em `tabularium-spec/decisions/product/`.
+Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda por fazer). Cada escolha não óbvia tem um registro curto do porquê. E, como a spec cresce por propostas aceitas em momentos diferentes, um processo apoiado por IA confronta cada ideia com a spec vigente, para que ela também não se contradiga. Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o uso. As escolhas deste, com as alternativas descartadas, estão em `tabularium-spec/decisions/product/`.
 
 ---
 
@@ -37,16 +37,17 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 - **Descrição do produto** (`product.md`): glossário, requisitos e regras de negócio, só comportamento observável, sem detalhes de implementação. Cada linha carrega um status:
   - `✓`: implementado;
   - sem marca: aprovado, ainda não implementado;
-  - `✓ atual ⇢ desejado`: implementado, com mudança aprovada ainda por fazer.
+  - `✓ atual ⇢ desejado`: redefinido; implementado, com mudança aprovada ainda por fazer.
 - **Modelo conceitual** (`model.md`): entidades, relações, estados e restrições do domínio. É um modelo de conceitos, não de banco de dados.
 - **Documentos técnicos** (`<camada>.md`, opcionais): estado atual de uma camada técnica, como interface ou arquitetura.
 - **Registros de decisão** (`decisions/`): um arquivo curto por escolha relevante, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. São parecidos com ADRs, mas só as decisões em vigor ficam na pasta.
 
 **Como uma mudança de requisito acontece**
 1. **Discussão**: numa conversa com o agente, a ideia é refinada. O agente faz perguntas, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. Se for preciso continuar depois, a discussão é guardada numa issue.
-2. **Proposta**: com a ideia madura, o agente abre um pull request que altera só a spec, já com o texto final. Nada de rascunho de ideias.
+2. **Proposta**: com a ideia madura, o agente confere se a spec resultante continua consistente e só então abre um pull request que altera só a spec, já com o texto final. Nada de rascunho de ideias.
 3. **Revisão**:
-   - um check de CI valida as regras da spec e **bloqueia** o merge se algo estiver errado;
+   - o CI deduz o **tipo da mudança** (editorial, neutra, compatível ou incompatível) e aplica a label; quando o diff não mostra se o sentido mudou, a IA julga, e a label aplicada por uma pessoa vence;
+   - um check de CI valida as regras da spec para aquele tipo e **bloqueia** o merge se algo estiver errado;
    - um agente de revisão (Copilot ou Claude) comenta possíveis lacunas, sem bloquear;
    - quem decide é uma pessoa, ao fazer o merge.
 4. **Aceite**: o merge do PR transforma a proposta em compromisso. Os itens entram na spec sem `✓`, ou com `⇢`.
@@ -55,6 +56,7 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 **Garantias**
 - A spec na branch principal reflete o código: o que tem `✓` está implementado.
 - Mudança em algo já implementado exige um registro de decisão explicando o porquê.
+- Nenhuma proposta é publicada sobre uma spec inconsistente.
 - Nenhuma mudança entra sem PR, e a branch principal é protegida.
 
 **E a documentação tradicional?** Visão, casos de uso, diagramas e histórias de usuário não são mantidos à mão, porque duplicariam a spec e ficariam desatualizados. Quando alguém precisa de um deles, pede ao agente que o gere a partir da spec, como foi feito com este arquivo.
@@ -80,16 +82,24 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 
 ```mermaid
 stateDiagram-v2
-  state "Mudança comprometida" as MudancaComprometida
-  [*] --> Comprometido: proposta aceita (acréscimo)
+  [*] --> Comprometido: mudança compatível aceita
   Comprometido --> Implementado: entrega com código marca ✓
-  Implementado --> MudancaComprometida: proposta aceita anexa ⇢ desejado
-  MudancaComprometida --> Implementado: entrega reescreve o item e remove ⇢
-  MudancaComprometida --> Implementado: desistência remove ⇢ e o lado desejado
+  Implementado --> Redefinido: mudança incompatível aceita anexa ⇢ desejado
+  Redefinido --> Implementado: entrega reescreve o item e remove ⇢
+  Redefinido --> Implementado: desistência remove ⇢ e o lado desejado
   Comprometido --> [*]: abandono (apagado ou movido para fora de escopo)
 ```
 
-- **Mudança significativa**: altera o sentido de um item `✓`, contradiz um item existente ou vai contra uma decisão. Entra como `⇢` na linha mais baixa afetada e **sempre** cria ou altera uma decisão no mesmo PR.
+### Tipos de mudança
+
+| Tipo | O que faz | Label |
+|---|---|---|
+| Editorial | muda só o texto da spec, sem mudar sentido; único que altera ou marca `✓` sem código | `spec-editorial` |
+| Neutra | não altera o sentido de nenhum requisito: código sem spec, ou entrega de compromisso | `spec-neutral` |
+| Compatível | cria requisito, altera item sem `✓` ou cria decisão, sem contradizer nada; pode vir com o código | `spec-compatible` |
+| Incompatível | altera o sentido de um item `✓`, contradiz um item existente ou vai contra uma decisão; entra como `⇢` na linha mais baixa afetada e **sempre** cria ou altera uma decisão no mesmo PR | `spec-incompatible` |
+
+PR com vários tipos recebe o maior. O CI deduz o mínimo que o diff prova e aplica a label. Nos casos em que o diff não mostra se o sentido mudou (texto de `✓` ou fora dos itens alterado, compromisso reescrito, decisão existente alterada, `✓` marcado sem código), a IA julga e vale o maior entre o mínimo e o julgado. A label aplicada por uma pessoa vence e nunca é trocada; abaixo do mínimo, é erro. Sem IA (fork ou sem chave), o caso ambíguo exige a label de uma pessoa.
 
 ### Ciclo de evolução
 
@@ -99,24 +109,26 @@ flowchart LR
   G --> D["/spec-ideas<br/>sugerir"]
   D --> G
   G -. a pedido .-> S["/spec-issue<br/>issue requirement"]
-  D --> P["/spec-propose<br/>PR draft: requirement + spec-only"]
-  P --> R["CI: spec-check (bloqueia)<br/>+ revisão consultiva (/spec-impact, Copilot)"]
+  D --> P["/spec-propose<br/>valida a consistência<br/>PR draft"]
+  P --> R["CI: tipo + spec-check (bloqueia)<br/>+ revisão consultiva (/spec-impact, Copilot)"]
   R --> A[Humano decide o merge<br/>merge = compromisso]
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
-1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões e código. Classifica a mudança (acréscimo, ajuste de compromisso ou mudança significativa) e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
+1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Lê sempre o `product.md` e o `model.md` inteiros e abre documentos técnicos e decisões à medida que a ideia os alcança. Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões e código, e aponta inconsistências da área tocada. Classifica a mudança pelo tipo e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
 2. **Sugerir (`/spec-ideas`)**: alternativas, cenários de borda, cascata esquecida, riscos e recortes. As sugestões descartadas, com motivo, viram "Alternativas descartadas". Também só na conversa.
 3. **Guardar (`/spec-issue`, a pedido)**: publica os resumos numa issue `requirement`, nova ou existente, como memória entre sessões.
-4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista, e abre ou atualiza o PR. PR novo nasce em draft; PR existente é rebaseado na `main` com `--force-with-lease`. Issue e PR se referenciam com `Refs #N`.
+4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista, valida a consistência da spec resultante sobre a `main` atual e só então abre ou atualiza o PR. Qualquer inconsistência, mesmo preexistente, impede a publicação. PR novo nasce em draft; PR existente é rebaseado na `main` com `--force-with-lease`, e a validação confere o reencaixe. Issue e PR se referenciam com `Refs #N`.
 5. **Validar**:
+   - tipo da mudança deduzido e aplicado pelo CI, com a IA no caso ambíguo;
    - `spec-check` bloqueante;
    - revisão consultiva que nunca bloqueia: Copilot via ruleset e `REVIEW.md`, e/ou Claude via job `spec-review` com `ANTHROPIC_API_KEY`. O conteúdo do PR é tratado como dado, não como instrução.
 6. **Aceitar**: qualquer pessoa com permissão de merge, sem aprovação formal obrigatória. O agente só integra a pedido explícito dela. O merge torna o texto compromisso. PR fechado sem merge é recusa.
 7. **Entregar**: implementação e `/spec-sync` no mesmo PR:
    - marca `✓` e resolve `⇢`;
    - cita a issue com `Closes #N`;
-   - divergência pequena com a label `spec-mismatch`; divergência grande vira nova proposta.
+   - mudança compatível pode vir junto, inclusive com decisão nova;
+   - divergência pequena é ajustada como mudança incompatível, com aval de quem integra; divergência grande vira nova proposta.
 
 ### Regras verificadas pelo CI (`scripts/spec.mjs check --base`)
 
@@ -124,11 +136,11 @@ Valem para o `product.md`, o `model.md` e os documentos técnicos.
 
 | Situação no PR | Resultado |
 |---|---|
+| Label de tipo abaixo do mínimo deduzido do diff, ou mais de uma | erro |
+| Caso ambíguo sem classificação por IA nem label de uma pessoa | erro |
 | Resolver `⇢` sem alterar código | erro, sempre |
-| Marcar `✓` ou alterar/remover item `✓` sem código | erro, salvo com a label `spec-only` (redação) |
-| Criar, alterar ou desfazer `⇢` sem decisão alterada | erro |
-| PR com código que cria ou altera `⇢` ou decisões | erro, salvo com a label `spec-mismatch` |
-| PR com código que não altera a spec | erro, salvo com a label `no-spec-change` (não muda comportamento) |
+| Marcar `✓` ou alterar/remover item `✓` sem código | erro, salvo em PR `spec-editorial` |
+| Criar, alterar ou desfazer `⇢`, ou mudança incompatível, sem decisão criada ou alterada | erro |
 | Mapa de decisões desatualizado, frontmatter ou seções faltando, link ou referência nos documentos | erro |
 | Nome em negrito no `model.md` que não é termo do glossário nem tipo declarado | erro |
 | Referência temporal nos documentos, termo de implementação no `model.md`, `CLAUDE.md` presente | aviso |
@@ -138,13 +150,13 @@ A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atuali
 ### Manutenção
 
 - **`/spec-check`**: drift entre a spec e o código, com evidências.
-- **`/spec-reconcile`**: organiza as decisões de uma camada contra o documento de referência. Aponta contradições, órfãs, lacunas, sobreposição e camada errada, e propõe fundir, dividir, mover ou apagar. Nada muda sem aprovação.
+- **`/spec-reconcile`**: verifica a consistência da spec, uma camada por vez: contradição entre itens, entre documentos e com decisões, conceito repetido, termo inconsistente e lacuna de cascata; a camada técnica é confrontada também com o produto. Organiza as decisões (órfãs, lacunas, sobreposição, camada errada) e propõe fundir, dividir, mover ou apagar. Nada muda sem aprovação.
 - **`/spec-init`**: estrutura e preferências; pode ser refeito para mudar a configuração.
 - **`/spec-extract`**: gera a spec a partir de código existente. `✓` só com evidência no código; o modelo vem do comportamento, nunca do schema.
 
 ### Definição do próprio template
 
-A spec do tabularium3 fica em `tabularium-spec/`. Ela e tudo o que o template entrega (instruções, skills, script, workflow e documentação) formam a definição do template, que muda num PR único com a label `tabularium`, sem issue e sem entrega separada: todo item fica `✓`. O CI verifica essa spec só na forma; num PR `tabularium`, o exemplo em `spec/` também, e a revisão consultiva não roda. O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta.
+A spec do tabularium3 fica em `tabularium-spec/`. Ela e tudo o que o template entrega (instruções, skills, script, workflow e documentação) formam a definição do template, que muda num PR único com a label `tabularium`, sem label de tipo, sem issue e sem entrega separada: todo item fica `✓`. O CI verifica essa spec só na forma; num PR `tabularium`, o exemplo em `spec/` também, o tipo não é classificado e a revisão consultiva não roda. O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta.
 
 ### Documentos derivados
 

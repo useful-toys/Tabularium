@@ -23,7 +23,7 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
    - Tem código e documentação: `✓`.
    - Só código: `✓`, e pergunte se o comportamento é intencional.
    - Só documentação: pergunte se é compromisso (entra sem `✓`) ou se está desatualizado (fica de fora).
-   - Documentação e código divergem: pergunte qual vale. Se for o documentado, é mudança significativa: `✓ <o código> ⇢ <o documentado>`.
+   - Documentação e código divergem: pergunte qual vale. Se for o documentado, é mudança incompatível: `✓ <o código> ⇢ <o documentado>`.
 5. **Regras transversais, Não funcionais e Fora de escopo**: extraia e confirme da mesma forma.
 6. **Modelo conceitual** (`spec/model.md`), se o domínio tiver estrutura relevante (pergunte):
    - Parta do comportamento e do vocabulário do glossário, nunca do schema. Formato em `spec/AGENTS.md`.
@@ -37,7 +37,7 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
 8. **Valide**: `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`. O check também valida o `model.md`.
 
 ## Entrega
-PR com a label `spec-only`. A descrição do PR traz o relatório:
+PR só com a spec; o CI deduz o tipo e aplica a label. A descrição do PR traz o relatório:
 - domínios e quantidade de requisitos extraídos; entidades do modelo conceitual, se houver;
 - itens `✓` duvidosos, com a evidência (arquivo) de cada um;
 - decisões migradas, técnicas deixadas de fora e obsoletas descartadas;

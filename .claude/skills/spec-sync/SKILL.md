@@ -14,12 +14,12 @@ Regras de formato: `spec/AGENTS.md`. Os compromissos já estão na `main` (itens
    - Item com `⇢` entregue: reescreva a linha com o texto desejado, com `✓` e sem `⇢`. Numa remoção (`⇢ (removido)`), apague a linha.
    - O que não foi entregue continua como está.
 3. **Divergência**: se o código faz algo diferente do comprometido, pergunte ao usuário.
-   - **Pequena** (detalhe que não muda a intenção): ajuste o texto do item e, se preciso, a decisão, com uma entrada no histórico `AAAA-MM-DD <issue ou #PR>: <o que divergiu>`. O PR precisa da label `spec-mismatch`, e a pessoa que integra avalia.
+   - **Pequena** (detalhe que não muda a intenção): ajuste o texto do item e a decisão, com uma entrada no histórico `AAAA-MM-DD <issue ou #PR>: <o que divergiu>`. É mudança incompatível dentro da entrega: o CI aplica `spec-incompatible`, e a pessoa que integra avalia.
    - **Grande**: pare. A divergência vira uma nova proposta (`/spec-grill` → `/spec-propose`), aceita antes desta entrega.
-4. **Mudança pequena com código**: acréscimos e ajustes que não contradizem nada e não mexem em decisões podem entrar direto neste PR, já com `✓`.
-5. **Valide**: `node scripts/spec.mjs check --base origin/main`, sem a label `spec-only`, porque o PR tem código.
+4. **Mudança compatível com código**: requisito novo ou ajuste de item sem `✓`, sem contradizer nada, pode entrar direto neste PR, já com `✓`, inclusive com decisão nova que não viole decisão vigente.
+5. **Valide**: `node scripts/spec.mjs check --base origin/main`. O check informa o tipo deduzido: entrega pura é `spec-neutral`.
 
-PR de código que não entrega nem muda comportamento (refatoração, teste) não passa por esta skill: leva a label `no-spec-change`.
+PR de código que não entrega nem muda comportamento (refatoração, teste) não passa por esta skill: o CI o classifica como `spec-neutral`.
 
 ## PR
 - A descrição cita a issue com `Closes #N`, se houver: a issue fecha na entrega.

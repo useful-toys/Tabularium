@@ -26,4 +26,4 @@ Achados numerados, cada um com:
 - evidência (arquivo do código);
 - correção sugerida.
 
-Se houver inconsistência entre decisões e os documentos com itens, sugira `/spec-reconcile`.
+Se houver inconsistência da spec consigo mesma (entre itens, entre documentos ou com decisões), sugira `/spec-reconcile`.

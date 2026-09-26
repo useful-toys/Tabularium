@@ -23,11 +23,16 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
       HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
-      TEMPLATE_PR: ${{ hashFiles('tabularium-spec/config.json') != '' && contains(github.event.pull_request.labels.*.name, 'tabularium') }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # hashFiles só existe dentro dos passos.
+      - name: PR do próprio template?
+        env:
+          TEMPLATE: ${{ hashFiles('tabularium-spec/config.json') != '' && contains(github.event.pull_request.labels.*.name, 'tabularium') }}
+        run: echo "TEMPLATE_PR=$TEMPLATE" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:

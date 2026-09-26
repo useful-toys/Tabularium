@@ -13,4 +13,4 @@ carregar-quando: mudança no link do catálogo, em importação, exclusão de da
   - Aceita: quem quer compartilhar precisa ligar o link uma vez
 
 ## Histórico
-- 2026-08-05 TASK-079: decisão criada
+- 2026-08-05 #79: decisão criada

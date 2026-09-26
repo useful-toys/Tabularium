@@ -14,4 +14,4 @@ carregar-quando: mudança em primeiro acesso, idade, menores de idade ou estados
   - Aceita: depende da honestidade de quem atesta
 
 ## Histórico
-- 2026-07-20 TASK-070: decisão criada
+- 2026-07-20 #70: decisão criada

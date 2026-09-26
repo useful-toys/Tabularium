@@ -13,4 +13,4 @@ carregar-quando: mudança em seções, especiais, grupos da Copa ou progresso po
   - Aceita: especiais ficam fora da ordem por grupos e precisam de posição própria no catálogo
 
 ## Histórico
-- 2026-05-05 TASK-004: decisão criada
+- 2026-05-05 #4: decisão criada

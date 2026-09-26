@@ -12,4 +12,4 @@ carregar-quando: mudança em formas de ajuste da contagem, zerar ou lançamento 
   - Aceita: baixar muitas unidades de uma vez exige vários toques
 
 ## Histórico
-- 2026-05-20 TASK-030: decisão criada
+- 2026-05-20 #30: decisão criada

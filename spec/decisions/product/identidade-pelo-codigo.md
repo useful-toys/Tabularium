@@ -14,4 +14,4 @@ carregar-quando: mudança em código ou sigla, identificação de figurinhas, ca
   - Aceita: a posição com 2 dígitos limita cada seção a 99 figurinhas
 
 ## Histórico
-- 2026-05-05 TASK-004: decisão criada
+- 2026-05-05 #4: decisão criada

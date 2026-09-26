@@ -13,4 +13,4 @@ carregar-quando: mudança no catálogo, em figurinhas ou seções, personalizaç
   - Aceita: erro no catálogo só se corrige com nova versão do app
 
 ## Histórico
-- 2026-05-05 TASK-004: decisão criada
+- 2026-05-05 #4: decisão criada

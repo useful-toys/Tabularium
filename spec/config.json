@@ -13,7 +13,7 @@
     ".claude/",
     "scripts/spec",
     "tabularium-spec/",
-    "DOCUMENTATION-FLOW.md",
+    "tabularium-docs/",
     ".gitattributes"
   ]
 }

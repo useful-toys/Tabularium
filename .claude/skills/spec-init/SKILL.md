@@ -25,7 +25,7 @@ Crie o que faltar, sem sobrescrever nada:
 - `spec/product.md` a partir de `assets/product.md`. Se o `product.md` existente for o exemplo do template (Iconula), pergunte se ele, o `model.md` e as decisões de exemplo devem ser substituídos pelo esqueleto.
 - `spec/model.md` a partir de `assets/model.md`, só se o usuário quiser: pergunte se o domínio tem estrutura relevante (entidades com relações, estados ou invariantes). Produto sem estrutura relevante dispensa o modelo.
 - Para cada camada além de `product`, pergunte se ela terá documento técnico. Se sim, crie `spec/<camada>.md` só com o título `# <Produto> — <Camada>`.
-- Se existir `tabularium-spec/` (a spec do próprio template), pergunte se deve ser apagada. Em seguida, remova `tabularium-spec/` de `nonCodePaths` e, do workflow, os passos "Check da spec do próprio template" e "Label do PR do próprio template"; sem a pasta, eles e a condição da label `tabularium` ficam inertes.
+- Se existir `tabularium-spec/` (a spec do próprio template), pergunte se ela e `tabularium-docs/` (documentos derivados do template) devem ser apagadas. Em seguida, remova as duas de `nonCodePaths` e, do workflow, os passos "Check da spec do próprio template" e "Label do PR do próprio template"; sem a pasta, eles e a condição da label `tabularium` ficam inertes.
 - `spec/decisions/<camada>/` para cada camada.
 - Rode `node scripts/spec.mjs build-map`.
 

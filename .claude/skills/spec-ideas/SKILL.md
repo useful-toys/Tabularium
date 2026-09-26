@@ -9,17 +9,17 @@ Etapa 2 de 3 da proposta: esmiuçar (spec-grill) → **sugerir** (spec-ideas) �
 
 Trabalhe só na conversa. Não edite arquivos da spec e não crie nem altere nada no tracker. Issue e PR de origem são só lidos. Publicar é pedido explícito do usuário, via `/spec-issue` ou `/spec-propose`.
 
-Regras de formato: `spec/AGENTS.md`.
+Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-spec/`, só no repositório do template): use essa pasta no lugar de `spec/` e siga `tabularium-spec/AGENTS.md`.
 
 ## 1. Origem e contexto
 - Leia a origem (texto, `gh issue view <N> --comments` ou `gh pr view <N> --comments` + `gh pr diff <N>`) e o resumo `<!-- spec-grill -->`, que pode estar na conversa ou nos comentários da origem.
-- Leia `spec/product.md`, o mapa de decisões e as decisões relevantes pelo `carregar-quando`.
+- Leia `spec/product.md`, o `spec/model.md` se existir, o mapa de decisões e as decisões relevantes pelo `carregar-quando`.
 
 ## 2. Sugestões
 Gere, para a ideia como está decidida:
 - **Alternativas**: outras formas de atender a mesma necessidade, inclusive mais simples ou sem mudar nada.
 - **Cenários de borda**: situações que a proposta não cobre (limites, vazio, erro, uso simultâneo, dados legados).
-- **Cascata esquecida**: itens, transversais, não funcionais e decisões que também deveriam mudar.
+- **Cascata esquecida**: itens, transversais, não funcionais, modelo conceitual e decisões que também deveriam mudar.
 - **Riscos para o usuário**: perda de dados, surpresa, contradição com um diferencial do produto.
 - **Recortes**: partes que podem ficar fora de escopo agora.
 

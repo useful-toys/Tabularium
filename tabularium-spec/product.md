@@ -11,9 +11,10 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - Evolui pelo fluxo git e GitHub que a equipe já usa, sem processo próprio
 
 ## Glossário
-- **Spec**: pasta com o documento de produto, o modelo conceitual, os registros de decisão e a configuração de um projeto
+- **Spec**: pasta com o documento de produto, o modelo conceitual, os documentos técnicos, os registros de decisão e a configuração de um projeto
 - **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
+- **Documento técnico**: arquivo opcional que descreve o estado atual de uma camada técnica, como interface ou arquitetura
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
 - **Tipo de domínio**: conjunto de valores válidos de um atributo, com natureza, restrições de negócio e unidade
@@ -43,12 +44,12 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
   - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
 - ✓ Oferecer a troca do exemplo incluído por um esqueleto vazio
-- Criar o esqueleto do modelo conceitual a pedido
+- ✓ Criar o esqueleto do modelo conceitual a pedido
 - ✓ Avisar quando um arquivo de instruções específico de um agente anula as instruções comuns
 
 ### Extração da spec de código existente
-- ✓ Gerar documento de produto e decisões a partir do código, dos testes e da documentação existente ⇢ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
-  - Modelo conceitual vem do comportamento e do vocabulário do domínio, nunca do schema; o que só existe no banco vira pergunta
+- ✓ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
+  - ✓ Modelo conceitual vem do comportamento e do vocabulário do domínio, nunca do schema; o que só existe no banco vira pergunta
   - ✓ Item só é marcado implementado com evidência no código
   - ✓ Item só documentado vira pergunta: compromisso ou documentação desatualizada
   - ✓ Divergência entre código e documentação vira pergunta; se valer o documentado, vira mudança comprometida
@@ -58,7 +59,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 
 ### Documento de produto
-- ✓ Descrever o produto num único arquivo, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo ⇢ Descrever o produto no documento de produto, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo; e, quando houver estrutura relevante, também no modelo conceitual, lido sempre junto com ele
+- ✓ Descrever o produto no documento de produto, nesta ordem: o que é, diferenciais, glossário, requisitos por domínio, regras transversais, não funcionais, fora de escopo; e, quando houver estrutura relevante, também no modelo conceitual, lido sempre junto com ele
   - ✓ Requisitos e regras em listas aninhadas, sem IDs nem âncoras
   - ✓ Domínios subdivididos quando crescem demais ou misturam assuntos, a julgamento
   - ✓ Cada conceito tem uma única casa; nenhuma afirmação se repete entre seções
@@ -71,34 +72,38 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - ✓ Glossário, diferenciais e fora de escopo não levam estado
 
 ### Modelo conceitual
-- Descrever a estrutura do domínio num modelo conceitual
-  - O glossário define cada termo; o modelo estrutura, sem redefinir: relações com cardinalidade, estados e transições, invariantes
-  - Termo definido pela própria condição mantém a condição no glossário; o modelo só cita o estado
-  - Sem informação de implementação; identificador só quando é conceito de negócio
-  - Atributos só quando têm regra ou importam ao usuário
-  - Duas seções: tipos, depois entidades
-  - Tipos de domínio declarados uma vez, com natureza, restrições de negócio e unidade de medida quando aplicável; atributos citam o tipo
-  - Natureza de uma lista fechada: texto, inteiro, decimal, sim/não, data, data e hora local, instante, duração, enumeração, quantidade com unidade
-  - Tamanho, precisão e formato só quando são regra de negócio
-  - Tipo definido só no modelo; termo homônimo no glossário guarda só o significado
-  - Invariantes do domínio vivem no modelo; regras transversais ficam com o comportamento
-  - Um bloco por entidade, em lista plana; agrupamento por domínio só quando a lista crescer
-  - Relação com verbo, cardinalidade (1, 0..1, N, 0..N) e entidade-alvo, escrita uma vez, no bloco da entidade dependente; relação N:N no bloco da entidade mais central
-  - Estado derivado fica na entidade dona do atributo que o deriva, marcado como derivado
-  - Estados registrados listados, e uma transição por linha com quem ou que ação a provoca
-  - Modelo e documento de produto não se referenciam; compartilham o vocabulário do glossário
-  - Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
-  - Produto sem estrutura relevante dispensa o modelo
+- ✓ Descrever a estrutura do domínio num modelo conceitual
+  - ✓ O glossário define cada termo; o modelo estrutura, sem redefinir: relações com cardinalidade, estados e transições, invariantes
+  - ✓ Termo definido pela própria condição mantém a condição no glossário; o modelo só cita o estado
+  - ✓ Sem informação de implementação; identificador só quando é conceito de negócio
+  - ✓ Atributos só quando têm regra ou importam ao usuário
+  - ✓ Duas seções: tipos, depois entidades
+  - ✓ Tipos de domínio declarados uma vez, com natureza, restrições de negócio e unidade de medida quando aplicável; atributos citam o tipo
+  - ✓ Natureza de uma lista fechada: texto, inteiro, decimal, sim/não, data, data e hora local, instante, duração, enumeração, quantidade com unidade
+  - ✓ Tamanho, precisão e formato só quando são regra de negócio
+  - ✓ Tipo definido só no modelo; termo homônimo no glossário guarda só o significado
+  - ✓ Invariantes do domínio vivem no modelo; regras transversais ficam com o comportamento
+  - ✓ Um bloco por entidade, em lista plana; agrupamento por domínio só quando a lista crescer
+  - ✓ Relação com verbo, cardinalidade (1, 0..1, N, 0..N) e entidade-alvo, escrita uma vez, no bloco da entidade dependente; relação N:N no bloco da entidade mais central
+  - ✓ Estado derivado fica na entidade dona do atributo que o deriva, marcado como derivado
+  - ✓ Estados registrados listados, e uma transição por linha com quem ou que ação a provoca
+  - ✓ Modelo e documento de produto não se referenciam; compartilham o vocabulário do glossário
+  - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
+  - ✓ Produto sem estrutura relevante dispensa o modelo
 
 ### Documentos técnicos
-- Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão
+- ✓ Descrever uma camada técnica, como interface ou arquitetura, num documento técnico próprio, opcional
+  - ✓ Seções livres; autocontido e atemporal, como o documento de produto
+  - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
+  - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
+- ✓ Criar o esqueleto do documento técnico de uma camada a pedido
 
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
   - ✓ Só decisões vigentes; a que deixa de valer é apagada, salvo se explica um item de fora de escopo
   - ✓ Mudança de decisão move a escolha anterior para alternativas descartadas e registra a mudança no histórico
   - ✓ O porquê vem do humano; o agente nunca o inventa
-  - Decisões sobre o modelo conceitual ficam na camada de produto
+  - ✓ Decisões sobre o modelo conceitual ficam na camada de produto
 - ✓ Gerar o mapa de decisões de cada camada, para o agente abrir só o que a tarefa exige
 - ✓ Organizar as decisões de uma camada a pedido, confrontando-as com o documento de referência
   - ✓ Detecta contradição, decisões contraditórias entre si, órfãs, lacunas, sobreposição, mistura de assuntos, camada errada e problemas de forma
@@ -110,7 +115,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 ### Amadurecimento de ideias
 - ✓ Esmiuçar uma ideia contra a spec em rodadas de perguntas interativas, até cada ponto estar decidido
   - ✓ Aceita como entrada texto livre, issue de requisito ou proposta aberta
-  - ✓ Confronta a ideia com glossário, regras transversais, não funcionais, decisões vigentes e código ⇢ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
+  - ✓ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
   - ✓ Classifica a ideia como acréscimo, ajuste de compromisso ou mudança significativa e levanta a cascata
   - ✓ Na rediscussão de uma proposta, a defasagem em relação à branch principal vira pergunta
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
@@ -156,14 +161,14 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Barrar PR de código que cria mudança comprometida ou altera decisões, salvo com rótulo de divergência
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
-- Validar o modelo conceitual, quando existir, com as mesmas regras do documento de produto
-- Barrar nome em destaque no modelo conceitual que não seja entidade do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
-- Avisar sobre termos de implementação no modelo conceitual
-- Exigir atualização da spec quando o PR altera código ligado a ela
+- ✓ Validar o modelo conceitual e os documentos técnicos, quando existirem, com as mesmas regras do documento de produto
+- ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
+- ✓ Avisar sobre termos de implementação no modelo conceitual
+- ✓ Barrar PR que altera código sem alterar a spec, salvo quando rotulado como sem mudança de comportamento
 
 ### Exportação
-- Exportar a spec em formato convencional a pedido
-  - Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
+- ✓ Exportar a spec em formato convencional a pedido
+  - ✓ Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
 
 ## Regras transversais
 - ✓ Toda mudança, inclusive só de spec, entra por PR na branch principal protegida

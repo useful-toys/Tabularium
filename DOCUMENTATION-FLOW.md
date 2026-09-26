@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `07aeb44` da `main`, com a entrega do #10 (PR #11). Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `b78784b` da `main`, com as mudanças do PR #13. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
 
 ## O problema e o contexto
 
@@ -39,6 +39,7 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
   - sem marca: aprovado, ainda não implementado;
   - `✓ atual ⇢ desejado`: implementado, com mudança aprovada ainda por fazer.
 - **Modelo conceitual** (`model.md`): entidades, relações, estados e restrições do domínio. É um modelo de conceitos, não de banco de dados.
+- **Documentos técnicos** (`<camada>.md`, opcionais): estado atual de uma camada técnica, como interface ou arquitetura.
 - **Registros de decisão** (`decisions/`): um arquivo curto por escolha relevante, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. São parecidos com ADRs, mas só as decisões em vigor ficam na pasta.
 
 **Como uma mudança de requisito acontece**
@@ -67,8 +68,9 @@ Cada linha diz se é realidade (implementada) ou compromisso (decidido, ainda po
 | Artefato | Conteúdo | Regras-chave |
 |---|---|---|
 | `spec/product.md` | O que é, diferenciais, glossário, requisitos por domínio (requisito → regras), regras transversais, não funcionais, fora de escopo | Autocontido (sem links nem referências), atemporal, só comportamento observável, sem IDs, uma casa por conceito |
-| `spec/model.md` | Modelo conceitual, opcional: `## Tipos` e `## Entidades` (atributos, relações com cardinalidade, estados, transições, invariantes) | Sem implementação; tipos de domínio com natureza de lista fechada; toda entidade em negrito definida no glossário, todo tipo citado declarado. *Formato aceito na #1; a verificação automática está em entrega.* |
-| `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo: `tema`, `decisao`, `carregar-quando`, depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas" |
+| `spec/model.md` | Modelo conceitual, opcional: `## Tipos` e `## Entidades` (atributos, relações com cardinalidade, estados, transições, invariantes) | Sem implementação; tipos de domínio com natureza de lista fechada; todo nome em negrito é termo do glossário ou tipo declarado, verificado pelo CI |
+| `spec/<camada>.md` | Documento técnico opcional de uma camada além de `product`, com seções livres | Autocontido, atemporal; mesmos estados e regras de mudança dos itens |
+| `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo, por camada (`product`, `interface`, `architecture`, `data`, `operations`…): `tema`, `decisao`, `carregar-quando`, depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas" |
 | `spec/decisions/<camada>/README.md` | Mapa gerado | O agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
 | `spec/config.json` | Camadas, idioma, caminhos que não são código | Alterado pelo `/spec-init` |
 | `AGENTS.md`, `spec/AGENTS.md` | Processo; regras de formato e de mudança (fonte única) | Sem `CLAUDE.md`: a presença dele anula os `AGENTS.md` no Claude Code |
@@ -103,7 +105,7 @@ flowchart LR
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
-1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Confronta a ideia com glossário, regras transversais, não funcionais, decisões e código (e com o modelo conceitual, após a entrega da #1). Classifica a mudança (acréscimo, ajuste de compromisso ou mudança significativa) e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
+1. **Esmiuçar (`/spec-grill`)**: rodadas de perguntas interativas pela árvore de decisões. Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões e código. Classifica a mudança (acréscimo, ajuste de compromisso ou mudança significativa) e levanta a cascata. Aceita texto, issue ou PR; com PR, aponta a defasagem em relação à `main`. Trabalha só na conversa.
 2. **Sugerir (`/spec-ideas`)**: alternativas, cenários de borda, cascata esquecida, riscos e recortes. As sugestões descartadas, com motivo, viram "Alternativas descartadas". Também só na conversa.
 3. **Guardar (`/spec-issue`, a pedido)**: publica os resumos numa issue `requirement`, nova ou existente, como memória entre sessões.
 4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista, e abre ou atualiza o PR. PR novo nasce em draft; PR existente é rebaseado na `main` com `--force-with-lease`. Issue e PR se referenciam com `Refs #N`.
@@ -118,14 +120,18 @@ flowchart LR
 
 ### Regras verificadas pelo CI (`scripts/spec.mjs check --base`)
 
+Valem para o `product.md`, o `model.md` e os documentos técnicos.
+
 | Situação no PR | Resultado |
 |---|---|
 | Resolver `⇢` sem alterar código | erro, sempre |
 | Marcar `✓` ou alterar/remover item `✓` sem código | erro, salvo com a label `spec-only` (redação) |
 | Criar, alterar ou desfazer `⇢` sem decisão alterada | erro |
 | PR com código que cria ou altera `⇢` ou decisões | erro, salvo com a label `spec-mismatch` |
-| Mapa de decisões desatualizado, frontmatter ou seções faltando, link ou referência no `product.md` | erro |
-| Referência temporal no `product.md`, `CLAUDE.md` presente | aviso |
+| PR com código que não altera a spec | erro, salvo com a label `no-spec-change` (não muda comportamento) |
+| Mapa de decisões desatualizado, frontmatter ou seções faltando, link ou referência nos documentos | erro |
+| Nome em negrito no `model.md` que não é termo do glossário nem tipo declarado | erro |
+| Referência temporal nos documentos, termo de implementação no `model.md`, `CLAUDE.md` presente | aviso |
 
 A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atualizada, e, se a equipe exigir aprovação, aprovações descartadas a cada commit novo. Isso protege contra propostas concorrentes: uma proposta aceita antes força a outra a ser revalidada.
 
@@ -135,6 +141,10 @@ A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atuali
 - **`/spec-reconcile`**: organiza as decisões de uma camada contra o documento de referência. Aponta contradições, órfãs, lacunas, sobreposição e camada errada, e propõe fundir, dividir, mover ou apagar. Nada muda sem aprovação.
 - **`/spec-init`**: estrutura e preferências; pode ser refeito para mudar a configuração.
 - **`/spec-extract`**: gera a spec a partir de código existente. `✓` só com evidência no código; o modelo vem do comportamento, nunca do schema.
+
+### Definição do próprio template
+
+A spec do tabularium3 fica em `tabularium-spec/`. Ela e tudo o que o template entrega (instruções, skills, script, workflow e documentação) formam a definição do template, que muda num PR único com a label `tabularium`, sem issue e sem entrega separada: todo item fica `✓`. O CI verifica essa spec só na forma; num PR `tabularium`, o exemplo em `spec/` também, e a revisão consultiva não roda. O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta.
 
 ### Documentos derivados
 

@@ -1,6 +1,6 @@
 ---
 name: spec-reconcile
-description: Organiza as decisões de uma camada (spec/decisions/<camada>/) e as confronta com o documento de referência da camada (product ↔ spec/product.md) para eliminar decisões parecidas, contraditórias, obsoletas, faltantes ou fora do lugar. Use a pedido do usuário, ou sugira quando notar inconsistência entre decisões e requisitos.
+description: Organiza as decisões de uma camada (spec/decisions/<camada>/) e as confronta com o documento de referência da camada (product ↔ spec/product.md e spec/model.md; demais camadas ↔ spec/<camada>.md) para eliminar decisões parecidas, contraditórias, obsoletas, faltantes ou fora do lugar. Use a pedido do usuário, ou sugira quando notar inconsistência entre decisões e requisitos.
 ---
 
 # spec-reconcile
@@ -9,7 +9,7 @@ Regras de formato: `spec/AGENTS.md`. Nada é alterado sem confirmação do human
 
 ## 1. Escopo
 - Pergunte a camada (padrão: `product`). Uma camada por execução.
-- Documento de referência: `product` → `spec/product.md`. Para as camadas técnicas, use o documento definido para elas. Se não houver, confronte só as decisões entre si.
+- Documento de referência: `product` → `spec/product.md` e, se existir, `spec/model.md`. Camada técnica → `spec/<camada>.md`. Se não houver, confronte só as decisões entre si.
 
 ## 2. Carga
 - Leia o mapa da camada (`README.md`) e o documento de referência.
@@ -21,7 +21,7 @@ Para cada grupo, procure:
 
 | Tipo | Tratamento proposto |
 |---|---|
-| Contradição com o `product.md` | Item `✓` vence: a decisão se ajusta. Item sem `✓` ou `⇢`: pergunte. |
+| Contradição com o documento de referência | Item `✓` vence: a decisão se ajusta. Item sem `✓` ou `⇢`: pergunte. |
 | Decisões contraditórias entre si | A que bate com item `✓` fica; a outra é apagada ou fundida, e a escolha perdedora vira alternativa descartada. Sem `✓` envolvido: pergunte. |
 | Órfã ou obsoleta (não sustenta nenhum item) | Apagar, exceto se explica um item de Fora de escopo: nesse caso, "por que não fazer". |
 | Lacuna (escolha não óbvia sem decisão) | Rascunho de `tema` e `decisao`. Contexto e alternativas: pergunte, nunca invente. |
@@ -30,9 +30,9 @@ Para cada grupo, procure:
 | Camada errada | Mover para a camada certa, com `AAAA-MM-DD organização: movida de <camada>`. Sobreposição no destino: só aponte no relatório. |
 | Forma | `carregar-quando` vago; requisito escondido na decisão; justificativa técnica numa decisão de produto. |
 
-## 4. product.md
+## 4. Documento de referência
 Só edições que não mudam comportamento:
-- trazer para o `product.md` um requisito escondido numa decisão (com `✓` se estiver implementado, após confirmação);
+- trazer para o documento de referência um requisito escondido numa decisão (com `✓` se estiver implementado, após confirmação);
 - remover resíduo técnico ou temporal.
 
 Nunca altere o sentido de um item `✓`.

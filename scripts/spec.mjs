@@ -5,6 +5,9 @@
 //   node scripts/spec.mjs check [--base <ref>] [--labels a,b]
 //   --spec <pasta>  pasta da spec (padrão: spec)
 //
+// Documentos com itens: product.md, model.md (modelo conceitual, opcional) e
+// <camada>.md (documento técnico opcional de cada camada além de product).
+//
 // Regras de formato: spec/AGENTS.md.
 
 import { execFileSync } from 'node:child_process';
@@ -26,6 +29,9 @@ export const LOCALES = {
     ],
     // Seções em que os itens não levam ✓.
     unmarkedSections: ['O que é', 'Diferenciais', 'Glossário', 'Fora de escopo'],
+    glossarySection: 'Glossário',
+    modelSections: ['Tipos', 'Entidades'],
+    implementationWords: ['id', 'fk', 'chave', 'coluna', 'tabela', 'índice', 'sequence'],
     temporalWords: [
       'antigo', 'antiga', 'antigos', 'antigas', 'anteriormente', 'legado',
       'migração', 'migrado', 'migrada', 'corrige', 'corrigido',
@@ -45,6 +51,7 @@ export const DONE = '✓';
 export const LABEL_SPEC_ONLY = 'spec-only';
 export const LABEL_MISMATCH = 'spec-mismatch';
 export const LABEL_REQUIREMENT = 'requirement';
+export const LABEL_NO_SPEC_CHANGE = 'no-spec-change';
 export const CHANGE = '⇢';
 
 // Posição do ⇢ fora de trechos em `código` (-1 se não houver).
@@ -162,28 +169,31 @@ function sectionsOf(text) {
 const itemRe = /^\s*- /;
 const doneRe = new RegExp(`^\\s*- ${DONE} `);
 
-export function checkProduct(text, locale) {
+// Regras comuns a todo documento com itens: autocontido, marcas e avisos temporais.
+// sections: seções obrigatórias, nesta ordem (null = livres); unmarked: seções sem ✓.
+export function checkItems(text, locale, { name, sections = null, unmarked = [] }) {
   const errors = [];
   const warnings = [];
   const lines = sectionsOf(text);
 
-  const found = lines.filter((l) => /^## /.test(l.line)).map((l) => l.section);
-  const expected = locale.productSections;
-  if (found.join('|') !== expected.join('|')) {
-    errors.push(`product.md: seções devem ser, nesta ordem: ${expected.join(', ')} (encontradas: ${found.join(', ')})`);
+  if (sections) {
+    const found = lines.filter((l) => /^## /.test(l.line)).map((l) => l.section);
+    if (found.join('|') !== sections.join('|')) {
+      errors.push(`${name}: seções devem ser, nesta ordem: ${sections.join(', ')} (encontradas: ${found.join(', ')})`);
+    }
   }
 
   for (const { n, line: raw, section } of lines) {
-    const at = `product.md:${n}`;
+    const at = `${name}:${n}`;
     // Trechos em `código` são texto literal: não contam como link, marcador ou referência.
     const line = raw.replace(/`[^`]*`/g, '');
-    if (/\]\([^)]*\)|https?:\/\//.test(line)) errors.push(`${at}: link não é permitido (product.md é autocontido)`);
+    if (/\]\([^)]*\)|https?:\/\//.test(line)) errors.push(`${at}: link não é permitido (${name} é autocontido)`);
     if (/\b(ADR|IDR|TDR|MDR|DDR|PDR)[\s-]?\d+|decisions\//.test(line)) {
       errors.push(`${at}: referência a decisão não é permitida`);
     }
     if (line.includes(CHANGE) && !doneRe.test(line)) errors.push(`${at}: \`${CHANGE}\` só em item ${DONE}`);
     if (line.split(CHANGE).length > 2) errors.push(`${at}: mais de um \`${CHANGE}\` na linha`);
-    if (doneRe.test(line) && locale.unmarkedSections.includes(section)) {
+    if (doneRe.test(line) && unmarked.includes(section)) {
       errors.push(`${at}: itens de "${section}" não levam ${DONE}`);
     }
     if (itemRe.test(line) && line.includes(DONE) && !doneRe.test(line)) {
@@ -191,27 +201,63 @@ export function checkProduct(text, locale) {
     }
     const plain = line.split(CHANGE)[0].toLowerCase();
     for (const w of locale.temporalWords) {
-      if (new RegExp(`(^|[^\\p{L}])${w}([^\\p{L}]|$)`, 'u').test(plain)) {
-        warnings.push(`${at}: possível referência temporal ("${w}")`);
-      }
+      if (wordRe(w).test(plain)) warnings.push(`${at}: possível referência temporal ("${w}")`);
     }
   }
   return { errors, warnings };
 }
 
-export function openChanges(text) {
+const wordRe = (w) => new RegExp(`(^|[^\\p{L}])${w}([^\\p{L}]|$)`, 'u');
+
+export function checkProduct(text, locale) {
+  return checkItems(text, locale, {
+    name: 'product.md', sections: locale.productSections, unmarked: locale.unmarkedSections,
+  });
+}
+
+// Nomes em negrito no início de um item da seção dada (termos do glossário, tipos do modelo).
+export function definedTerms(text, section) {
+  return sectionsOf(text)
+    .filter((l) => l.section === section)
+    .map((l) => l.line.match(new RegExp(`^\\s*- (?:${DONE} )?\\*\\*(.+?)\\*\\*`)))
+    .filter(Boolean)
+    .map((m) => m[1].trim());
+}
+
+// Modelo conceitual: regras do product.md, seções Tipos e Entidades, vocabulário
+// só do glossário ou dos tipos declarados, e aviso para termos de implementação.
+export function checkModel(text, glossary, locale) {
+  const { errors, warnings } = checkItems(text, locale, { name: 'model.md', sections: locale.modelSections });
+  const known = new Set([...glossary, ...definedTerms(text, locale.modelSections[0])]);
+  for (const { n, line: raw } of sectionsOf(text)) {
+    const line = raw.replace(/`[^`]*`/g, '');
+    for (const m of line.matchAll(/\*\*(.+?)\*\*/g)) {
+      if (!known.has(m[1].trim())) {
+        errors.push(`model.md:${n}: **${m[1].trim()}** não é termo do glossário nem tipo declarado`);
+      }
+    }
+    if (!itemRe.test(line)) continue;
+    const plain = line.toLowerCase();
+    for (const w of locale.implementationWords) {
+      if (wordRe(w).test(plain)) warnings.push(`model.md:${n}: possível termo de implementação ("${w}")`);
+    }
+  }
+  return { errors, warnings };
+}
+
+export function openChanges(text, name = 'product.md') {
   return sectionsOf(text)
     .filter(({ line }) => doneRe.test(line) && hasChange(line))
-    .map(({ n, line }) => `product.md:${n}: ${line.trim()}`);
+    .map(({ n, line }) => `${name}:${n}: ${line.trim()}`);
 }
 
 // Itens comprometidos (sem ✓) nas seções que levam estado.
-export function commitments(text, locale) {
+export function commitments(text, locale, name = 'product.md', unmarked = locale.unmarkedSections) {
   return sectionsOf(text)
     .filter(({ line, section }) =>
-      section && !locale.unmarkedSections.includes(section) &&
-      itemRe.test(line) && !doneRe.test(line) && !/^s*- Nota:/.test(line))
-    .map(({ n, line }) => `product.md:${n}: ${line.trim()}`);
+      section && !unmarked.includes(section) &&
+      itemRe.test(line) && !doneRe.test(line) && !/^\s*- Nota:/.test(line))
+    .map(({ n, line }) => `${name}:${n}: ${line.trim()}`);
 }
 
 // Parte "o que vale hoje" de uma linha ✓ (sem o ⇢ e o desejado), normalizada.
@@ -274,6 +320,15 @@ function git(root, args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' });
 }
 
+// Documentos com itens da spec: product.md sempre; model.md e <camada>.md se existirem.
+export function specDocs(root, spec, config) {
+  const docs = [{ file: 'product.md', kind: 'product' }, { file: 'model.md', kind: 'model' }];
+  for (const layer of config.layers) {
+    if (layer !== 'product') docs.push({ file: `${layer}.md`, kind: 'technical' });
+  }
+  return docs.filter((d) => d.kind === 'product' || existsSync(join(root, spec, d.file)));
+}
+
 export function check(root, { base, labels = [], spec = 'spec' } = {}) {
   const config = loadConfig(root, spec);
   const { locale } = config;
@@ -293,15 +348,21 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
     }
   }
 
-  const productPath = join(root, spec, 'product.md');
-  const product = readFileSync(productPath, 'utf8');
-  const p = checkProduct(product, locale);
-  errors.push(...p.errors);
-  warnings.push(...p.warnings);
-
-  const changes = openChanges(product);
+  const docs = specDocs(root, spec, config).map((d) => ({ ...d, text: readFileSync(join(root, spec, d.file), 'utf8') }));
+  const product = docs[0].text;
+  const glossary = definedTerms(product, locale.glossarySection);
+  const changes = [];
+  const pending = [];
+  for (const { file, kind, text } of docs) {
+    const r = kind === 'product' ? checkProduct(text, locale)
+      : kind === 'model' ? checkModel(text, glossary, locale)
+      : checkItems(text, locale, { name: file });
+    errors.push(...r.errors);
+    warnings.push(...r.warnings);
+    changes.push(...openChanges(text, file));
+    pending.push(...commitments(text, locale, file, kind === 'product' ? locale.unmarkedSections : []));
+  }
   if (changes.length) info.push(`Mudanças comprometidas (${CHANGE}) em aberto:`, ...changes.map((c) => `  ${c}`));
-  const pending = commitments(product, locale);
   if (pending.length) info.push('Itens comprometidos, ainda não implementados:', ...pending.map((c) => `  ${c}`));
 
   for (const f of ['CLAUDE.md', join(spec, 'CLAUDE.md')]) {
@@ -309,22 +370,31 @@ export function check(root, { base, labels = [], spec = 'spec' } = {}) {
   }
 
   if (base) {
-    let before = '';
-    try {
-      before = git(root, ['show', `${base}:${spec}/product.md`]);
-    } catch {
-      // product.md novo neste PR: nada a comparar.
-    }
     const changed = git(root, ['diff', '--name-only', `${base}...HEAD`]).split('\n').filter(Boolean);
     const touchesCode = changed.some((f) => isCode(f, config.nonCodePaths));
+    const touchesSpec = changed.some((f) => f.startsWith(`${spec}/`));
     const decisionsChanged = changed.filter((f) => f.startsWith(`${spec}/decisions/`) && !f.endsWith('/README.md'));
-    const { resolutions, rewrites, marks, changeEdits } = classifyProductDiff(before, product);
+    const diff = { resolutions: [], rewrites: [], marks: [], changeEdits: [] };
+    for (const { file, text } of docs) {
+      let before = '';
+      try {
+        before = git(root, ['show', `${base}:${spec}/${file}`]);
+      } catch {
+        // Documento novo neste PR: nada a comparar.
+      }
+      const d = classifyProductDiff(before, text);
+      for (const k of Object.keys(diff)) diff[k].push(...d[k].map((l) => (file === 'product.md' ? l : `${file}: ${l}`)));
+    }
+    const { resolutions, rewrites, marks, changeEdits } = diff;
     if (changeEdits.length && !decisionsChanged.length) {
       for (const c of changeEdits) errors.push(`${CHANGE} criado, alterado ou desfeito sem decisão alterada no PR: ${c}`);
     }
     if (touchesCode && !labels.includes(LABEL_MISMATCH)) {
       for (const c of changeEdits) errors.push(`PR com código não pode criar ou alterar ${CHANGE} (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${c}`);
       for (const d of decisionsChanged) errors.push(`PR com código não pode alterar decisões (proposta em PR próprio, ou label ${LABEL_MISMATCH}): ${d}`);
+    }
+    if (touchesCode && !touchesSpec && !labels.includes(LABEL_NO_SPEC_CHANGE)) {
+      errors.push(`PR com código sem alteração na spec (label ${LABEL_NO_SPEC_CHANGE} se não muda comportamento)`);
     }
     if (!touchesCode) {
       for (const r of resolutions) errors.push(`${CHANGE} resolvido sem alteração de código: ${r}`);

@@ -8,9 +8,12 @@
   - ✓ preferências: camadas, idioma do conteúdo e caminhos que não são código
 - ✓ **Documento de produto**
   - ✓ pertence a 1 **Spec**
-- **Modelo conceitual**
-  - pertence a 1 **Spec**; a Spec pode não ter modelo
-  - suas linhas seguem os mesmos estados de **Item**
+- ✓ **Modelo conceitual**
+  - ✓ pertence a 1 **Spec**; a Spec pode não ter modelo
+  - ✓ suas linhas seguem os mesmos estados de **Item**
+- ✓ **Documento técnico**
+  - ✓ pertence a 1 **Camada**; a Camada pode não ter documento técnico
+  - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Item**
   - ✓ pertence a 1 **Documento de produto**
   - ✓ tipos: **Requisito** | **Regra** | regra transversal | não funcional

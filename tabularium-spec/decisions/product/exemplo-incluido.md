@@ -1,17 +1,19 @@
 ---
 tema: Exemplo incluído no template
-decisao: Um produto real preenchido na spec, com decisões inferidas e uma mudança comprometida de demonstração
-carregar-quando: mudança no exemplo do template ou na forma de demonstrar o formato
+decisao: Um produto real preenchido na spec, com decisões inferidas e uma mudança comprometida de demonstração, usado para experimentar o ciclo de proposta
+carregar-quando: mudança no exemplo do template, na forma de demonstrar o formato ou de experimentar o ciclo
 ---
-- Decisão: a spec do template traz um aplicativo real, reescrito pelas regras, com decisões de produto inferidas da documentação original e uma mudança comprometida para mostrar o ciclo completo
+- Decisão: a spec do template traz um aplicativo real, reescrito pelas regras, com decisões de produto inferidas da documentação original e uma mudança comprometida para mostrar o ciclo completo; o exemplo passa pelas mesmas verificações e regras de um produto e serve para experimentar o ciclo de proposta; como não tem código, as regras de entrega são exercitadas pelos casos de teste do script
 - Contexto: o usuário precisava ver o formato aplicado a um caso concreto para avaliá-lo
 - Alternativas descartadas
   - Só o esqueleto vazio: não mostra como fica um produto de verdade
   - Exemplo em pasta separada de documentação: não seria validado como spec
   - Exemplo só no plano de implementação: some depois da implementação
+  - Exemplo com código simulado: manutenção de código que não é o produto do template
 - Consequências
-  - Ganha: referência concreta, validada pela verificação
-  - Aceita: quem adota precisa trocar o exemplo pelo esqueleto
+  - Ganha: referência concreta, validada pela verificação; campo de prova do mecanismo
+  - Aceita: quem adota precisa trocar o exemplo pelo esqueleto; entrega com código não é experimentada no exemplo
 
 ## Histórico
+- 2026-09-26 #13: exemplo como experimento do ciclo de proposta
 - 2026-09-24 plano-inicial: decisão criada

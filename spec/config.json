@@ -2,7 +2,7 @@
   "language": "pt-BR",
   "layers": [
     "product",
-    "model"
+    "data"
   ],
   "nonCodePaths": [
     "spec/",
@@ -12,6 +12,8 @@
     ".github/",
     ".claude/",
     "scripts/spec",
-    "tabularium-spec/"
+    "tabularium-spec/",
+    "DOCUMENTATION-FLOW.md",
+    ".gitattributes"
   ]
 }

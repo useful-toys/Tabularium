@@ -1,6 +1,6 @@
 ---
 name: spec-propose
-description: Registra uma proposta já esmiuçada como texto final - diff do spec/product.md e operações nas decisões (criar, alterar, fundir, dividir, remover) - e abre ou atualiza o PR de proposta, vinculando-o à issue. Sem entrevista; só pergunta o que bloquear. Use depois de /spec-grill e /spec-ideas.
+description: Registra uma proposta já esmiuçada como texto final - diff do spec/product.md (e do modelo conceitual e dos documentos técnicos) e operações nas decisões (criar, alterar, fundir, dividir, remover) - e abre ou atualiza o PR de proposta, vinculando-o à issue. Sem entrevista; só pergunta o que bloquear. Use depois de /spec-grill e /spec-ideas.
 ---
 
 # spec-propose
@@ -8,6 +8,8 @@ description: Registra uma proposta já esmiuçada como texto final - diff do spe
 Etapa 3 de 3 da proposta: esmiuçar (spec-grill) → sugerir (spec-ideas) → **registrar** (spec-propose). Esta etapa sintetiza: não reabra o que já foi decidido. Pergunte só o que impedir o registro, como um porquê ausente ou um conflito novo com a `main`.
 
 Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para virar compromisso no merge, nunca ideias soltas.
+
+Mudança no próprio template (`tabularium-spec/`, só no repositório do template): siga a seção "Mudança no próprio template" no lugar dos passos 3 a 5.
 
 ## 1. Fontes
 - Origem issue: `gh issue view <N> --comments`, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`.
@@ -23,12 +25,12 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 - **Demais origens**: crie uma branch a partir da `main` atual.
 
 ## 3. Texto final
-No `spec/product.md`:
+Nos documentos com itens (`spec/product.md` e, quando existem, `spec/model.md` e os documentos técnicos):
 - Acréscimo: item novo sem `✓`, no domínio certo.
 - Ajuste de compromisso: edite o item sem `✓` ou o lado direito do `⇢`.
 - Mudança significativa: `✓ <o que vale hoje> ⇢ <texto completo desejado>`, na linha mais baixa afetada; numa remoção, `⇢ (removido)`. Nunca altere o lado esquerdo.
 - Abandono: apague o item, ou mova-o para Fora de escopo com motivo, conforme decidido.
-- Glossário, transversais, não funcionais e fora de escopo afetados pela cascata.
+- Glossário, modelo conceitual, transversais, não funcionais e fora de escopo afetados pela cascata.
 
 Nas decisões:
 - **Criar**: arquivo novo, com o porquê e as alternativas descartadas (as do resumo `spec-ideas` entram aqui).
@@ -60,3 +62,12 @@ Proposta de requisito. Refs #<issue>
 
 ## 5. Fechamento
 Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.
+
+## Mudança no próprio template
+A definição do template é `tabularium-spec/` junto com tudo o que o template entrega. Regras em `tabularium-spec/AGENTS.md`.
+- Branch a partir da `main` atual. Nada de issue.
+- No mesmo PR: `tabularium-spec/` (documentos e decisões) e todos os arquivos da definição alinhados a ela: instruções, skills, script e testes, workflow e documentação. Se a mudança exigir, adapte também o exemplo em `spec/`.
+- Todo item de `tabularium-spec/` fica com `✓`; sem item comprometido e sem `⇢`. Decisões seguem as mesmas operações do passo 3.
+- Valide: `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
+- PR pronto (sem draft), só com a label `tabularium`: sem `requirement` nem `spec-only`. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
+- O merge, decidido por um humano, é aceite e entrega. Não há revisão consultiva nem `/spec-sync`.

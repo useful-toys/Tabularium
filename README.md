@@ -4,7 +4,9 @@ Template para manter, dentro do repositório, uma **especificação viva**: o qu
 
 O exemplo incluído (`spec/`) é o Iconula, um app de figurinhas da Copa 2026. Substitua-o ao adotar o template.
 
-A spec do próprio tabularium3 (requisitos do template e as decisões que o moldaram) fica em `tabularium-spec/`, com as mesmas convenções. Apague essa pasta ao adotar o template.
+O exemplo também serve para experimentar o ciclo de proposta: passa pelas mesmas verificações de um produto.
+
+A spec do próprio tabularium3 (requisitos do template e as decisões que o moldaram) fica em `tabularium-spec/`, com as mesmas regras de formato. Ela e tudo o que o template entrega formam a definição do tabularium, que muda por um fluxo próprio: PR único com a label `tabularium`, sem issue nem entrega separada (ver `tabularium-spec/AGENTS.md`). Apague essa pasta ao adotar o template.
 
 ## O ciclo
 
@@ -18,7 +20,7 @@ flowchart LR
   A --> C["Implementação + /spec-sync<br/>✓ e ⇢ resolvidos<br/>Closes #issue"]
 ```
 
-| Na `main`, em `spec/product.md` | Significa |
+| Na `main`, em `spec/product.md`, `spec/model.md` e documentos técnicos | Significa |
 |---|---|
 | `- ✓ texto` | implementado |
 | `- texto` | comprometido, ainda não implementado |
@@ -29,6 +31,8 @@ flowchart LR
 | `requirement` | issue ou PR de proposta de requisito |
 | `spec-only` | PR que altera só a spec |
 | `spec-mismatch` | PR de código que ajusta uma pequena divergência entre entrega e compromisso |
+| `no-spec-change` | PR de código que não muda comportamento e por isso não altera a spec |
+| `tabularium` | só neste repositório: PR que muda a definição do próprio template |
 
 ## Estrutura
 
@@ -37,6 +41,8 @@ AGENTS.md                       processo (lido por qualquer agente)
 REVIEW.md                       instruções para agentes de revisão (ex.: Copilot code review)
 spec/AGENTS.md                  regras de formato e de mudança da spec
 spec/product.md                 o que o produto é e como se comporta
+spec/model.md                   modelo conceitual (opcional): tipos e entidades do domínio
+spec/<camada>.md                documento técnico de uma camada (opcional)
 spec/config.json                preferências: camadas, idioma, caminhos que não são código
 spec/decisions/<camada>/        uma decisão vigente por arquivo + mapa gerado (README.md)
 scripts/spec.mjs                build-map e check (Node, sem dependências)
@@ -80,7 +86,8 @@ node --test scripts/spec.test.mjs
 
 Todos aceitam `--spec <pasta>` para operar noutra pasta de spec, como `--spec tabularium-spec`.
 
-O `check` valida o formato do `product.md` e das decisões, verifica se os mapas estão atualizados e lista os `⇢` e os itens comprometidos em aberto. Com `--base`, também aplica as regras de PR:
+O `check` valida o formato do `product.md`, do `model.md` (inclusive se todo nome em destaque é termo do glossário ou tipo declarado), dos documentos técnicos e das decisões, verifica se os mapas estão atualizados e lista os `⇢` e os itens comprometidos em aberto. Com `--base`, também aplica as regras de PR, nos três documentos:
 - resolver `⇢` ou marcar `✓` exige código;
 - criar, alterar ou desfazer `⇢` exige decisão alterada;
-- PR com código não mexe em `⇢` nem em decisões, salvo com `spec-mismatch`.
+- PR com código não mexe em `⇢` nem em decisões, salvo com `spec-mismatch`;
+- PR com código altera a spec, salvo com `no-spec-change`.

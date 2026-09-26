@@ -1,9 +1,9 @@
 ---
 tema: Rótulos e rascunho nas propostas
-decisao: Rótulos em inglês (requirement, spec-only, spec-mismatch); proposta nasce em rascunho e volta a ele na rediscussão
+decisao: Rótulos em inglês (requirement, spec-only, spec-mismatch, no-spec-change); proposta nasce em rascunho e volta a ele na rediscussão
 carregar-quando: mudança em labels, estado draft ou filtros de issues e PRs de requisito
 ---
-- Decisão: issue e PR de requisito levam o rótulo requirement; PR só de spec leva spec-only; divergência na entrega leva spec-mismatch; a proposta nasce em rascunho até o autor tratar a revisão consultiva, e volta a rascunho quando é rediscutida
+- Decisão: issue e PR de requisito levam o rótulo requirement; PR só de spec leva spec-only; divergência na entrega leva spec-mismatch; PR de código que não muda comportamento leva no-spec-change; a proposta nasce em rascunho até o autor tratar a revisão consultiva, e volta a rascunho quando é rediscutida
 - Contexto: é preciso achar propostas abertas para detectar conflitos, e distinguir texto pronto para aceitar de texto em ajuste
 - Alternativas descartadas
   - Só o rótulo spec-only: não distingue proposta de correção de redação ou organização
@@ -15,4 +15,5 @@ carregar-quando: mudança em labels, estado draft ou filtros de issues e PRs de 
   - Aceita: rótulos precisam existir no repositório
 
 ## Histórico
+- 2026-09-26 #13: rótulo no-spec-change
 - 2026-09-24 plano-inicial: decisão criada

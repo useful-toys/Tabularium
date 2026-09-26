@@ -4,7 +4,7 @@ decisao: Autodeclaração única de 12 anos ou mais, ou de autorização dos res
 carregar-quando: mudança em primeiro acesso, idade, menores de idade ou estados da conta
 ---
 - Decisão: no primeiro acesso, o usuário atesta ter 12 anos ou mais ou estar autorizado pelos responsáveis; a atestação vale para a conta e não se repete
-- Contexto: o álbum tem muito público infantil, e a LGPD exige cuidado especial com dados de crianças; o app só trata a identidade Google e a coleção
+- Contexto: o álbum tem muito público infantil; o app só trata a identidade Google e a coleção
 - Alternativas descartadas
   - Pedir data de nascimento: dado pessoal além do necessário
   - Comprovação de idade ou do consentimento dos responsáveis: exige documentos que o app não quer tratar

@@ -3,13 +3,5 @@
   "layers": [
     "product"
   ],
-  "nonCodePaths": [
-    "tabularium-spec/",
-    "tabularium-docs/",
-    "spec/product.md",
-    "spec/model.md",
-    "spec/decisions/",
-    "spec/config.json",
-    "README.md"
-  ]
+  "codePaths": []
 }

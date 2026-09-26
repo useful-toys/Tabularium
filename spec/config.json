@@ -4,16 +4,5 @@
     "product",
     "data"
   ],
-  "nonCodePaths": [
-    "spec/",
-    "README.md",
-    "AGENTS.md",
-    "REVIEW.md",
-    ".github/",
-    ".claude/",
-    "scripts/spec",
-    "tabularium-spec/",
-    "tabularium-docs/",
-    ".gitattributes"
-  ]
+  "codePaths": []
 }

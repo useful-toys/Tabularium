@@ -76,6 +76,7 @@ export function loadConfig(root, spec = 'spec') {
   const config = JSON.parse(readFileSync(join(root, spec, 'config.json'), 'utf8'));
   const locale = LOCALES[config.language];
   if (!locale) throw new Error(`Idioma sem textos definidos em scripts/spec.mjs (LOCALES): ${config.language}`);
+  if (!Array.isArray(config.codePaths)) throw new Error(`${spec}/config.json sem \`codePaths\` (lista de caminhos de código; vazia se o projeto não tem código)`);
   return { ...config, locale };
 }
 
@@ -398,8 +399,9 @@ export function changeType({ docs, touchesCode, touchesSpec, decisionsAdded = []
   return { min, ambiguous: min === 'incompatible' ? [] : ambiguous };
 }
 
-export function isCode(path, nonCodePaths) {
-  return !nonCodePaths.some((p) => path === p || path.startsWith(p));
+// Código é o que está nos caminhos de código; configuração, build, instruções e infra ficam de fora.
+export function isCode(path, codePaths) {
+  return codePaths.some((p) => path === p || path.startsWith(p));
 }
 
 // ---------- check ----------
@@ -499,7 +501,7 @@ export function classifyPR(root, { base, spec = 'spec', config = loadConfig(root
   const status = git(root, ['diff', '--name-status', '--no-renames', `${base}...HEAD`])
     .split('\n').filter(Boolean).map((l) => l.split('\t'));
   const changed = status.map(([, f]) => f);
-  const touchesCode = changed.some((f) => isCode(f, config.nonCodePaths));
+  const touchesCode = changed.some((f) => isCode(f, config.codePaths));
   const touchesSpec = changed.some((f) => f.startsWith(`${spec}/`));
   const isDecision = (f) => f.startsWith(`${spec}/decisions/`);
   const decisionsAdded = status.filter(([s, f]) => s === 'A' && isDecision(f) && !f.endsWith('/README.md')).map(([, f]) => f);

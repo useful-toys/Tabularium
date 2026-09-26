@@ -6,7 +6,7 @@
 
 ## Entidades
 - ✓ **Spec**
-  - ✓ preferências: camadas, idioma do conteúdo e caminhos que não são código
+  - ✓ preferências: camadas, idioma do conteúdo e caminhos de código
 - ✓ **Documento de produto**
   - ✓ pertence a 1 **Spec**
 - ✓ **Modelo conceitual**

@@ -6,7 +6,7 @@ O exemplo incluído (`spec/`) é o Iconula, um app de figurinhas da Copa 2026. S
 
 O exemplo também serve para experimentar o ciclo de proposta: passa pelas mesmas verificações de um produto.
 
-A spec do próprio tabularium3 (requisitos do template e as decisões que o moldaram) fica em `tabularium-spec/`, com as mesmas regras de formato. Ela e tudo o que o template entrega formam a definição do tabularium, que muda por um fluxo próprio: PR único com a label `tabularium`, sem issue nem entrega separada (ver `tabularium-spec/AGENTS.md`). Apague essa pasta ao adotar o template.
+A spec do próprio tabularium3 (requisitos do template e as decisões que o moldaram) fica em `tabularium-spec/`, com as mesmas regras de formato. Ela e tudo o que o template entrega formam a definição do tabularium, que muda por um fluxo próprio: PR único com a label `tabularium`, sem issue nem entrega separada (ver `tabularium-spec/AGENTS.md`). Os documentos derivados da definição, como o fluxo completo em `tabularium-docs/spec-flow.md`, são regerados a cada uma dessas mudanças. Apague `tabularium-spec/` e `tabularium-docs/` ao adotar o template.
 
 ## O ciclo
 

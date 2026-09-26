@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `8f1d270` da `main`. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). Para atualizá-lo, peça a um agente que o gere de novo a partir da spec.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `8f1d270` da `main`, com as mudanças do PR #15. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
 
 ## O problema e o contexto
 
@@ -156,8 +156,8 @@ A `main` é protegida: PR obrigatório, `spec-check` exigido com a branch atuali
 
 ### Definição do próprio template
 
-A spec do tabularium3 fica em `tabularium-spec/`. Ela e tudo o que o template entrega (instruções, skills, script, workflow e documentação) formam a definição do template, que muda num PR único com a label `tabularium`, sem label de tipo, sem issue e sem entrega separada: todo item fica `✓`. O CI verifica essa spec só na forma; num PR `tabularium`, o exemplo em `spec/` também, o tipo não é classificado e a revisão consultiva não roda. O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta.
+A spec do tabularium3 fica em `tabularium-spec/`, e os documentos derivados dela, como este, em `tabularium-docs/`. Ela e tudo o que o template entrega (instruções, skills, script, workflow e documentação) formam a definição do template, que muda num PR único com a label `tabularium`, sem label de tipo, sem issue e sem entrega separada: todo item fica `✓`. O CI verifica essa spec só na forma; num PR `tabularium`, o exemplo em `spec/` também, o tipo não é classificado e a revisão consultiva não roda. O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta.
 
 ### Documentos derivados
 
-A spec não mantém documentos convencionais. Eles são exportados a pedido, ficam fora da spec, declaram que são derivados e de qual versão, e nunca servem de fonte para agentes. Este arquivo é um exemplo disso.
+A spec não mantém documentos convencionais. Eles são exportados a pedido, ficam fora da spec, declaram que são derivados e de qual versão, e nunca servem de fonte para agentes. Este arquivo é um exemplo disso, com uma exceção do repositório do template: ele e o `README.md` são regerados a cada mudança da definição, por subagentes que leem só os arquivos finais.

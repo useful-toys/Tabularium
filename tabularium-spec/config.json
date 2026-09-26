@@ -5,6 +5,7 @@
   ],
   "nonCodePaths": [
     "tabularium-spec/",
+    "tabularium-docs/",
     "spec/product.md",
     "spec/model.md",
     "spec/decisions/",

@@ -2,7 +2,7 @@
   "language": "pt-BR",
   "layers": [
     "product",
-    "model"
+    "data"
   ],
   "nonCodePaths": [
     "spec/",

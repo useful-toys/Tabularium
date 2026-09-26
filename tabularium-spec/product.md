@@ -90,6 +90,9 @@ Template de repositório que mantém, junto do código, uma especificação viva
   - Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
   - Produto sem estrutura relevante dispensa o modelo
 
+### Documentos técnicos
+- Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão
+
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
   - ✓ Só decisões vigentes; a que deixa de valer é apagada, salvo se explica um item de fora de escopo
@@ -157,7 +160,10 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - Barrar nome em destaque no modelo conceitual que não seja entidade do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - Avisar sobre termos de implementação no modelo conceitual
 - Exigir atualização da spec quando o PR altera código ligado a ela
-- Descrever interface e arquitetura em documentos técnicos da spec, com suas camadas de decisão
+
+### Exportação
+- Exportar a spec em formato convencional a pedido
+  - Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
 
 ## Regras transversais
 - ✓ Toda mudança, inclusive só de spec, entra por PR na branch principal protegida
@@ -169,7 +175,6 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ O agente só integra um PR a pedido explícito do humano, PR a PR
-- Documento exportado da spec fica fora dela, declara que é derivado e de qual versão, e nunca é fonte para agentes; em conflito, vale a spec
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado
 
 ## Não funcionais

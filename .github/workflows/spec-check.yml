@@ -26,17 +26,40 @@ jobs:
         env:
           BASE_REF: origin/${{ github.base_ref }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-        run: node scripts/spec.mjs check --base "$BASE_REF" --labels "$LABELS"
+          TEMPLATE_PR: ${{ hashFiles('tabularium-spec/config.json') != '' && contains(github.event.pull_request.labels.*.name, 'tabularium') }}
+        run: |
+          if [ "$TEMPLATE_PR" = "true" ]; then
+            # PR da definição do template: o exemplo acompanha a mudança de regra e é verificado só na forma.
+            node scripts/spec.mjs check
+          else
+            node scripts/spec.mjs check --base "$BASE_REF" --labels "$LABELS"
+          fi
 
+      # Só existe no repositório do template (quem adota apaga tabularium-spec/).
       - name: Check da spec do próprio template
+        if: hashFiles('tabularium-spec/config.json') != ''
+        run: node scripts/spec.mjs check --spec tabularium-spec
+
+      - name: Label do PR do próprio template
         if: hashFiles('tabularium-spec/config.json') != ''
         env:
           BASE_REF: origin/${{ github.base_ref }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-        run: node scripts/spec.mjs check --spec tabularium-spec --base "$BASE_REF" --labels "$LABELS"
+        run: |
+          has() { case ",$LABELS," in *",$1,"*) return 0;; *) return 1;; esac; }
+          fail=0
+          if git diff --name-only "$BASE_REF...HEAD" | grep -q '^tabularium-spec/' && ! has tabularium; then
+            echo "::error::PR que altera tabularium-spec/ exige a label tabularium"; fail=1
+          fi
+          if has tabularium; then
+            for l in requirement spec-only; do
+              if has "$l"; then echo "::error::PR com a label tabularium não leva a label $l"; fail=1; fi
+            done
+          fi
+          exit $fail
 
   # Revisão consultiva por agente: comenta no PR, nunca bloqueia.
-  # Roda só quando o PR toca spec/ e existe o secret ANTHROPIC_API_KEY (forks não recebem secrets).
+  # Roda só quando o PR toca spec/, não é da definição do template e existe o secret ANTHROPIC_API_KEY (forks não recebem secrets).
   spec-review:
     runs-on: ubuntu-latest
     if: github.event.action != 'labeled' && github.event.action != 'unlabeled'
@@ -54,12 +77,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      # PR da definição do template (label tabularium) não é proposta de produto: sem revisão consultiva.
       - name: PR toca spec/?
         id: scope
         env:
           BASE_REF: origin/${{ github.base_ref }}
+          TEMPLATE_PR: ${{ hashFiles('tabularium-spec/config.json') != '' && contains(github.event.pull_request.labels.*.name, 'tabularium') }}
         run: |
-          if git diff --name-only "$BASE_REF...HEAD" | grep -q '^spec/'; then
+          changed=$(git diff --name-only "$BASE_REF...HEAD")
+          if [ "$TEMPLATE_PR" = "true" ] || echo "$changed" | grep -q '^tabularium-spec/'; then
+            echo "touches=false" >> "$GITHUB_OUTPUT"
+          elif echo "$changed" | grep -q '^spec/'; then
             echo "touches=true" >> "$GITHUB_OUTPUT"
           else
             echo "touches=false" >> "$GITHUB_OUTPUT"

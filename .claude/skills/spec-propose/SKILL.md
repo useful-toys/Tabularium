@@ -74,9 +74,14 @@ Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda n
 
 ## Mudança no próprio template
 A definição do template é `tabularium-spec/` junto com tudo o que o template entrega. Regras em `tabularium-spec/AGENTS.md`.
-- Branch a partir da `main` atual. Nada de issue.
-- No mesmo PR: `tabularium-spec/` (documentos e decisões) e todos os arquivos da definição alinhados a ela: instruções, skills, script e testes, workflow e documentação. Se a mudança exigir, adapte também o exemplo em `spec/`.
-- Todo item de `tabularium-spec/` fica com `✓`; sem item comprometido e sem `⇢`. Decisões seguem as mesmas operações do passo 3.
+- Branch a partir da `main` atual. Nada de issue. Nenhum arquivo muda durante `/spec-grill` e `/spec-ideas`: tudo é escrito aqui.
+- No mesmo PR, nesta ordem:
+  1. **Você**, que tem as decisões e os porquês da conversa: `tabularium-spec/` (documentos e decisões) e os arquivos da definição alinhados a ela: instruções, skills, script e testes, workflow. Se a mudança exigir, adapte também o exemplo em `spec/`. Todo item de `tabularium-spec/` fica com `✓`; sem item comprometido e sem `⇢`. Decisões seguem as mesmas operações do passo 3.
+  2. **Revisão por subagente**, com contexto limpo: ele lê só `tabularium-spec/` e o diff da branch e aponta instrução, skill, script ou workflow desalinhado com a spec, ou inválido. Corrija os achados, ou leve ao usuário os que pedirem decisão, antes de seguir.
+  3. **Documentos derivados por subagentes, em paralelo**, cada um lendo só os arquivos finais, nunca a conversa:
+     - `README.md`: o que é e os diferenciais, conforme `tabularium-spec/product.md`; o fluxo resumido; cada skill em uma linha; as partes operacionais (estrutura, adoção, comandos) atualizadas;
+     - `tabularium-docs/spec-flow.md`: o fluxo completo, regerado a partir de `tabularium-spec/` e do comportamento das skills, com o cabeçalho de documento derivado.
+  - Sem subagentes disponíveis, faça os passos 2 e 3 em sequência, relendo só os arquivos finais.
 - Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
 - PR pronto (sem draft), só com a label `tabularium`: sem label de tipo. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
 - O merge, decidido por um humano, é aceite e entrega. Não há revisão consultiva nem `/spec-sync`.

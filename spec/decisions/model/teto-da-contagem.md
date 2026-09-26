@@ -14,4 +14,4 @@ carregar-quando: mudança no limite da contagem, nas regras de segurança do Fir
   - Aceita: o produto limita a contagem a 99 por figurinha
 
 ## Histórico
-- 2026-05-20 #30: decisão criada
+- 2026-09-25 organização: migrada dos documentos de modelo de dados do app original

@@ -12,4 +12,4 @@ carregar-quando: mudança em preferências de vista, ordenação, disposição, 
   - Aceita: trocar de aparelho ou limpar o navegador volta aos padrões
 
 ## Histórico
-- 2026-06-22 #55: decisão criada
+- 2026-09-25 organização: migrada dos documentos de modelo de dados do app original

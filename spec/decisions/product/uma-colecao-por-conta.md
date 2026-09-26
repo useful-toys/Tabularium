@@ -13,4 +13,4 @@ carregar-quando: mudança em coleção, conta, vários álbuns por usuário ou c
   - Aceita: quem mantém dois álbuns precisa de duas contas Google
 
 ## Histórico
-- 2026-05-10 #12: decisão criada
+- 2026-09-25 organização: migrada dos documentos de modelo de dados do app original

@@ -14,4 +14,4 @@ carregar-quando: mudança em primeiro acesso, idade, menores de idade ou estados
   - Aceita: depende da honestidade de quem atesta
 
 ## Histórico
-- 2026-07-20 #70: decisão criada
+- 2026-09-25 organização: migrada dos documentos de modelo de dados do app original

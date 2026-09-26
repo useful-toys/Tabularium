@@ -14,4 +14,4 @@ carregar-quando: mudança em política de privacidade, termos de uso, aceite ou 
   - Aceita: classificar cada nova versão como material ou não é julgamento do mantenedor
 
 ## Histórico
-- 2026-07-20 #70: decisão criada
+- 2026-09-25 organização: migrada dos documentos de modelo de dados do app original

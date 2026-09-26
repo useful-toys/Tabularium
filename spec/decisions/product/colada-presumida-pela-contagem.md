@@ -13,4 +13,4 @@ carregar-quando: mudança em contagem, estados da figurinha, progresso ou listas
   - Aceita: quem guarda figurinhas sem colar vê a coleção como colada
 
 ## Histórico
-- 2026-05-20 TASK-030: decisão criada
+- 2026-05-20 #30: decisão criada

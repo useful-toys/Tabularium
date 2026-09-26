@@ -16,7 +16,7 @@ const locale = LOCALES['pt-BR'];
 const fixture = fileURLToPath(new URL('./spec-fixtures/basic', import.meta.url));
 const product = readFileSync(join(fixture, 'spec', 'product.md'), 'utf8');
 const decision = readFileSync(join(fixture, 'spec', 'decisions', 'product', 'desfazer.md'), 'utf8');
-const opts = { locale, taskPattern: 'TASK-\\d+' };
+const opts = { locale };
 
 // ---------- frontmatter e mapa ----------
 
@@ -47,16 +47,21 @@ test('decisão sem campo, sem seção e com histórico fora do padrão', () => {
   const bad = decision
     .replace('tema: Correção de contagens\n', '')
     .replace('- Contexto: contar é o fluxo mais frequente\n', '')
-    .replace('- 2026-01-02 TASK-1: decisão criada', '- ontem: criada');
+    .replace('- 2026-01-02 #1: decisão criada', '- ontem: criada');
   const errors = checkDecision('d.md', bad, opts);
   assert.ok(errors.includes('d.md: frontmatter sem `tema`'));
   assert.ok(errors.includes('d.md: falta `- Contexto:`'));
   assert.ok(errors.some((e) => e.includes('entrada de histórico fora do padrão')));
 });
 
-test('histórico aceita entrada de organização e #N do GitHub', () => {
-  const ok = decision.replace('## Histórico\n', '## Histórico\n- 2026-02-02 #42: limite ajustado\n- 2026-02-01 organização: fundida com outra\n');
+test('histórico aceita #N do GitHub, organização e plano inicial', () => {
+  const ok = decision.replace('## Histórico\n', '## Histórico\n- 2026-02-02 #42: limite ajustado\n- 2026-02-01 organização: fundida com outra\n- 2026-01-01 plano-inicial: decisão criada\n');
   assert.deepEqual(checkDecision('d.md', ok, opts), []);
+});
+
+test('histórico recusa ID de task de outro tracker', () => {
+  const bad = decision.replace('## Histórico\n', '## Histórico\n- 2026-02-02 PROJ-7: limite ajustado\n');
+  assert.ok(checkDecision('d.md', bad, opts).some((e) => e.includes('entrada de histórico fora do padrão')));
 });
 
 test('histórico precisa ser a última seção', () => {
@@ -186,7 +191,7 @@ const DELIVERED = '- ✓ Desfazer contagens: até as 5 últimas';
 
 function touchDecision(r) {
   const p = join(r.dir, 'spec', 'decisions', 'product', 'desfazer.md');
-  writeFileSync(p, readFileSync(p, 'utf8').replace('## Histórico\n', '## Histórico\n- 2026-01-03 TASK-2: limite de desfazer passa a 5\n'));
+  writeFileSync(p, readFileSync(p, 'utf8').replace('## Histórico\n', '## Histórico\n- 2026-01-03 #2: limite de desfazer passa a 5\n'));
 }
 
 test('check: ⇢ novo exige decisão alterada no mesmo PR', () => {

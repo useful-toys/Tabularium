@@ -1,9 +1,5 @@
 {
   "language": "pt-BR",
-  "tracker": {
-    "type": "github",
-    "taskPattern": "TASK-\\d+"
-  },
   "layers": [
     "product"
   ],

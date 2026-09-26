@@ -13,4 +13,4 @@ carregar-quando: mudança em apresentação visual das figurinhas ou conteúdo d
   - Aceita: identificação só pelo texto; o usuário confere no álbum físico
 
 ## Histórico
-- 2026-05-10 TASK-012: decisão criada
+- 2026-05-10 #12: decisão criada

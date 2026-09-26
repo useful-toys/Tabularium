@@ -1,6 +1,6 @@
 ---
 name: spec-init
-description: Cria a estrutura da spec viva e grava as preferências do projeto (tracker, padrão de task, camadas de decisão, idioma) em spec/config.json. Use para adotar a spec num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
+description: Cria a estrutura da spec viva e grava as preferências do projeto (camadas de decisão, idioma, caminhos que não são código) em spec/config.json. Use para adotar a spec num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
 ---
 
 # spec-init
@@ -14,8 +14,6 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR com a label
 
 ## 2. Preferências
 Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar. Senão, pergunte tudo:
-- **Tracker**: `github` (GitHub Issues) ou `jira`.
-- **Padrão de task**: regex do ID de task usado nos históricos das decisões; `#\d+` (issue ou PR do GitHub) é sempre aceito (ex.: `#\d+`, `PROJ-\d+`).
 - **Camadas de decisão** além de `product`: `interface`, `architecture`, `model`, `devops` ou outras.
 - **Idioma do conteúdo** (ex.: `pt-BR`). A estrutura fica sempre em inglês. O idioma precisa existir em `LOCALES` em `scripts/spec.mjs`; se não existir, avise e adicione a entrada, traduzindo os textos de `pt-BR`.
 - **Caminhos que não são código** (`nonCodePaths`): mantenha o padrão (`spec/`, `README.md`, `AGENTS.md`, `REVIEW.md`, `.github/`, `.claude/`, `scripts/spec`) e acrescente o que o usuário indicar.
@@ -33,7 +31,6 @@ Crie o que faltar, sem sobrescrever nada:
 - **Camada nova**: crie a pasta e regere os mapas.
 - **Camada removida com decisões**: pergunte se as decisões vão para outra camada (histórico: `AAAA-MM-DD organização: movida de <camada>`) ou se são apagadas.
 - **Idioma novo**: vale para conteúdo novo. Só traduza o existente se o usuário pedir.
-- **Padrão de task novo**: não reescreva históricos. Se as entradas antigas deixarem de validar, inclua os dois padrões no regex (`TASK-\d+|PROJ-\d+`).
 
 ## 5. Fechamento
 - Rode `node scripts/spec.mjs check` e corrija o que for estrutural.
@@ -45,7 +42,7 @@ Crie o que faltar, sem sobrescrever nada:
   - exigir PR;
   - exigir o check `spec-check`;
   - exigir branch atualizada com a `main` antes do merge;
-  - descartar aprovações quando houver commits novos.
+  - não é preciso exigir aprovação: a aceitação é o merge decidido por um humano. Se a equipe quiser exigir aprovação, oriente também descartar aprovações quando houver commits novos.
 - Revisão consultiva por agente (opcional). Pergunte qual usar; pode ser mais de um, ou nenhum:
   - **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md`. Usa a assinatura do Copilot, sem secret.
   - **Claude**: o job `spec-review` do workflow roda o `spec-impact` quando existe o secret `ANTHROPIC_API_KEY`; sem ele, o job é pulado.

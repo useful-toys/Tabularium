@@ -13,4 +13,4 @@ carregar-quando: mudança em progresso, listas de repetidas ou texto de troca
   - Aceita: a mesma palavra tem duas leituras, e é o glossário que as distingue
 
 ## Histórico
-- 2026-06-25 TASK-058: decisão criada
+- 2026-06-25 #58: decisão criada

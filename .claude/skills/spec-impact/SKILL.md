@@ -5,7 +5,7 @@ description: Analisa o impacto de uma ideia ou mudança sobre a spec viva. Dois 
 
 # spec-impact
 
-Regras de formato: `spec/AGENTS.md`. Esta skill só analisa: não edita arquivos, e o veredito é sempre do revisor humano.
+Regras de formato: `spec/AGENTS.md`. Esta skill só analisa: não edita arquivos, e o veredito é sempre da pessoa que integra.
 
 ## Contexto comum
 - Leia `spec/product.md` inteiro e o mapa de decisões de cada camada. Abra só as decisões cujo `carregar-quando` corresponda ao tema.
@@ -38,6 +38,6 @@ Classificação: <resumo>
 |---|---|---|---|---|
 
 <Sem achados: "Nenhum achado.">
-_Consultivo: quem aprova é o revisor._
+_Consultivo: quem decide é a pessoa que integra._
 ```
-Para editar, encontre o comentário com a marca (`gh api repos/{owner}/{repo}/issues/<N>/comments`) e use `gh api -X PATCH .../issues/comments/<id> -f body=...`. Se não existir, use `gh pr comment <N> --body-file`.
+Para editar, encontre o comentário com a marca (`gh api repos/{owner}/{repo}/issues/<N>/comments`) e use `gh api repos/{owner}/{repo}/issues/comments/<id> -X PATCH -F body=@<arquivo>` (caminho logo após `gh api`: o CI só libera `gh api repos/<repo>/issues/`). Se não existir, use `gh pr comment <N> --body-file`.

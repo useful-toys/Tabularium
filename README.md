@@ -13,7 +13,7 @@ Template de repositório que mantém, junto do código, uma **especificação vi
 
 ## O que vem no repositório
 
-- `spec/`: exemplo incluído, o Iconula (app de figurinhas da Copa 2026). Passa pelas mesmas verificações de um produto e serve para experimentar o ciclo de proposta. Substitua-o ao adotar (o `/spec-init` oferece um esqueleto vazio).
+- `spec/`: exemplo incluído, o Iconula (app de figurinhas da Copa 2026). Passa pelas mesmas verificações de um produto e serve para experimentar o ciclo de proposta. Não tem código: a lista de caminhos de código dele é vazia, e a entrega não pode ser experimentada com ele. Substitua-o ao adotar (o `/spec-init` oferece um esqueleto vazio).
 - `tabularium-spec/`: a spec do próprio template (requisitos e decisões que o moldaram), no mesmo formato. Junto com tudo o que o template entrega, forma a definição do tabularium, que muda por um fluxo próprio: PR único com a label `tabularium`, sem issue, sem label de tipo e sem entrega separada (ver `tabularium-spec/AGENTS.md`).
 - `tabularium-docs/`: documentos derivados da definição, regerados a cada PR `tabularium`. O fluxo completo, com o porquê de cada etapa, está em `tabularium-docs/spec-flow.md`.
 

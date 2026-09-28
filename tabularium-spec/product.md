@@ -47,11 +47,14 @@ Template de repositório que mantém, junto do código, uma especificação viva
 
 ### Adoção
 - ✓ Criar projeto a partir do template, com estrutura, regras, verificação e exemplo prontos
+  - ✓ O exemplo não tem código: sua lista de caminhos de código é vazia, e a entrega não pode ser experimentada com ele
 - ✓ Adotar a spec num repositório existente copiando um conjunto definido de arquivos
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Configuração pode ser refeita a qualquer momento; o existente é preservado e cada mudança é confirmada
   - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
   - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
+  - ✓ Só o que está nos caminhos de código conta como código nas regras de PR; cada caminho abrange tudo o que começa por ele
+  - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
 - ✓ Oferecer a troca do exemplo incluído por um esqueleto vazio
 - ✓ Criar o esqueleto do modelo conceitual a pedido
 - ✓ Avisar quando um arquivo de instruções específico de um agente anula as instruções comuns
@@ -171,6 +174,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 
 ### Verificação automática
 - ✓ Validar o formato do documento de produto e das decisões
+- ✓ Recusar configuração sem a lista de caminhos de código
 - ✓ Detectar mapa de decisões desatualizado
 - ✓ Listar os itens redefinidos em aberto
 - ✓ Deduzir do diff o tipo mínimo de cada PR e aplicar o rótulo de tipo

@@ -3,10 +3,14 @@
 ## Tipos
 - ✓ **Slug de decisão**: texto; minúsculas sem acento, dígitos e hífens; resume o tema
 - ✓ **Tipo de mudança**: enumeração; editorial | neutra | compatível | incompatível, em ordem crescente
+- ✓ **Versão do tabularium**: texto; maior.menor.correção, em números; a maior muda quando a spec dos projetos precisa ser adaptada ao formato
 
 ## Entidades
+- ✓ **Tabularium**
+  - ✓ versão: **Versão do tabularium**
 - ✓ **Spec**
   - ✓ preferências: camadas, idioma do conteúdo e caminhos de código
+  - ✓ segue 1 **Tabularium**, o instalado no projeto
 - ✓ **Documento de produto**
   - ✓ pertence a 1 **Spec**
 - ✓ **Modelo conceitual**

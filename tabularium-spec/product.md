@@ -1,7 +1,7 @@
 # tabularium3 — Template de spec viva
 
 ## O que é
-Template de repositório que mantém, junto do código, uma especificação viva do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga: cada ideia é esmiuçada e proposta até encaixar na spec vigente, e reencaixada se a spec mudar antes do aceite. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
+Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma especificação viva do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga: cada ideia é esmiuçada e proposta até encaixar na spec vigente, e reencaixada se a spec mudar antes do aceite. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
 
 ## Diferenciais
 - A spec cabe no contexto de um agente: arquivos densos, lidos de uma vez ou sob demanda
@@ -42,22 +42,38 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
 - **Documento exportado**: documento em formato convencional gerado a partir da spec, a pedido
 - **Tracker**: sistema externo de solicitações (GitHub Issues)
+- **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem exemplo nem spec própria
 
 ## Requisitos
 
 ### Adoção
-- ✓ Criar projeto a partir do template, com estrutura, regras, verificação e exemplo prontos
-  - ✓ O exemplo não tem código: sua lista de caminhos de código é vazia, e a entrega não pode ser experimentada com ele
-- ✓ Adotar a spec num repositório existente copiando um conjunto definido de arquivos
+- ✓ Instalar o tabularium num repositório, novo ou existente, com um comando que baixa uma versão e copia os arquivos dela
+  - ✓ Copia só os arquivos listados pelo tabularium; o exemplo, a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto
+  - ✓ Instala a última versão publicada, ou a versão informada
+  - ✓ Sem arquivo de instruções comuns, cria-o só com o processo; com ele, o processo fica num bloco delimitado, e o resto do arquivo não é tocado
+  - ✓ Registra no projeto a origem, a versão e os arquivos instalados
+  - ✓ Recusa instalar enquanto existir arquivo de instruções específico de um agente que anula as instruções comuns, e orienta migrá-lo à mão
+  - ✓ Nunca faz commit; o resultado entra por PR
+- ✓ Atualizar o tabularium de um projeto com o mesmo comando
+  - ✓ Sobrescreve os arquivos do tabularium e troca só o bloco do processo; a mesma versão dá o mesmo resultado em qualquer projeto
+  - ✓ Apaga os arquivos do tabularium que saíram da versão nova
+  - ✓ Recusa voltar para versão menor que a instalada, salvo pedido explícito
+  - ✓ Avisa quando a versão nova exige adaptar a spec ao formato
+- ✓ Publicar o tabularium em versões numeradas, quando uma pessoa decide
+- ✓ Adaptar a spec ao formato de uma versão nova do tabularium, no mesmo PR da atualização
+  - ✓ Nunca muda o sentido de item; o que exigir isso vira proposta
+  - ✓ Cada adaptação é confirmada, em lote ou item a item
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Configuração pode ser refeita a qualquer momento; o existente é preservado e cada mudança é confirmada
   - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
   - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
+  - ✓ Idioma sem textos embutidos na verificação recebe os textos num arquivo da própria spec
   - ✓ Só o que está nos caminhos de código conta como código nas regras de PR; cada caminho abrange tudo o que começa por ele
   - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
-- ✓ Oferecer a troca do exemplo incluído por um esqueleto vazio
+  - ✓ Nunca altera os arquivos do tabularium
 - ✓ Criar o esqueleto do modelo conceitual a pedido
-- ✓ Avisar quando um arquivo de instruções específico de um agente anula as instruções comuns
+- ✓ Oferecer, no repositório do tabularium, um exemplo preenchido para experimentar o ciclo de proposta num clone
+  - ✓ O exemplo não tem código: sua lista de caminhos de código é vazia, e a entrega não pode ser experimentada com ele
 
 ### Extração da spec de código existente
 - ✓ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
@@ -210,7 +226,7 @@ Template de repositório que mantém, junto do código, uma especificação viva
 
 ## Não funcionais
 - ✓ Economia de contexto: documentos densos; decisões carregadas sob demanda pelo mapa
-- ✓ Portabilidade: verificação roda em Windows e Linux só com Node, sem dependências
+- ✓ Portabilidade: verificação roda em Windows e Linux só com Node, sem dependências; instalação e atualização rodam em Windows e Linux só com git e o shell nativo
 - ✓ Compatibilidade: instruções lidas por qualquer agente que siga a convenção de `AGENTS.md`
 - ✓ Determinismo: mapas e verificações gerados por script, sem gastar tokens do agente; só a classificação do caso ambíguo usa IA
 - ✓ Plataforma: GitHub — issues, PRs, proteção de branch e Actions
@@ -221,8 +237,8 @@ Template de repositório que mantém, junto do código, uma especificação viva
 - **IDs ou âncoras nos itens do documento de produto** — permanente: cada referência vira manutenção
 - **Solicitações, backlog e ideias adiadas na spec** — permanente: pertencem ao tracker; ocupariam o contexto do agente sem informar suas decisões
 - **Documentação em formatos convencionais mantida na spec** — permanente: visão, casos de uso, diagramas, histórias e BDD consomem muitos tokens e divergem; são exportados a pedido
-- **Script de instalação** — nesta versão: adoção por template do GitHub ou cópia de arquivos
 - **Confirmação do tipo restrita a quem tem permissão de escrita** — permanente: o merge já é o portão
 - **Reconhecimento dos rótulos de PR anteriores aos tipos de mudança** — nesta versão: ainda não há adotantes
 - **Julgar se PR só de código muda comportamento** — nesta versão: a classificação cobre só o que o PR faz com a spec
+- **Mesclar customizações do projeto nos arquivos do tabularium ao atualizar** — nesta versão: a atualização é determinística; o que é do projeto fica fora dos arquivos do tabularium
 - **Outros hubs git, trackers, plataformas de CI e provedores de modelo além do Copilot e do Claude** — nesta versão: complexidade que não queremos agora

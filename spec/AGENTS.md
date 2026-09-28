@@ -9,6 +9,7 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - `decisions/<camada>/*.md`: uma decisão vigente por arquivo. Camadas em `config.json`. Nenhuma camada se chama `model`, nome reservado ao modelo conceitual; o modelo de dados usa a camada `data`.
 - `decisions/<camada>/README.md`: mapa gerado por `node scripts/spec.mjs build-map`. Nunca editar à mão.
 - `config.json`: preferências do projeto (camadas, idioma, caminhos de código). Só o que está nos caminhos de código conta como código nas regras de PR. Alterado só pela skill `spec-init`.
+- `locales/<idioma>.json` (opcional): textos da verificação para um idioma fora dos embutidos em `scripts/spec.mjs`. Criado pela skill `spec-init`.
 
 `product.md`, `model.md` e os documentos técnicos são os **documentos com itens**. As regras de Status e de Mudanças valem para os três.
 

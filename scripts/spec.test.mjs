@@ -2,14 +2,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
   LOCALES, buildMaps, changeType, check, checkDecision, checkItems, checkModel, checkProduct, classifyDocDiff,
-  classifyPR, classifyProductDiff, definedTerms, isCode, maxType, openChanges, parseFrontmatter, renderMap,
+  classifyPR, classifyProductDiff, definedTerms, isCode, loadLocale, maxType, openChanges, parseFrontmatter, parseLocale,
+  renderMap,
 } from './spec.mjs';
 
 const locale = LOCALES['pt-BR'];
@@ -19,6 +20,31 @@ const model = readFileSync(join(fixture, 'spec', 'model.md'), 'utf8');
 const glossary = definedTerms(product, locale.glossarySection);
 const decision = readFileSync(join(fixture, 'spec', 'decisions', 'product', 'desfazer.md'), 'utf8');
 const opts = { locale };
+
+// ---------- idioma ----------
+
+test('idioma embutido vem de LOCALES', () => {
+  assert.equal(loadLocale(fixture, 'spec', 'pt-BR'), locale);
+});
+
+test('outro idioma vem de spec/locales/<idioma>.json', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'spec-locale-'));
+  try {
+    mkdirSync(join(dir, 'spec', 'locales'), { recursive: true });
+    const en = { ...locale, historyHeading: '## History', mapTitle: '# Decisions: {layer}' };
+    writeFileSync(join(dir, 'spec', 'locales', 'en.json'), JSON.stringify(en));
+    const loaded = loadLocale(dir, 'spec', 'en');
+    assert.equal(loaded.historyHeading, '## History');
+    assert.equal(loaded.mapTitle('product'), '# Decisions: product');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('idioma sem arquivo ou com chave faltando é recusado', () => {
+  assert.throws(() => loadLocale(fixture, 'spec', 'xx'), /spec\/locales\/xx\.json/);
+  assert.throws(() => parseLocale(JSON.stringify({ historyHeading: '## H' }), 'en.json'), /faltam as chaves/);
+});
 
 // ---------- frontmatter e mapa ----------
 
@@ -515,4 +541,24 @@ test('trechos em código não contam como marcador, link ou ⇢', () => {
   assert.deepEqual(checkProduct(ok, locale).errors, []);
   assert.deepEqual(openChanges(ok), []);
   assert.deepEqual(classifyProductDiff('- ✓ A `⇢` B\n', '- ✓ A `⇢` B\n  - novo\n'), { ...none, changeEdits: [] });
+});
+
+// ---------- tabularium.manifest ----------
+
+test('tabularium.manifest lista arquivos existentes, sem exemplo nem arquivos do próprio tabularium', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  const files = readFileSync(join(root, 'tabularium.manifest'), 'utf8').replace(/\r/g, '').split('\n')
+    .filter((l) => l.trim() && !l.startsWith('#'));
+  assert.equal(new Set(files).size, files.length, 'caminho repetido');
+  for (const f of files) assert.ok(existsSync(join(root, f)), `ausente: ${f}`);
+  const excluded = /^(tabularium-(spec|docs)\/|README\.md$|AGENTS\.md$|INSTALL\.|tabularium\.manifest$|\.github\/workflows\/tabularium\.yml$|scripts\/spec(\.test\.mjs|-fixtures\/))/;
+  for (const f of files) {
+    assert.ok(!excluded.test(f), `não distribuível: ${f}`);
+    assert.ok(!f.startsWith('spec/') || f === 'spec/AGENTS.md', `exemplo no manifesto: ${f}`);
+  }
+  const skills = execFileSync('git', ['ls-files', '.claude/skills'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
+  for (const s of skills) assert.ok(files.includes(s), `skill fora do manifesto: ${s}`);
+  const agents = readFileSync(join(root, 'AGENTS.md'), 'utf8').replace(/\r/g, '').split('\n');
+  assert.ok(agents.indexOf('<!-- tabularium:begin -->') >= 0 && agents.indexOf('<!-- tabularium:end -->') > agents.indexOf('<!-- tabularium:begin -->'),
+    'AGENTS.md sem o bloco do tabularium');
 });

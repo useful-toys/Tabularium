@@ -1,12 +1,13 @@
 ---
 tema: Adoção da spec num repositório
-decisao: Duas etapas - estrutura e preferências reexecutável; extração a partir de código com perguntas durante
+decisao: Depois da instalação, duas etapas - preparação reexecutável, com estrutura, preferências e adaptação ao formato; extração a partir de código com perguntas durante
 carregar-quando: mudança em adoção, configuração do projeto ou extração da spec de código existente
 ---
-- Decisão: uma etapa cria só a estrutura e grava as preferências numa configuração lida por scripts e skills, podendo ser refeita para mudar a configuração; outra etapa extrai a spec de código existente, marcando implementado só com evidência no código, perguntando a cada dúvida e deixando a documentação antiga intocada
+- Decisão: depois que o comando de instalação copia o tabularium, uma etapa de preparação cria só a estrutura e grava as preferências numa configuração lida por scripts e skills, podendo ser refeita para mudar a configuração, e, depois de uma atualização, adapta a spec ao formato novo sem mudar sentido; outra etapa extrai a spec de código existente, marcando implementado só com evidência no código, perguntando a cada dúvida e deixando a documentação antiga intocada
 - Contexto: repositório novo não tem o que extrair; repositório com código ou documentação antiga precisa de engenharia reversa assistida
 - Alternativas descartadas
   - Uma etapa única com modos: mistura configuração com extração
+  - Preparação que também instala e atualiza os arquivos: a skill não existe no projeto antes da instalação, e a cópia deixa de ser determinística
   - Uma etapa por cenário (novo, código sem spec, código com documentação): código com e sem documentação só diferem nas fontes
   - Preferências registradas em texto nas regras: o script teria de ler Markdown
   - Perguntas acumuladas no fim da extração: retrabalho quando uma resposta muda o resto
@@ -16,4 +17,5 @@ carregar-quando: mudança em adoção, configuração do projeto ou extração d
   - Aceita: extração lenta e interativa
 
 ## Histórico
+- 2026-09-28 #19: preparação depois da instalação, com adaptação da spec ao formato de uma versão nova
 - 2026-09-24 plano-inicial: decisão criada

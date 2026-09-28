@@ -151,7 +151,7 @@ carregar-quando: <situações em que vale abrir este arquivo>
 ```
 - O histórico é a última seção, com a entrada mais recente no topo.
 - Quando a decisão muda, a escolha anterior entra em "Alternativas descartadas" com o motivo do abandono, e o histórico ganha uma entrada.
-- Reorganizações usam `AAAA-MM-DD organização: <fundida com X | dividida de X | movida de <camada> | migrada de <documento de origem>>`.
+- Reorganizações usam `AAAA-MM-DD organização: <fundida com X | dividida de X | movida de <camada> | renomeada de X | migrada de <documento de origem>>`.
 - Depois de criar, editar, mover ou apagar decisões, rode `node scripts/spec.mjs build-map`.
 
 ### Leitura

@@ -12,7 +12,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, rótulo e merge
 
 ## Glossário
-- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração; a camada de produto sempre existe; as técnicas, como interface ou arquitetura, dependem da aplicação
+- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas, como interface ou arquitetura, dependem da aplicação
 - **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
 - **Documento técnico**: arquivo opcional que descreve o estado atual de uma camada técnica, como interface ou arquitetura
@@ -207,6 +207,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Validar o modelo conceitual e os documentos técnicos, quando existirem, com as mesmas regras do documento de produto
 - ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - ✓ Avisar sobre termos de implementação no modelo conceitual
+- ✓ Avisar quando existe arquivo de instruções específico de um agente que anula as instruções comuns
 
 ### Exportação
 - ✓ Exportar a spec em formato convencional a pedido

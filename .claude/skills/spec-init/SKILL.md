@@ -45,7 +45,7 @@ Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o form
 - Crie as labels, se não existirem (`gh label create`):
   - `requirement`: issues de requisito;
   - `spec-editorial`: PR que muda só o texto da spec, sem mudar sentido;
-  - `spec-neutral`: PR que não altera o sentido de nenhum requisito (código sem spec, entrega de compromisso ou atualização do tabularium);
+  - `spec-neutral`: PR que não altera o sentido de nenhum requisito (código sem spec, ou entrega de compromisso);
   - `spec-compatible`: PR que cria requisito, altera item não implementado ou cria decisão, sem contradizer nada;
   - `spec-incompatible`: PR que altera o sentido de item implementado, contradiz item ou vai contra decisão.
   O CI aplica a label de tipo: o workflow declara permissão de escrita nos PRs só para isso.

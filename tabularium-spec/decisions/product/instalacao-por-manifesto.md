@@ -3,13 +3,7 @@ tema: Como o tabularium chega a um projeto e é atualizado
 decisao: Comando de instalação em sh e ps1 que copia, de uma versão publicada, só os arquivos de um manifesto, sobrescrevendo; o mesmo comando atualiza, sem mesclar
 carregar-quando: mudança na forma de adotar ou atualizar o tabularium, no manifesto, nas versões, na estrutura de pastas ou em instalação
 ---
-- Decisão: o tabularium chega ao projeto por um comando de instalação na raiz do repositório do tabularium, em sh e ps1, baixado e executado com o curl ou o `irm` apontando a URL
-  - O comando baixa a versão pedida, ou a última tag publicada, e copia só os arquivos listados num manifesto; o exemplo, a spec do próprio tabularium, os documentos derivados, o README, os testes e o fluxo de CI do próprio repositório ficam de fora
-  - Rodado de novo, o mesmo comando atualiza: sobrescreve os arquivos do manifesto, apaga os que saíram dele e troca só o bloco delimitado do processo no arquivo de instruções da raiz, que cria se não existir
-  - Registra num arquivo próprio do projeto a origem, a versão e os arquivos instalados; recusa voltar para versão menor, salvo pedido explícito; nunca faz commit
-  - O que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra num arquivo da spec, e passos de CI do repositório do tabularium num fluxo que não é distribuído; assim sobrescrever é seguro
-  - Versões com número semântico, publicadas em lote e à mão por uma pessoa; a maior muda quando a spec dos projetos precisa ser adaptada ao formato, e a adaptação é feita pela preparação, no mesmo PR da atualização
-  - O repositório do tabularium não é marcado como template do GitHub; mantém o layout de um projeto real, com o exemplo na própria spec, validado pela verificação
+- Decisão: o tabularium chega ao projeto por um comando de instalação na raiz do repositório do tabularium, em sh e ps1, baixado e executado com o curl ou o `irm` apontando a URL; o comando baixa a versão pedida, ou a última tag publicada, e copia só os arquivos listados num manifesto; o exemplo, a spec do próprio tabularium, os documentos derivados, o README, os testes e o fluxo de CI do próprio repositório ficam de fora; rodado de novo, o mesmo comando atualiza: sobrescreve os arquivos do manifesto, apaga os que saíram dele e troca só o bloco delimitado do processo no arquivo de instruções da raiz, que cria se não existir; registra num arquivo próprio do projeto a origem, a versão e os arquivos instalados; recusa voltar para versão menor, salvo pedido explícito; nunca faz commit; o que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra num arquivo da spec, e passos de CI do repositório do tabularium num fluxo que não é distribuído; assim sobrescrever é seguro; versões com número semântico, publicadas em lote e à mão por uma pessoa; a maior muda quando a spec dos projetos precisa ser adaptada ao formato, e a adaptação é feita pela preparação, no mesmo PR da atualização; o repositório do tabularium não é marcado como template do GitHub; mantém o layout de um projeto real, com o exemplo na própria spec, validado pela verificação
 - Contexto: "Use this template" copiava o exemplo e a spec do próprio tabularium, que quem adotava precisava apagar, e não havia como atualizar um projeto que já adotara; o desejo é uma instalação determinística e um mecanismo simples por ora
 - Alternativas descartadas
   - Repositório template do GitHub com o layout real e cópia manual de arquivos: copia o exemplo e a spec do tabularium, e não atualiza
@@ -28,6 +22,4 @@ carregar-quando: mudança na forma de adotar ou atualizar o tabularium, no manif
   - Aceita: customização nos arquivos do tabularium se perde a cada atualização; dois scripts com a mesma lógica; arquivo novo na definição exige entrada no manifesto; sem versão publicada, não há o que instalar; mudanças ficam sem versão até uma pessoa publicar
 
 ## Histórico
-- 2026-09-28 #19: instalação e atualização por comando e manifesto, versões publicadas à mão, sem template do GitHub
-- 2026-09-28 organização: renomeada de template-com-layout-real
-- 2026-09-24 plano-inicial: decisão criada
+- 2026-09-28 #19: decisão criada, substitui template-com-layout-real

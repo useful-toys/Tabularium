@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na versão `6a732e3` da `main`, com as mudanças do PR #17. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na branch `tabularium/instalacao-por-manifesto`, de onde foi gerado. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
 
 ## O problema e o contexto
 
@@ -9,7 +9,7 @@
 - **Documento desatualizado vira instrução errada.** O agente implementa o que o documento diz, mesmo quando isso não vale mais.
 - **As decisões se perdem nas conversas.** A razão de uma escolha fica num chat que ninguém relê. A mesma discussão volta meses depois, sem as alternativas já descartadas.
 
-**O que vimos na prática.** Este fluxo nasceu da documentação real de um app, o Iconula, que serve de exemplo em `spec/`. Escrita a partir de planos, ela acumulou quatro tipos de problema:
+**O que vimos na prática.** Este fluxo nasceu da documentação real de um app, o Iconula, que serve de exemplo em `spec/` no repositório do tabularium. Escrita a partir de planos, ela acumulou quatro tipos de problema:
 - **narrativa de mudanças**: "corrige o atual", "removido na migração";
 - **detalhes técnicos misturados ao comportamento**: caminhos de banco, tempos de debounce;
 - **dezenas de referências** a registros de decisão de cinco tipos diferentes;
@@ -37,6 +37,8 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 
 **A ideia central.** A especificação do produto é versionada no próprio repositório, junto com o código. Ela evolui pelo mesmo mecanismo: pull requests verificados pelo CI e integrados por uma pessoa. É escrita em listas curtas, para que um agente de IA consiga lê-la inteira antes de mexer em qualquer coisa. O processo usa só o que o GitHub já oferece: issue, PR, label, draft e merge.
 
+**Como o tabularium chega ao projeto.** Um comando de instalação (`INSTALL.sh` via `curl`, ou `INSTALL.ps1` via `irm`), rodado na raiz do repositório, baixa uma versão publicada do tabularium e copia só os arquivos listados no manifesto dela: regras, instruções, script, workflow, formulário de issue e skills. O exemplo, a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto. O mesmo comando atualiza. Ele nunca faz commit: o resultado entra por PR, depois do `/spec-init`, que configura o projeto e, numa atualização, adapta a spec ao formato novo.
+
 **O que fica versionado em `spec/`**
 - **Descrição do produto** (`product.md`): o que é, diferenciais, glossário, requisitos e regras, regras transversais, não funcionais e fora de escopo. Só comportamento observável, sem detalhes de implementação. Cada item carrega um estado:
   - `✓`: implementado;
@@ -45,7 +47,8 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 - **Modelo conceitual** (`model.md`, opcional): tipos e entidades do domínio, com relações, estados e invariantes. É um modelo de conceitos, não de banco de dados. Quando existe, é lido sempre junto com o `product.md`.
 - **Documentos técnicos** (`<camada>.md`, opcionais): estado atual de uma camada técnica, como interface ou arquitetura.
 - **Registros de decisão** (`decisions/<camada>/`): um arquivo curto por escolha não óbvia, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. Parecem ADRs, mas só as decisões em vigor ficam na pasta.
-- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto.
+- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, interface, arquitetura…) tem seu documento de referência e suas decisões; a de produto sempre existe.
+- **Textos de idioma** (`locales/<idioma>.json`, opcional): textos da verificação para um idioma que o script não traz embutido.
 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa issue.
 
@@ -87,13 +90,54 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 | `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo, nomeado pelo slug: frontmatter `tema`, `decisao`, `carregar-quando`; depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas"; o porquê vem do humano |
 | `spec/decisions/<camada>/README.md` | Mapa de decisões, gerado por `node scripts/spec.mjs build-map` | Nunca editado à mão; o agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
 | `spec/config.json` | Camadas, idioma, caminhos de código (`codePaths`) | Alterado só pelo `/spec-init`; nenhuma camada se chama `model`; caminhos casados por prefixo; lista vazia é projeto sem código; config sem a lista é recusada pelo script |
-| `AGENTS.md` | Processo | Sem `CLAUDE.md`: a presença dele faz o Claude Code ignorar os `AGENTS.md` |
+| `spec/locales/<idioma>.json` | Textos da verificação para um idioma fora dos embutidos no script, opcional | Criado pelo `/spec-init`; mesmas chaves dos textos embutidos; fica na spec, e não no script, para sobreviver às atualizações |
+| `AGENTS.md` | Processo, num bloco entre `<!-- tabularium:begin -->` e `<!-- tabularium:end -->` | O INSTALL troca só o bloco; o resto do arquivo é do projeto. Sem `CLAUDE.md`: a presença dele faz o Claude Code ignorar os `AGENTS.md` |
 | `spec/AGENTS.md` | Regras de formato e de mudança | Fonte única; carregado quando o agente trabalha na spec |
 | `REVIEW.md` | Checklist para agentes de revisão, como o Copilot code review | Revisão consultiva; não se aplica a PR `tabularium` |
 | `.claude/skills/spec-*` | Dez skills, uma por etapa do ciclo | O processo também está descrito nos `AGENTS.md`, para qualquer agente |
 | `scripts/spec.mjs` | Gera mapas, deduz o tipo mínimo (`classify`) e verifica a spec (`check`) | Só Node, sem dependências; roda em Windows e Linux |
-| `.github/workflows/spec-check.yml` | Job `spec-check` (tipo, label e check, bloqueante) e job `spec-review` (revisão consultiva pelo Claude) | O `spec-review` nunca bloqueia |
+| `.github/workflows/spec-check.yml` | Job `spec-check` (tipo, label e check, bloqueante) e job `spec-review` (revisão consultiva pelo Claude) | O `spec-review` nunca bloqueia; os dois se abstêm em PR com a label `tabularium` no repositório do tabularium |
 | `.github/ISSUE_TEMPLATE/requirement.yml` | Formulário de issue de requisito: problema, proposta, alternativas, dúvidas | Aplica a label `requirement` |
+| `.tabularium` | Registro da instalação: origem, versão e arquivos instalados | Gerado pelo INSTALL, nunca editado à mão; os arquivos listados são sobrescritos a cada atualização e não se editam no projeto |
+
+Só no repositório do tabularium, fora do que o INSTALL copia:
+
+| Artefato | Conteúdo | Regras-chave |
+|---|---|---|
+| `INSTALL.sh`, `INSTALL.ps1` | Comando de instalação e atualização, em sh e em PowerShell | Mesma lógica nos dois; rodam só com git e o shell nativo |
+| `tabularium.manifest` | Lista, um caminho por linha, do que o INSTALL copia | Arquivo novo da definição que os projetos precisam entra nele; os testes do script falham se faltar uma skill, se um caminho não existir ou se entrar algo não distribuível |
+| `.github/workflows/tabularium.yml` | CI da definição do tabularium: testes do script, check de `tabularium-spec/` e do exemplo, exigência da label `tabularium` | Fora do manifesto: nunca chega aos projetos |
+| `tabularium-spec/`, `tabularium-docs/`, `spec/` (menos `spec/AGENTS.md`), `README.md` | Spec do tabularium, documentos derivados, exemplo Iconula e README | Fora do manifesto: nunca chegam aos projetos |
+
+### Adoção e atualização
+
+O tabularium se instala por um comando. O repositório do tabularium não é um template do GitHub: ele mantém o layout de um projeto real, com o exemplo na própria spec, e só o que está no manifesto sai dele.
+
+```mermaid
+flowchart LR
+  I["INSTALL (curl | sh ou irm | iex)<br/>na raiz do repositório"] --> C["copia os arquivos do manifesto da tag<br/>troca o bloco do AGENTS.md<br/>grava .tabularium"]
+  C --> S["/spec-init<br/>preferências, estrutura<br/>e, numa atualização, adaptação ao formato"]
+  S --> P["PR com o diff da instalação<br/>e da adaptação"]
+  P --> E["/spec-extract, se já há código"]
+```
+
+1. **Instalar ou atualizar**: `curl -fsSL <url>/INSTALL.sh | sh` ou `irm <url>/INSTALL.ps1 | iex`, na raiz do repositório. Precisa só de git e do shell nativo.
+   - Instala a última tag `vX.Y.Z` publicada, ou a pedida em `TABULARIUM_VERSION`. A origem vem de `TABULARIUM_SOURCE`, do `.tabularium` ou do repositório oficial.
+   - Recusa rodar se existir `CLAUDE.md` na raiz ou em `spec/`, e orienta migrar o conteúdo para `AGENTS.md` à mão. Recusa também rodar no próprio repositório do tabularium.
+   - Recusa voltar para uma versão menor que a instalada, salvo com `TABULARIUM_ALLOW_DOWNGRADE=1`.
+   - Apaga os arquivos que saíram do manifesto (os listados no `.tabularium` anterior e ausentes do novo) e copia os do manifesto, sobrescrevendo.
+   - No `AGENTS.md`, troca só o bloco entre `<!-- tabularium:begin -->` e `<!-- tabularium:end -->`. Sem `AGENTS.md`, cria-o só com o bloco; sem os marcadores, põe o bloco no início. O resto do arquivo não é tocado.
+   - Grava em `.tabularium` a origem, a versão e os arquivos instalados.
+   - Avisa quando a versão maior mudou: o formato da spec pode ter mudado.
+   - Nunca faz commit. A mesma versão dá o mesmo resultado em qualquer projeto, e o diff mostra tudo o que mudou.
+2. **Preparar (`/spec-init`)**: grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo, no mesmo PR (ver Manutenção).
+3. **Abrir o PR**: o resultado entra por PR, como toda mudança.
+
+**Por que sobrescrever é seguro.** O que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra em `spec/locales/<idioma>.json`, e não no script; conteúdo próprio no `AGENTS.md` fora do bloco. Customização feita nos arquivos do tabularium se perde na atualização; não há mescla.
+
+**Versões.** Tags `vX.Y.Z`, criadas à mão por uma pessoa quando decide publicar um lote de mudanças. A maior muda quando a spec dos projetos precisa ser adaptada ao formato. Sem tag publicada, o INSTALL não tem o que instalar.
+
+**Exemplo.** O Iconula fica só no repositório do tabularium, em `spec/`, para experimentar o ciclo de proposta num clone. Nenhum projeto o recebe.
 
 ### Estados de um item
 
@@ -133,7 +177,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 - **Proposta** é o PR sem código com `spec-compatible` ou `spec-incompatible`.
 - Outras labels:
   - `requirement`: issue de requisito;
-  - `tabularium`: PR que muda a definição do próprio template, só no repositório do template.
+  - `tabularium`: PR que muda a definição do próprio tabularium, só no repositório do tabularium.
 - Todas as labels são em inglês. O `/spec-init` cria `requirement` e as labels de tipo.
 
 ### Classificação pelo CI
@@ -213,7 +257,7 @@ flowchart LR
 
 ### Regras verificadas pelo CI (`scripts/spec.mjs check --base`)
 
-Valem para o `product.md`, o `model.md` e os documentos técnicos. Antes do check, o CI roda os testes do script. "Código" é o que está nos caminhos de código da configuração.
+Valem para o `product.md`, o `model.md` e os documentos técnicos. Os testes do script rodam só no repositório do tabularium, em `tabularium.yml`. "Código" é o que está nos caminhos de código da configuração.
 
 | Situação | Resultado |
 |---|---|
@@ -230,8 +274,8 @@ Valem para o `product.md`, o `model.md` e os documentos técnicos. Antes do chec
 | Link ou referência a decisão nos documentos | erro |
 | `⇢` fora de item `✓`, mais de um `⇢` na linha, `✓` fora do lugar ou em seção sem estado | erro |
 | Nome em negrito no `model.md` que não é termo do glossário nem tipo declarado | erro |
-| PR que toca `tabularium-spec/` ou `tabularium-docs/` sem a label `tabularium` | erro (só no repositório do template) |
-| PR `tabularium` com label de tipo ou `requirement` | erro (só no repositório do template) |
+| PR que toca qualquer arquivo da definição sem a label `tabularium` | erro (só no repositório do tabularium, em `tabularium.yml`) |
+| PR `tabularium` com label de tipo ou `requirement` | erro (só no repositório do tabularium, em `tabularium.yml`) |
 | Referência temporal nos documentos, termo de implementação no `model.md`, `CLAUDE.md` presente | aviso |
 
 O check também lista os `⇢` e os compromissos em aberto.
@@ -258,33 +302,43 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Item `✓` vence o conflito; nos demais casos, pergunta. Lacunas ganham rascunho, sem inventar o porquê.
   - Nunca altera o sentido de item `✓`: isso vira proposta.
   - Nada muda sem aprovação, em lote ou item a item. Aplica numa branch própria e abre um PR.
-- **`/spec-init`**: cria a estrutura e grava as preferências. Pode ser refeito para mudar a configuração.
-  - Sugere os caminhos de código a partir das pastas do repositório e confirma. Pergunta sempre por eles quando a lista está vazia, como no exemplo do template.
-  - Quando o código muda de lugar, a lista é atualizada por ele.
-  - Oferece trocar o exemplo pelo esqueleto, cria as labels e orienta a proteção da `main` e a revisão consultiva.
+- **`/spec-init`**: roda depois do INSTALL. Cria a estrutura, grava as preferências e, depois de uma atualização, adapta a spec ao formato novo. Pode ser refeito para mudar a configuração; o existente é preservado e cada mudança é confirmada.
+  - Para se faltar `.tabularium`, `spec/AGENTS.md` ou `scripts/spec.mjs` (pede para rodar o INSTALL) ou se existir `CLAUDE.md`.
+  - Camadas: cada uma tem documento de referência e decisões. Camada nova ganha pasta de decisões e, se o usuário quiser, documento técnico; camada removida com decisões: o usuário escolhe mover ou apagar as decisões.
+  - Idioma: vale para conteúdo novo; o existente só é traduzido a pedido. Idioma sem textos embutidos no script recebe `spec/locales/<idioma>.json`, criado por ele.
+  - Sugere os caminhos de código a partir das pastas do repositório e confirma. Pergunta sempre por eles quando a lista está vazia. Quando o código muda de lugar, a lista é atualizada por ele.
+  - Cria `product.md` a partir do esqueleto e, só a pedido, o `model.md` e os documentos técnicos.
+  - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
+  - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
+  - Cria as labels e orienta a proteção da `main` e a revisão consultiva.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
-### Definição do próprio template
+### Definição do próprio tabularium
 
-A spec do tabularium3 fica em `tabularium-spec/`. A **definição do template** é essa spec junto com tudo o que o template entrega: `AGENTS.md`, `spec/AGENTS.md`, `REVIEW.md`, `README.md`, `tabularium-docs/`, `.gitattributes`, `scripts/`, `.claude/skills/` e `.github/`. Esses arquivos não implementam a spec do template: fazem parte da definição.
+A spec do tabularium3 fica em `tabularium-spec/`. A **definição do tabularium** é essa spec junto com tudo o que compõe o repositório do tabularium: `AGENTS.md`, `spec/AGENTS.md`, `REVIEW.md`, `README.md`, `tabularium-docs/`, `.gitattributes`, `scripts/`, `.claude/skills/`, `.github/`, `INSTALL.sh`, `INSTALL.ps1` e `tabularium.manifest`. Esses arquivos não implementam a spec do tabularium: fazem parte da definição. O que chega aos projetos é só o listado no manifesto, mais o bloco do `AGENTS.md`.
 
 - Toda mudança na definição entra num único **PR com a label `tabularium`**, sem label de tipo e sem issue. Não há entrega separada: todo item fica `✓`, sem compromisso nem `⇢`.
 - Se a mudança exigir adaptar o exemplo em `spec/`, a adaptação vem no mesmo PR.
 - `/spec-grill` e `/spec-ideas` amadurecem a mudança na conversa. Nenhum arquivo muda nessa fase.
 - O `/spec-propose` escreve tudo, nesta ordem:
-  1. **O agente da conversa**, que tem as decisões e os porquês, escreve `tabularium-spec/` e os arquivos da definição: instruções, skills, script e testes, workflow.
-  2. **Um subagente de contexto limpo revisa**: lê só `tabularium-spec/` e o diff da branch e aponta o que está desalinhado com a spec ou inválido. Os achados são corrigidos, ou levados ao usuário, antes de seguir.
+  1. **O agente da conversa**, que tem as decisões e os porquês, escreve `tabularium-spec/` e os arquivos da definição: instruções, skills, script e testes, workflows, `tabularium.manifest` e os dois INSTALL, com a mesma lógica.
+  2. **Um subagente de contexto limpo revisa**: lê só `tabularium-spec/` e o diff da branch e aponta instrução, skill, script, workflow, manifesto ou INSTALL desalinhado com a spec ou inválido. Os achados são corrigidos, ou levados ao usuário, antes de seguir.
   3. **Subagentes em paralelo regeram** o `README.md` e os documentos de `tabularium-docs/`, lendo só os arquivos finais, nunca a conversa.
   - Sem subagentes, os mesmos passos rodam em sequência.
 - Depois, valida a consistência de `tabularium-spec/` e roda `build-map` e `check` nas duas specs.
 - O PR nasce pronto, não em draft. O merge, decidido por um humano, é aceite e entrega.
-- No CI, `tabularium-spec/` é verificada só na forma, sem as regras de PR. Por isso, a lista de caminhos de código dela fica vazia e não é lida.
-- Num PR `tabularium`, `spec/` também é verificada só na forma, o tipo não é classificado e a revisão consultiva não roda.
+- O CI da definição fica em `.github/workflows/tabularium.yml`, fora do manifesto:
+  - roda os testes do script, que também conferem o manifesto;
+  - verifica `tabularium-spec/` só na forma, sem as regras de PR; por isso, a lista de caminhos de código dela fica vazia e não é lida;
+  - num PR `tabularium`, verifica `spec/` também só na forma;
+  - exige a label `tabularium` no PR que toca qualquer arquivo da definição (`tabularium-spec/`, `tabularium-docs/`, o que está no manifesto, o próprio manifesto, os INSTALL, `AGENTS.md`, `README.md`, `.gitattributes`, os testes do script e `tabularium.yml`) e recusa label de tipo ou `requirement` num PR `tabularium`.
+- O `spec-check.yml` distribuído se abstém no PR `tabularium`: o tipo não é classificado e a revisão consultiva não roda. Assim, os passos próprios do repositório do tabularium não precisam ser removidos de um arquivo que os projetos recebem.
+- Publicar uma versão é separado do merge: uma pessoa cria a tag `vX.Y.Z` quando decide liberar um lote de mudanças para os projetos (ver Adoção e atualização).
 
-O exemplo Iconula, em `spec/`, serve para experimentar o ciclo de proposta. Ele não tem código: a lista de caminhos de código dele é vazia, e a entrega não pode ser experimentada com ele; as regras de entrega são exercitadas pelos testes do script. Quem adota o template apaga `tabularium-spec/` e `tabularium-docs/`.
+O exemplo Iconula, em `spec/`, existe só no repositório do tabularium e serve para experimentar o ciclo de proposta num clone. Ele não tem código: a lista de caminhos de código dele é vazia, e a entrega não pode ser experimentada com ele; as regras de entrega são exercitadas pelos testes do script. Fica fora do manifesto, junto com `tabularium-spec/`, `tabularium-docs/` e o `README.md`: nada disso chega aos projetos, e quem adota não tem o que apagar.
 
 ### Documentos derivados
 
 A spec não mantém documentos em formatos convencionais. Eles são exportados a pedido e ficam fora da spec. Abrem declarando que são derivados, de qual spec e de qual versão. Nunca servem de fonte para agentes: em conflito, vale a spec.
 
-No repositório do template há uma exceção. O `README.md` e os documentos de `tabularium-docs/`, como este, são regerados a cada PR `tabularium`, por subagentes que leem só os arquivos finais.
+No repositório do tabularium há uma exceção. O `README.md` e os documentos de `tabularium-docs/`, como este, são regerados a cada PR `tabularium`, por subagentes que leem só os arquivos finais.

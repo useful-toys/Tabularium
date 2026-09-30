@@ -17,10 +17,12 @@
   - ✓ pertence a 1 **Spec**; a Spec pode não ter modelo
   - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Documento técnico**
-  - ✓ pertence a 1 **Camada**; a Camada pode não ter documento técnico
+  - ✓ tipos: fundamental | auxiliar
+  - ✓ fundamental: pertence a 1 **Camada**, e toda Camada declarada além de produto tem um
+  - ✓ auxiliar: pertence a 1 **Spec**, opcional, e não é uma Camada
   - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Item**
-  - ✓ pertence a 1 **Documento de produto**
+  - ✓ pertence a 1 **Documento de produto** ou a 1 **Documento técnico**
   - ✓ tipos: **Requisito** | **Regra** | regra transversal | não funcional
   - ✓ **Regra** pertence a 1 **Requisito**
   - ✓ estados: comprometido | implementado | redefinido
@@ -37,24 +39,29 @@
 - ✓ **Mapa de decisões**
   - ✓ pertence a 1 **Camada**
   - ✓ derivado das decisões da camada; nunca escrito à mão
-- ✓ **Requirement issue**
+- ✓ **Issue**
   - ✓ vive em 1 **Tracker**
-  - ✓ nasce da descrição de uma pessoa ou de uma conversa e só existe depois da triagem; a issue sem triagem pode virar requirement issue, bug issue ou ser descartada
-  - ✓ corpo: o entendimento mais recente, escrito pela IA; comentários: o histórico resumido, com a solicitação original no primeiro comentário da IA
-  - ✓ estados: aberta | fechada
-  - ✓ aberta → fechada: a entrega que a implementa é aceita
+  - ✓ nasce da descrição de uma pessoa ou de uma conversa
+  - ✓ estados: sem triagem | requirement | bug | plan | descartada
+  - ✓ sem triagem → requirement: a triagem a resolve como pedido de spec nova, diferente ou sem um item, ou omissa
+  - ✓ sem triagem → bug: a triagem a resolve como contradição de item implementado
+  - ✓ sem triagem → plan: a triagem a reconhece só para ser recusada
+  - ✓ sem triagem → descartada: a spec já a cobre; ela é fechada
+  - ✓ requirement | bug | plan → outro estado: a triagem é alterada com evidência e confirmação de uma pessoa
+  - ✓ requirement: corpo é o entendimento mais recente, escrito pela IA; comentários são o histórico resumido, com a solicitação original no primeiro comentário da IA
+  - ✓ requirement fecha quando a entrega que a implementa é aceita
 - ✓ **Proposta**
   - ✓ altera 1 **Spec**
-  - ✓ refere 0..1 **Requirement issue**
+  - ✓ refere 0..1 **Issue** em estado requirement
   - ✓ nunca contém código
-  - ✓ tipo: **Tipo de mudança**; compatível ou incompatível
+  - ✓ tipo: **Tipo de mudança**; editorial, compatível ou incompatível
   - ✓ estados: rascunho | pronta | aceita | recusada
   - ✓ rascunho → pronta: o autor trata a revisão consultiva
   - ✓ pronta → rascunho: a proposta volta a ser discutida
   - ✓ pronta → aceita: um humano integra, ou o agente a pedido dele
   - ✓ pronta → recusada: fechada sem integrar
 - ✓ **Entrega**
-  - ✓ fecha 0..1 **Requirement issue**
+  - ✓ fecha 0..1 **Issue** em estado requirement
   - ✓ implementa N **Item**
   - ✓ sempre contém código
   - ✓ tipo: **Tipo de mudança**; neutra, ou compatível ou incompatível quando traz mudança junto com o código

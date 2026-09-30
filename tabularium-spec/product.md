@@ -12,15 +12,15 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, rótulo e merge
 
 ## Glossário
-- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas, como interface ou arquitetura, dependem da aplicação
+- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas fundamentais, como arquitetura ou integração, dependem da aplicação
 - **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
-- **Documento técnico**: arquivo que descreve o estado atual de uma camada técnica, como interface ou arquitetura; o fundamental, de uma camada declarada, é obrigatório, e o auxiliar, complementar e de menor impacto, é opcional
+- **Documento técnico**: arquivo que descreve o estado atual de uma camada técnica, como arquitetura ou integração; o fundamental, de uma camada declarada, é obrigatório, e o auxiliar, sobre questões complementares como telas, fluxos ou guia de estilo, é opcional e não é camada
 - **Documento de referência**: documento com itens de uma camada: na de produto, o documento de produto e o modelo conceitual; numa técnica, o documento técnico fundamental
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
 - **Tipo de domínio**: conjunto de valores válidos de um atributo, com natureza, restrições de negócio e unidade
-- **Item**: linha do documento de produto: requisito, regra, regra transversal ou não funcional
+- **Item**: linha de um documento com itens, isto é, do documento de produto (requisito, regra, regra transversal ou não funcional), do modelo conceitual ou de um documento técnico
   - **Requisito**: capacidade do produto, na forma verbo + objeto
   - **Regra**: fato testável que restringe um requisito
 - **Item implementado**: item com a marca de visto; o código faz o que ele diz
@@ -34,17 +34,24 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Rótulo de tipo**: rótulo do PR com o seu tipo de mudança
 - **Consistência**: estado da spec sem contradição entre itens, entre documentos ou com decisões, sem conceito repetido, termo fora do sentido do glossário ou lacuna de cascata
 - **Decisão**: registro de uma escolha não óbvia vigente, com contexto, alternativas descartadas, consequências e histórico
-- **Camada**: parte da spec de mesma natureza (produto, interface, arquitetura…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
+- **Camada**: parte da spec de mesma natureza (produto, arquitetura, integração…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
-- **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
-- **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue sem essa resolução está sem triagem
+- **Issue**: solicitação registrada no tracker; nasce sem triagem e, depois dela, é requirement, bug, plan ou descartada
+- **Ideia**: intenção de mudar o produto ou a spec, ainda em amadurecimento, que nasce numa pessoa, numa issue ou na conversa
+- **Conversa**: diálogo entre a pessoa e o agente de IA, centro do ciclo, onde uma ideia ou issue é triada, entendida e ampliada, sem publicar nada no tracker
+- **Requirement issue**: issue do tracker triada como requirement, que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta
+- **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue de plano é reconhecida só para ser recusada; a issue sem essa resolução está sem triagem
 - **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; seu tratamento será definido em processo dedicado
-- **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
+- **Portão da proposta**: condição para uma conversa virar proposta: ideia triada como requirement issue, nada necessário em aberto e spec resultante consistente
+- **Proposta**: PR sem código com o texto final dos documentos com itens e das decisões, de qualquer tipo de mudança; aberto é proposta, aceito no merge, recusado se fechado sem merge
+- **Revisão consultiva**: comentário de agente sobre uma proposta, que nunca aprova nem bloqueia
+- **Fila de aceite**: conjunto das propostas abertas, cada uma à espera de ser aceita ou recusada
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
 - **Documento exportado**: documento em formato convencional gerado a partir da spec, a pedido
+- **Documento derivado**: documento gerado a partir da definição do tabularium, como o README e os guias de instalação, configuração e manutenção; nunca é fonte, e em conflito vale a spec
 - **Tracker**: sistema externo de solicitações (GitHub Issues)
-- **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem produto de exemplo nem spec própria
+- **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem produto de exemplo; a spec dele descreve o template e nunca chega aos projetos
 
 ## Requisitos
 
@@ -125,7 +132,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Seções livres; autocontido e atemporal, como o documento de produto
   - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
   - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
-- ✓ Criar o esqueleto do documento técnico de uma camada a pedido
+- ✓ Criar o esqueleto do documento técnico fundamental de cada camada declarada e, a pedido, o de um documento técnico auxiliar
 
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
@@ -187,12 +194,24 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Antes de criar ou atualizar a proposta, valida a consistência da spec resultante sobre a branch principal atual, nos itens tocados e na cascata
   - ✓ Com qualquer inconsistência, inclusive preexistente, não publica e aponta o que corrigir antes
   - ✓ Aplica o portão da proposta: só abre a proposta se a ideia estiver madura o bastante para casar com a spec vigente; senão devolve à conversa com o que falta
+    - ✓ Triagem: a ideia foi triada como requirement issue; bug e descarte não viram proposta
+    - ✓ Nada em aberto: nenhuma pergunta necessária fica sem resposta
+    - ✓ Porquê registrado: cada decisão tem o seu porquê e as alternativas descartadas
+    - ✓ Sem contradição: a spec resultante, com os documentos técnicos fundamentais e as decisões, não se contradiz, inclusive entre itens, entre documentos, com decisões e entre requisito e fora de escopo
+    - ✓ Uma casa por conceito: nenhum conceito aparece repetido em dois lugares
+    - ✓ Vocabulário do glossário: nenhum termo é usado fora do sentido do glossário, e todo termo do domínio está definido
+    - ✓ Cascata completa: nenhum item depende de outro que não existe mais
+    - ✓ Mudança declarada: só contraria item ou decisão vigente quem declara isso, com a seta e uma decisão criada ou alterada
+    - ✓ Inconsistência preexistente na spec vigente também impede a proposta, e é corrigida antes, num PR próprio
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - ✓ Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
   - ✓ No rebase sobre a branch principal, a descrição guia o novo casamento do diff com a nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e requirement issue mencionam uma à outra; a issue recebe o link da proposta e as decisões adicionais
+  - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e revisão consultiva
+  - ✓ As propostas abertas formam a fila de aceite: cada uma espera ser aceita (merge) ou recusada (fechada sem merge)
+  - ✓ A cada aceite a spec vigente muda e as outras propostas ficam defasadas; a proposta que deixa de passar nas regras da verificação é rediscutida no esmiuçar, e se a ideia ainda vale a proposta é atualizada sobre a spec vigente e o portão é aplicado de novo, senão é fechada
 - ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
@@ -226,7 +245,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Barrar mudança incompatível sem decisão criada ou alterada no mesmo PR
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
-- ✓ Validar o modelo conceitual e os documentos técnicos, quando existirem, com as mesmas regras do documento de produto
+- ✓ Validar o modelo conceitual, quando existe, e o documento técnico de cada camada declarada, com as mesmas regras do documento de produto
+- ✓ Barrar camada declarada sem documento técnico fundamental ou sem pasta de decisões
 - ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - ✓ Avisar sobre termos de implementação no modelo conceitual
 - ✓ Avisar quando existe arquivo de instruções específico de um agente que anula as instruções comuns

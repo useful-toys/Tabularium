@@ -12,7 +12,7 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 Mudança no próprio template (`tabularium-spec/`, só no repositório do template): siga a seção "Mudança no próprio template" no lugar dos passos 3 a 5.
 
 ## 1. Fontes
-- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com issue triada como requirement (label `requirement`): com `bug` ou `plan`, pare e explique; sem triagem, pare e sugira `/spec-grill #N`.
+- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com issue triada como requirement (label `requirement`): com `bug` ou `plan`, pare e explique que esse tratamento será definido em processo dedicado, ainda por especificar; sem triagem, pare e sugira `/spec-grill #N`.
 - Origem PR: `gh pr view <N> --comments` e `gh pr diff <N>`, com os mesmos resumos.
 - Origem texto livre: o que foi decidido nesta conversa, inclusive os resumos de spec-grill e spec-ideas apresentados nela.
 - Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.
@@ -23,7 +23,7 @@ Esta etapa aplica o portão da proposta. Só siga se a ideia estiver madura o ba
 - a triagem é requirement issue (label `requirement`, ou ideia da conversa triada como requirement);
 - nada necessário está em aberto: o `Em aberto` do corpo da issue não tem pendências e cada decisão tem o porquê;
 - o texto final se aplica à `main` atual e a spec resultante, com os documentos técnicos fundamentais e as decisões, não tem contradição (seção 3a); só pode contrariar item ou decisão vigente quem declara a mudança (`⇢` com decisão criada ou alterada).
-Se algo falhar, não abra nem atualize o PR: devolva à conversa com a lista do que falta e sugira `/spec-grill`.
+Se algo falhar, não abra nem atualize o PR: a proposta volta ao passo 1 do fluxo, isto é, à conversa. Devolva a lista do que o portão apontou como faltando e sugira continuar o `/spec-grill`, agora com essa lista.
 
 ## 2. Branch
 - **Origem PR**: use a branch do PR. Rebase na `main` atual (`git fetch`, `git rebase origin/main`) e publique com `git push --force-with-lease`.

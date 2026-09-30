@@ -80,6 +80,9 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Só o que está nos caminhos de código conta como código nas regras de PR; cada caminho abrange tudo o que começa por ele
   - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
   - ✓ Nunca altera os arquivos do tabularium
+- ✓ Preparar o repositório na configuração: criar os rótulos do fluxo no tracker e orientar a proteção da branch principal
+  - ✓ Cria os rótulos de issue (requirement, bug, plan) e de PR (os quatro tipos de mudança) que ainda não existem
+  - ✓ Orienta a proteção da branch principal e a revisão consultiva por agente; a pessoa as configura, e o agente nunca altera essas configurações
 - ✓ Criar o esqueleto do modelo conceitual a pedido
 
 ### Extração da spec de código existente

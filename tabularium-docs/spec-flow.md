@@ -339,7 +339,8 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Cria só o que falta, sem sobrescrever: `product.md` a partir do esqueleto, uma pasta de decisões e um documento técnico fundamental, só com o título, para cada camada; o `model.md` e os documentos técnicos auxiliares, só a pedido.
   - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
   - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
-  - Cria os rótulos que faltam. Sugere a proteção da `main` e a revisão consultiva por agente, opcional: pergunta se a pessoa aceita que a skill configure o repositório e, se não aceitar, mostra como fazê-lo à mão. A chave que a revisão por agente exige é criada pela pessoa; a skill só orienta e nunca a recebe.
+  - Cria os rótulos que faltam. Sugere a proteção da `main`: verifica a situação atual no repositório remoto; se estiver desabilitada, pergunta se a pessoa aceita que a skill a habilite e, se não aceitar, mostra como fazê-lo à mão; se já estiver habilitada, não faz nada.
+  - Sugere a revisão consultiva, opcional: um agente comenta cada proposta, sem aprovar nem bloquear. A configuração do repositório segue a mesma verificação, a mesma pergunta e a mesma alternativa manual da proteção. A chave que o agente exige é criada pela pessoa; a skill só orienta e nunca a recebe.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
 ### Definição do próprio tabularium

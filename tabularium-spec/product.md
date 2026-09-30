@@ -68,11 +68,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
   - ✓ Recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`, e orienta migrá-lo à mão
   - ✓ Nunca faz commit; o resultado entra por PR
-- ✓ Preparar o repositório remoto no github
+- ✓ Preparar o repositório remoto no GitHub
   - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
-  - ✓ Sugere a proteção da branch principal: pergunta se a pessoa aceita que a skill a configure e, se não aceitar, mostra como configurá-la à mão
-  - ✓ Sugere a revisão consultiva por agente, opcional: a pessoa escolhe qual usar, se algum, e a configuração do repositório segue a mesma pergunta da proteção
-  - ✓ A chave de acesso que a revisão por agente exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
+  - ✓ Sugere a proteção da branch principal: verifica a situação atual da proteção no repositório remoto; se estiver desabilitada, pergunta ao usuário se deseja habilitá-la automaticamente; se sim, configura o GitHub remoto; senão, apresenta como configurá-la manualmente; se estiver habilitada, não faz nada
+  - ✓ Sugere a revisão consultiva, em que um agente comenta cada proposta sem aprovar nem bloquear; é opcional, e a pessoa escolhe qual agente usar, se algum
+  - ✓ Configurar o repositório para a revisão consultiva segue a mesma verificação, a mesma pergunta e a mesma alternativa manual da proteção da branch principal
+  - ✓ A chave de acesso que o agente da revisão consultiva exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
   - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las

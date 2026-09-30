@@ -42,13 +42,13 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
 - **Documento exportado**: documento em formato convencional gerado a partir da spec, a pedido
 - **Tracker**: sistema externo de solicitações (GitHub Issues)
-- **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem exemplo nem spec própria
+- **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem produto de exemplo nem spec própria
 
 ## Requisitos
 
 ### Adoção
 - ✓ Instalar o tabularium num repositório, novo ou existente, com um comando que baixa uma versão e copia os arquivos dela
-  - ✓ Copia só os arquivos listados pelo tabularium; o exemplo, a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto
+  - ✓ Copia só os arquivos listados pelo tabularium; a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto
   - ✓ Instala a última versão publicada, ou a versão informada
   - ✓ Sem arquivo de instruções comuns, cria-o só com o processo; com ele, o processo fica num bloco delimitado, e o resto do arquivo não é tocado
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
@@ -72,8 +72,6 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
   - ✓ Nunca altera os arquivos do tabularium
 - ✓ Criar o esqueleto do modelo conceitual a pedido
-- ✓ Oferecer, no repositório do tabularium, um exemplo preenchido para experimentar o ciclo de proposta num clone
-  - ✓ O exemplo não tem código: sua lista de caminhos de código é vazia, e a entrega não pode ser experimentada com ele
 
 ### Extração da spec de código existente
 - ✓ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente

@@ -9,7 +9,7 @@
 - **Documento desatualizado vira instrução errada.** O agente implementa o que o documento diz, mesmo quando isso não vale mais.
 - **As decisões se perdem nas conversas.** A razão de uma escolha fica num chat que ninguém relê. A mesma discussão volta meses depois, sem as alternativas já descartadas.
 
-**O que vimos na prática.** Este fluxo nasceu da documentação real de um app, o Iconula, que serve de exemplo em `spec/` no repositório do tabularium. Escrita a partir de planos, ela acumulou quatro tipos de problema:
+**O que vimos na prática.** Este fluxo nasceu da documentação real de um app, o Iconula. Escrita a partir de planos, ela acumulou quatro tipos de problema:
 - **narrativa de mudanças**: "corrige o atual", "removido na migração";
 - **detalhes técnicos misturados ao comportamento**: caminhos de banco, tempos de debounce;
 - **dezenas de referências** a registros de decisão de cinco tipos diferentes;
@@ -37,7 +37,7 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 
 **A ideia central.** A especificação do produto é versionada no próprio repositório, junto com o código. Ela evolui pelo mesmo mecanismo: pull requests verificados pelo CI e integrados por uma pessoa. É escrita em listas curtas, para que um agente de IA consiga lê-la inteira antes de mexer em qualquer coisa. O processo usa só o que o GitHub já oferece: issue, PR, label, draft e merge.
 
-**Como o tabularium chega ao projeto.** Um comando de instalação (`INSTALL.sh` via `curl`, ou `INSTALL.ps1` via `irm`), rodado na raiz do repositório, baixa uma versão publicada do tabularium e copia só os arquivos listados no manifesto dela: regras, instruções, script, workflow, formulário de issue e skills. O exemplo, a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto. O mesmo comando atualiza. Ele nunca faz commit: o resultado entra por PR, depois do `/spec-init`, que configura o projeto e, numa atualização, adapta a spec ao formato novo.
+**Como o tabularium chega ao projeto.** Um comando de instalação (`INSTALL.sh` via `curl`, ou `INSTALL.ps1` via `irm`), rodado na raiz do repositório, baixa uma versão publicada do tabularium e copia só os arquivos listados no manifesto dela: regras, instruções, script, workflow, formulário de issue e skills. A spec do próprio tabularium e os documentos derivados nunca chegam ao projeto. O mesmo comando atualiza. Ele nunca faz commit: o resultado entra por PR, depois do `/spec-init`, que configura o projeto e, numa atualização, adapta a spec ao formato novo.
 
 **O que fica versionado em `spec/`**
 - **Descrição do produto** (`product.md`): o que é, diferenciais, glossário, requisitos e regras, regras transversais, não funcionais e fora de escopo. Só comportamento observável, sem detalhes de implementação. Cada item carrega um estado:
@@ -106,12 +106,12 @@ Só no repositório do tabularium, fora do que o INSTALL copia:
 |---|---|---|
 | `INSTALL.sh`, `INSTALL.ps1` | Comando de instalação e atualização, em sh e em PowerShell | Mesma lógica nos dois; rodam só com git e o shell nativo |
 | `tabularium.manifest` | Lista, um caminho por linha, do que o INSTALL copia | Arquivo novo da definição que os projetos precisam entra nele; os testes do script falham se faltar uma skill, se um caminho não existir ou se entrar algo não distribuível |
-| `.github/workflows/tabularium.yml` | CI da definição do tabularium: testes do script, check de `tabularium-spec/` e do exemplo, exigência da label `tabularium` | Fora do manifesto: nunca chega aos projetos |
-| `tabularium-spec/`, `tabularium-docs/`, `spec/` (menos `spec/AGENTS.md`), `README.md` | Spec do tabularium, documentos derivados, exemplo Iconula e README | Fora do manifesto: nunca chegam aos projetos |
+| `.github/workflows/tabularium.yml` | CI da definição do tabularium: testes do script, check de `tabularium-spec/`, exigência da label `tabularium` | Fora do manifesto: nunca chega aos projetos |
+| `tabularium-spec/`, `tabularium-docs/`, `README.md` | Spec do tabularium, documentos derivados e README | Fora do manifesto: nunca chegam aos projetos |
 
 ### Adoção e atualização
 
-O tabularium se instala por um comando. O repositório do tabularium não é um template do GitHub: ele mantém o layout de um projeto real, com o exemplo na própria spec, e só o que está no manifesto sai dele.
+O tabularium se instala por um comando. O repositório do tabularium não é um template do GitHub: ele mantém o layout de um projeto real, com `spec/` só com o `spec/AGENTS.md` distribuído, e só o que está no manifesto sai dele.
 
 ```mermaid
 flowchart LR
@@ -136,8 +136,6 @@ flowchart LR
 **Por que sobrescrever é seguro.** O que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra em `spec/locales/<idioma>.json`, e não no script; conteúdo próprio no `AGENTS.md` fora do bloco. Customização feita nos arquivos do tabularium se perde na atualização; não há mescla.
 
 **Versões.** Tags `vX.Y.Z`, criadas à mão por uma pessoa quando decide publicar um lote de mudanças. A maior muda quando a spec dos projetos precisa ser adaptada ao formato. Sem tag publicada, o INSTALL não tem o que instalar.
-
-**Exemplo.** O Iconula fica só no repositório do tabularium, em `spec/`, para experimentar o ciclo de proposta num clone. Nenhum projeto o recebe.
 
 ### Estados de um item
 
@@ -318,7 +316,6 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
 A spec do tabularium3 fica em `tabularium-spec/`. A **definição do tabularium** é essa spec junto com tudo o que compõe o repositório do tabularium: `AGENTS.md`, `spec/AGENTS.md`, `REVIEW.md`, `README.md`, `tabularium-docs/`, `.gitattributes`, `scripts/`, `.claude/skills/`, `.github/`, `INSTALL.sh`, `INSTALL.ps1` e `tabularium.manifest`. Esses arquivos não implementam a spec do tabularium: fazem parte da definição. O que chega aos projetos é só o listado no manifesto, mais o bloco do `AGENTS.md`.
 
 - Toda mudança na definição entra num único **PR com a label `tabularium`**, sem label de tipo e sem issue. Não há entrega separada: todo item fica `✓`, sem compromisso nem `⇢`.
-- Se a mudança exigir adaptar o exemplo em `spec/`, a adaptação vem no mesmo PR.
 - `/spec-grill` e `/spec-ideas` amadurecem a mudança na conversa. Nenhum arquivo muda nessa fase.
 - O `/spec-propose` escreve tudo, nesta ordem:
   1. **O agente da conversa**, que tem as decisões e os porquês, escreve `tabularium-spec/` e os arquivos da definição: instruções, skills, script e testes, workflows, `tabularium.manifest` e os dois INSTALL, com a mesma lógica.
@@ -334,8 +331,6 @@ A spec do tabularium3 fica em `tabularium-spec/`. A **definição do tabularium*
   - exige a label `tabularium` no PR que toca qualquer arquivo da definição (`tabularium-spec/`, `tabularium-docs/`, o que está no manifesto, o próprio manifesto, os INSTALL, `AGENTS.md`, `README.md`, `.gitattributes`, os testes do script e `tabularium.yml`) e recusa label de tipo ou `requirement` num PR `tabularium`.
 - O `spec-check.yml` distribuído se abstém no PR `tabularium`: o tipo não é classificado e a revisão consultiva não roda. Assim, os passos próprios do repositório do tabularium não precisam ser removidos de um arquivo que os projetos recebem.
 - Publicar uma versão é separado do merge: uma pessoa cria a tag `vX.Y.Z` quando decide liberar um lote de mudanças para os projetos (ver Adoção e atualização).
-
-O exemplo Iconula, em `spec/`, existe só no repositório do tabularium e serve para experimentar o ciclo de proposta num clone. Ele não tem código: a lista de caminhos de código dele é vazia, e a entrega não pode ser experimentada com ele; as regras de entrega são exercitadas pelos testes do script. Fica fora do manifesto, junto com `tabularium-spec/`, `tabularium-docs/` e o `README.md`: nada disso chega aos projetos, e quem adota não tem o que apagar.
 
 ### Documentos derivados
 

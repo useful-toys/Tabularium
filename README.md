@@ -13,14 +13,14 @@ Serve a equipes que desenvolvem com agentes de IA. Elas querem que spec e códig
 - A spec não se contradiz: nenhuma proposta inconsistente é incorporada na spec vigente.
 - Só a spec vigente fica no repositório: as ideias amadurecem fora dele, até virarem propostas consistentes com a spec vigente.
 - Funciona com qualquer agente que leia `AGENTS.md`, sem ferramenta proprietária de agente.
-- O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, label e merge.
+- O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, rótulo e merge.
 
 ## Instalar, configurar e manter
 
 Os detalhes operacionais ficam em `tabularium-docs/`. São documentos derivados: a fonte é a spec do tabularium, e eles são regerados a cada mudança. Em caso de conflito, vale a spec.
 
 - [`install.md`](tabularium-docs/install.md): instalar e atualizar o tabularium num projeto;
-- [`config.md`](tabularium-docs/config.md): configurar o projeto (caminhos de código, idioma) e o repositório (labels, proteção da `main`, revisão por agentes);
+- [`config.md`](tabularium-docs/config.md): configurar o projeto (caminhos de código, idioma) e o repositório (rótulos, proteção da `main`, revisão por agentes);
 - [`maintenance.md`](tabularium-docs/maintenance.md): mudar o próprio tabularium;
 - [`spec-flow.md`](tabularium-docs/spec-flow.md): o fluxo completo e o porquê.
 
@@ -76,16 +76,16 @@ flowchart LR
   G -->|"não: /spec-grill com o que falta"| C
   G -->|sim| PR["PR draft com novos arquivos da spec"]
 
-  PL["Plan issue (label plan)"] --> Z["Recusada<br/>(comportamento a especificar)"]
+  PL["Plan issue (rótulo plan)"] --> Z["Recusada<br/>(comportamento a especificar)"]
 
-  BL["Bug issue (label bug)"] --> Z
+  BL["Bug issue (rótulo bug)"] --> Z
 ```
 
 Depois que o PR é aberto:
 
 ```mermaid
 flowchart LR
-  PR["PR draft com novos arquivos da spec"] --> CI(("CI: classifica o tipo (label)<br/>regras objetivas<br/>agente só comenta"))
+  PR["PR draft com novos arquivos da spec"] --> CI(("CI: classifica o tipo (rótulo)<br/>regras objetivas<br/>agente só comenta"))
   CI --> GG{"Regras objetivas passam?"}
   GG -->|sim| A["Merge decidido por humano<br/>= compromisso"]
   GG -->|"não: /spec-grill sobre o PR"| C(("Conversa"))
@@ -100,25 +100,25 @@ Duas coisas diferentes carregam a ideia pelo ciclo:
 - `/spec-grill` faz perguntas até cada ponto estar decidido.
 - `/spec-ideas` sugere alternativas, casos de borda e efeitos em cascata.
 
-**2. A triagem descobre o que a ideia é.** O agente compara a issue ou ideia com a spec vigente. O que quem abriu acha que ela é vale só como palpite. Uma issue sem as labels `requirement`, `bug` e `plan` ainda não foi triada.
+**2. A triagem descobre o que a ideia é.** O agente compara a issue ou ideia com a spec vigente. O que quem abriu acha que ela é vale só como palpite. Uma issue sem os rótulos `requirement`, `bug` e `plan` ainda não foi triada.
 
 A triagem não é uma etapa. Ela acompanha a conversa. Quando o entendimento amadurece, a IA pode sugerir mudar uma triagem já decidida. Por exemplo, uma issue tida como requirement pode se revelar um bug. A mudança só vale quando uma pessoa a confirma.
 
 A triagem termina em uma de três classificações:
 
-- **Requirement issue** (label `requirement`): pede uma spec nova, alterada ou removida, ou a spec é omissa no assunto. Segue o ciclo abaixo.
-- **Bug issue** (label `bug`): o produto contradiz um item que a spec diz estar implementado (`✓`). É um defeito do código, não uma mudança de requisito.
-  - Se a origem é uma issue, ela ganha a label `bug`. Se é uma ideia, a issue é criada.
+- **Requirement issue** (rótulo `requirement`): pede uma spec nova, alterada ou removida, ou a spec é omissa no assunto. Segue o ciclo abaixo.
+- **Bug issue** (rótulo `bug`): o produto contradiz um item que a spec diz estar implementado (`✓`). É um defeito do código, não uma mudança de requisito.
+  - Se a origem é uma issue, ela ganha o rótulo `bug`. Se é uma ideia, a issue é criada.
   - O `/spec-grill` a recusa e para. O tratamento da bug issue será definido em um processo dedicado, ainda por especificar.
 - **Descarte**: a spec já cobre o pedido, mesmo que seja um item comprometido e ainda não implementado.
   - A issue de origem é fechada, com um comentário que aponta o item da spec.
   - Uma ideia é só abandonada.
 
-O `/spec-impact` pode sugerir a classificação. O `/spec-grill` resolve o que ficou incerto com o usuário. Quem decide é uma pessoa, e a label que ela aplica vence. Issue com a label `plan` também é recusada pelo `/spec-grill`. O tratamento de planos será definido em um processo dedicado, ainda por especificar.
+O `/spec-impact` pode sugerir a classificação. O `/spec-grill` resolve o que ficou incerto com o usuário. Quem decide é uma pessoa, e o rótulo que ela aplica vence. Issue com o rótulo `plan` também é recusada pelo `/spec-grill`. O tratamento de planos será definido em um processo dedicado, ainda por especificar.
 
-As labels das issues são aplicadas só pela triagem, e uma pessoa pode sempre trocá-las:
+Os rótulos das issues são aplicados só pela triagem, e uma pessoa pode sempre trocá-los:
 
-| Label | Uso |
+| Rótulo | Uso |
 |---|---|
 | `requirement` | issue triada com ideia de requisito, que segue o ciclo de proposta |
 | `bug` | issue triada como divergência do código em relação à spec; recusada até o processo de bug ser especificado |
@@ -155,29 +155,29 @@ Se o portão aprovar, o `/spec-propose` abre o PR:
 
 **5. O CI confere o PR de forma independente.** O `/spec-propose` conhece a conversa. O CI não a conhece. Ele só vê o novo texto da spec, nos arquivos ou no diff. É uma segunda conferência, feita apenas sobre a alteração. Ela tem três partes:
 
-- **Classifica a mudança.** Mede o tamanho do impacto, deduz o tipo (editorial, neutra, compatível ou incompatível) e aplica a label correspondente.
-- **Aplica regras objetivas e bloqueia o PR que as viola.** São regras que um script confere sem opinião. Por exemplo: uma mudança incompatível sem decisão, ou uma label de tipo menor do que a mudança.
+- **Classifica a mudança.** Mede o tamanho do impacto, deduz o tipo (editorial, neutra, compatível ou incompatível) e aplica o rótulo correspondente.
+- **Aplica regras objetivas e bloqueia o PR que as viola.** São regras que um script confere sem opinião. Por exemplo: uma mudança incompatível sem decisão, ou um rótulo de tipo menor do que a mudança.
 - **Pede a opinião de um agente de IA, que só comenta.** O agente procura os mesmos problemas do portão, como contradições, decisões contrariadas e cascata esquecida. Esse comentário nunca bloqueia, porque a IA pode errar e mudar de resposta entre execuções. Ele serve de alerta para quem vai aceitar a proposta.
 
-As labels de PR que o CI aplica dizem o tipo da mudança. Todo PR tem um tipo, pelo que faz com a spec vigente:
+Os rótulos de PR que o CI aplica dizem o tipo da mudança. Todo PR tem um tipo, pelo que faz com a spec vigente:
 - Com vários tipos, vale o maior.
 - O CI deduz o tipo mínimo pelo diff. Quando o diff não mostra se o sentido mudou, a IA julga, e vale o maior entre o mínimo e o julgado.
-- Uma label aplicada por uma pessoa vence, e o CI nunca a troca.
-- Sem IA disponível, o caso ambíguo exige a label de uma pessoa.
+- um rótulo aplicado por uma pessoa vence, e o CI nunca o troca.
+- Sem IA disponível, o caso ambíguo exige o rótulo de uma pessoa.
 
-| Label | Uso |
+| Rótulo | Uso |
 |---|---|
 | `spec-editorial` | só texto da spec, sem mudar sentido; único tipo que altera ou marca item `✓` sem código |
 | `spec-neutral` | não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso |
 | `spec-compatible` | cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente |
 | `spec-incompatible` | altera o sentido de item `✓`, contradiz item ou vai contra decisão; exige `⇢` e decisão criada ou alterada no mesmo PR |
-| `tabularium` | só neste repositório: PR que muda a definição do próprio tabularium, sem label de tipo |
+| `tabularium` | só neste repositório: PR que muda a definição do próprio tabularium, sem rótulo de tipo |
 
 O PR continua em rascunho até o autor liberá-lo. O CI nunca faz isso por ele. Mesmo sem comentários do agente, é o autor que decide que o PR está pronto, depois de ler os comentários e tratar o que julgar necessário.
 
 Não há aprovação formal obrigatória. Quem tem permissão de merge aceita a proposta, e o merge a torna compromisso.
 
-**Os PRs de proposta formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge).
+**Os PRs de proposta, de qualquer tipo, formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge).
 
 Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda. Os PRs que sobraram ficam defasados (drift). Um PR defasado pode deixar de passar nas regras do CI, por exemplo por contradizer o que acabou de ser aceito.
 
@@ -192,7 +192,7 @@ Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
 
 Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
-- `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria as labels; reexecutável.
+- `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria os rótulos; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
 - `/spec-grill`: faz a triagem (requirement issue, bug issue ou descarte) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.

@@ -125,9 +125,10 @@ jobs:
 
   # Conferência por agente: comenta no PR, nunca bloqueia.
   # Roda só quando o PR toca spec/, não é da definição do template e existe o secret ANTHROPIC_API_KEY (forks não recebem secrets).
+  # A variável do repositório SPEC_REVIEW_AGENT, gravada pelo /spec-init, liga (claude) ou desliga (github ou none) este job; sem a variável, vale só o secret.
   spec-review:
     runs-on: ubuntu-latest
-    if: github.event.action != 'labeled' && github.event.action != 'unlabeled'
+    if: (github.event.action != 'labeled' && github.event.action != 'unlabeled') && (vars.SPEC_REVIEW_AGENT == '' || vars.SPEC_REVIEW_AGENT == 'claude')
     continue-on-error: true
     # Só leitura do repositório: o agente comenta, mas não pode integrar nem escrever código.
     permissions:

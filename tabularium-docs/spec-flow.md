@@ -53,8 +53,8 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa requirement issue.
 
 **Como uma mudança de requisito acontece**
-1. **Discussão**: a ideia nasce numa issue qualquer, aberta por uma pessoa (formulário `relato`, cujo palpite de tipo não vale nada), ou numa conversa com o agente. Primeiro vem a **triagem** contra a spec, que termina em requirement issue, hotfix (bug) ou descarte (a spec já cobre o relato, inclusive com item comprometido). Issue `plan` é recusada. Para a requirement issue, a ideia é refinada na conversa: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. Se for preciso continuar depois, o entendimento é guardado numa requirement issue, a pedido.
-2. **Proposta**: com a ideia madura, o agente escreve o texto final e confere se a spec resultante continua consistente. Só então abre um pull request em draft, que altera só a spec.
+1. **Conversa**: a conversa é o centro. Entram nela uma ideia, uma issue genérica (sem triagem; por exemplo, aberta pelo formulário `relato`, cujo palpite de tipo não vale nada) ou uma requirement issue já triada. A **triagem** é o primeiro passo da conversa, contra a spec, e termina em requirement issue, bug issue (o hotfix parte dela, fora do ciclo) ou descarte (a spec já cobre o relato, inclusive com item comprometido). Issue `plan` é recusada. Para a requirement issue, a ideia é refinada: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. A pedido, o entendimento é guardado numa requirement issue, que volta à conversa quando preciso. Issue sem conversa fica sem triagem.
+2. **Proposta**: o `/spec-propose` é um portão. Só passa com triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e texto final aplicável à `main` atual sem inconsistência. Se falhar, devolve à conversa com o que falta; se passar, abre um pull request em draft, que altera só a spec.
 3. **Revisão**:
    - o CI deduz o **tipo da mudança** (editorial, neutra, compatível ou incompatível) e aplica a label; quando o diff não mostra se o sentido mudou, a IA julga; a label aplicada por uma pessoa vence;
    - o check do CI valida as regras da spec para aquele tipo e **bloqueia** o merge se algo estiver errado;
@@ -210,34 +210,37 @@ PR só de código, sem mudança na spec, é neutro, inclusive o hotfix de um bug
 
 ```mermaid
 flowchart LR
-  ID["Ideia"] --> G
-  N["Issue<br/>(nova, sem triagem, ou já triada)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>pessoa decide"]
-  T -- requirement issue --> I["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"]
-  T -- bug --> H["Hotfix: PR de código neutro<br/>Closes #issue, sem proposta"]
-  T -- já coberta --> X["Descartada<br/>fechada com o item apontado"]
-  N -- plan --> Z["Recusada<br/>planos ainda não tratados"]
-  subgraph CV["Conversa"]
-    G["/spec-grill<br/>triar e esmiuçar"] --> D["/spec-ideas<br/>sugerir"]
-    D -- sugestão aceita --> G
+  ID["Ideia"] --> C
+  IS["Issue genérica"] --> C
+  RI["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"] --> C
+  subgraph C["Conversa: triagem · entendimento · ideias"]
+    G1["/spec-grill<br/>triar e esmiuçar"] --> D["/spec-ideas<br/>sugerir"]
+    D -- sugestão aceita --> G1
   end
-  CV -. "/spec-issue, a pedido" .-> I
-  I -- "/spec-grill #issue" --> CV
-  CV -- bug --> H
-  CV -- já coberta --> X
-  CV --> P["/spec-propose<br/>valida a consistência<br/>PR draft"]
-  P --> R["CI: tipo + label + check (bloqueia)<br/>revisão consultiva (/spec-impact, Copilot)"]
-  R --> A["Humano decide o merge<br/>merge = compromisso"]
-  A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
+  C -- "/spec-issue, a pedido" --> RI
+  C -- "não é requirement" --> B["Bug issue (sugerida ao usuário)<br/>hotfix parte dela"]
+  C -- "já coberta pela spec" --> X["Descartada"]
+  C --> G{"Portão /spec-propose<br/>maduro e consistente<br/>com a spec atual?"}
+  G -- "não: o que falta" --> C
+  G -- sim --> P["PR draft"]
+  P --> R["CI: tipo + label + check (bloqueia)<br/>revisão consultiva"] --> A["Humano decide o merge<br/>merge = compromisso"] --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
+```
+
+Issue com o rótulo `plan` fica fora do ciclo:
+
+```mermaid
+flowchart LR
+  PL["Plan issue (rótulo plan)"] --> Z["Recusada: planos ainda não são tratados"]
 ```
 
 1. **Triar e esmiuçar (`/spec-grill`)**: converge. Faz rodadas de perguntas sobre uma árvore de decisões; em cada rodada, pergunta tudo o que já pode ser decidido, com opções e uma recomendada.
-   - **A raiz da árvore é a triagem**, resolvida antes do resto. Qualquer issue é entrada; o palpite de quem a abriu não vale, e a issue sem `requirement`, `bug` ou `plan` está sem triagem. O relato é comparado com a spec, e a triagem termina em:
-     - contradiz item `✓`: **bug**, hotfix (label `bug`);
-     - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue** (label `requirement`), segue o ciclo;
-     - a spec já cobre o relato, inclusive item comprometido sem `✓`: **descarte**, issue fechada com comentário que aponta o item;
+   - **A raiz da árvore é a triagem**, primeiro passo da conversa e resolvida antes do resto; não há etapa de triagem separada. Entram na conversa uma ideia, uma issue genérica ou uma requirement issue já triada. O palpite de quem abriu a issue não vale, e a issue sem `requirement`, `bug` ou `plan` está sem triagem. O relato é comparado com a spec, e a triagem termina em:
+     - contradiz item `✓`: **bug issue** (rótulo `bug`): a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia; o hotfix parte dela, fora do ciclo;
+     - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue** (rótulo `requirement`), segue o ciclo;
+     - a spec já cobre o relato, inclusive item comprometido sem `✓`: **descarte**, com a issue de origem fechada como descartada, com comentário que aponta o item; ideia descartada é só abandonada;
      - mistura de bug e requirement: duas issues ligadas.
-   - Requirement issue já triada vai direto à conversa. Issue com label `plan` não segue o ciclo: é recusada, sem esmiuçar.
-   - O `/spec-impact` em modo issue sugere o veredito, com a evidência (item, decisão ou código); o `/spec-grill` resolve o que ficou incerto, inclusive para a ideia nascida na conversa; uma pessoa decide. A label de uma pessoa vence a sugestão, e o tipo pode mudar durante a conversa, com a evidência em comentário. Triagem já confirmada no corpo da issue não é perguntada de novo.
+   - Requirement issue já triada vai direto à conversa. Issue com rótulo `plan` não segue o ciclo: é recusada, sem esmiuçar.
+   - O `/spec-impact` em modo issue é insumo opcional: sugere o veredito, com a evidência (item, decisão ou código); o `/spec-grill` resolve o que ficou incerto, inclusive para a ideia nascida na conversa; uma pessoa decide. O rótulo de uma pessoa vence a sugestão, e o tipo pode mudar durante a conversa, com a evidência em comentário. Triagem já confirmada no corpo da issue não é perguntada de novo.
    - Aceita texto livre, issue ou PR de proposta. Com issue, lê o corpo (entendimento mais recente) e os comentários (histórico), inclusive a `Solicitação original`. Com PR, compara com a `main` atual e transforma a defasagem em pergunta.
    - Lê sempre o `product.md` e o `model.md` inteiros e os mapas de decisões. Abre documentos técnicos e decisões à medida que a ideia os alcança.
    - Olha os `⇢` e compromissos em aberto e outras propostas abertas na mesma área.
@@ -250,13 +253,13 @@ flowchart LR
    - Sugestão aceita volta ao `/spec-grill`.
    - Descartes com motivo viram "Alternativas descartadas" das decisões.
    - Também só na conversa, com um resumo `<!-- spec-ideas -->`.
-3. **Guardar (`/spec-issue`, a pedido)**: leva o entendimento para uma requirement issue, nova ou existente, como memória entre sessões.
+3. **Guardar (`/spec-issue`, a pedido)**: leva o entendimento da conversa para uma requirement issue, nova ou existente, como memória entre sessões; a requirement issue volta à conversa com `/spec-grill #issue`.
    - **Corpo** = entendimento mais recente, reescrito só por esta skill (e, na linha da proposta, pelo `/spec-propose`). Marcador `<!-- tabularium:issue -->` e seções Triagem, Problema, Entendimento atual, Em aberto e a linha `Proposta: #PR`. Pessoas contribuem por comentário.
    - **Comentários** = histórico resumido: um `<!-- spec-issue -->` novo por rodada, com o delta.
    - **Primeiro toque** numa issue existente: o corpo original vira, sem alteração, o primeiro comentário da IA, com o título `Solicitação original`. É reconhecido pela falta de comentário com esse título, mesmo que pessoas já tenham comentado. Issue nascida na conversa não tem original.
    - Antes de reescrever o corpo, confere `updatedAt` para não sobrescrever edição nova. Mostra o texto e pede confirmação antes de publicar.
-   - **Aplica o resultado da triagem**, com confirmação: a label `requirement` ou `bug`, ou, no descarte, o fechamento da issue com um comentário que aponta o item da spec que já a cobre. Trocar uma label exige o aval do usuário, e a de uma pessoa vence a sugestão. Ideia descartada na conversa não gera issue. Issue `plan` é recusada, sem reescrever o corpo.
-4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista. Só pergunta o que impede o registro, como um porquê ausente.
+   - **Aplica o resultado da triagem**, com confirmação: o rótulo `requirement` ou `bug` na issue de origem, a criação da bug issue quando a origem é uma ideia, ou, no descarte, o fechamento da issue de origem como descartada, com um comentário que aponta o item da spec que já a cobre. Trocar um rótulo exige o aval do usuário, e o de uma pessoa vence a sugestão. Ideia descartada na conversa é só abandonada, sem issue. Issue `plan` é recusada, sem reescrever o corpo.
+4. **Portão (`/spec-propose`)**: só abre ou atualiza o PR se a ideia estiver madura e consistente com a spec atual. Critérios: triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e texto final aplicável à `main` atual sem inconsistência. Se algum falhar, devolve à conversa com o que falta. Passando, sintetiza o texto final, sem nova entrevista; só pergunta o que impede o registro, como um porquê ausente.
    - Escreve os documentos com itens e opera nas decisões: criar, alterar, fundir, dividir, mover ou remover.
    - Roda `build-map` e `check --base origin/main`.
    - Valida a consistência da spec resultante sobre a `main` atual. Qualquer inconsistência, mesmo antiga, impede a publicação.

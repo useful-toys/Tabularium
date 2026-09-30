@@ -37,7 +37,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Camada**: parte da spec de mesma natureza (produto, interface, arquitetura…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
 - **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
-- **Triagem**: comparação do relato de uma issue com a spec, que a resolve de três formas: vira requirement issue, vira hotfix ou é descartada; a issue sem essa resolução está sem triagem
+- **Triagem**: comparação do relato de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue sem essa resolução está sem triagem
+- **Bug issue**: issue triada como comportamento que contradiz item implementado, a corrigir por hotfix, um PR de código sem mudança na spec
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -157,12 +158,13 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Sugerir alternativas, cenários de borda, cascata esquecida e recortes para o humano aceitar ou descartar com motivo
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
-- ✓ Fazer a triagem de um relato contra a spec, como sugestão que uma pessoa confirma
-  - ✓ Aceita qualquer issue como entrada: a sem triagem passa por ela; a requirement issue já triada segue direto para a conversa
-  - ✓ A issue só está triada quando vira requirement issue, vira hotfix ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
+- ✓ Fazer a triagem de um relato contra a spec, na conversa, como sugestão que uma pessoa confirma
+  - ✓ A conversa aceita como origem uma ideia, uma issue sem triagem ou uma requirement issue já triada; a triagem é o primeiro passo dela, e a requirement issue já triada a pula
+  - ✓ A issue só está triada quando vira requirement issue, vira bug issue ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
+  - ✓ A issue sem conversa continua sem triagem, sem automação
   - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement issue, que segue o ciclo
-  - ✓ Contradiz item implementado: bug, que vira hotfix, um PR de código sem mudança na spec
-  - ✓ Já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: descartada, fechada com um comentário que aponta o item
+  - ✓ Contradiz item implementado: bug; a conversa sugere a bug issue, aplicando o rótulo bug à issue de origem ou, se a origem é uma ideia, criando a issue; o hotfix parte dela e fica fora deste ciclo
+  - ✓ Já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: descartada; a issue de origem é fechada como descartada, com um comentário que aponta o item, e a ideia de origem é abandonada sem publicar nada
   - ✓ Mistura de bug e requirement: separa em duas issues ligadas
   - ✓ O que quem abre a issue acha que ela é vale só como palpite; o rótulo aplicado por uma pessoa vence a sugestão
   - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara, inclusive para a ideia nascida na conversa
@@ -183,6 +185,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Mudança incompatível sempre cria ou altera uma decisão; decisão nova não viola decisão vigente
   - ✓ Antes de criar ou atualizar a proposta, valida a consistência da spec resultante sobre a branch principal atual, nos itens tocados e na cascata
   - ✓ Com qualquer inconsistência, inclusive preexistente, não publica e aponta o que corrigir antes
+  - ✓ Funciona como portão: só abre a proposta se a ideia estiver madura o bastante para encaixar na spec vigente; senão devolve à conversa com o que falta
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou

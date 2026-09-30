@@ -43,12 +43,12 @@ Papéis na issue:
 Proposta: #<PR>
 ```
 - `Em aberto` sem itens pendentes significa pronta para `/spec-propose`.
-- Issue `bug` (hotfix): no lugar de `Entendimento atual`, `Observado`, `Esperado` (com o item da spec) e `Como reproduzir`. Sem `Em aberto` pendente, o próximo passo é o hotfix, sem proposta.
+- Bug issue (o hotfix parte dela): no lugar de `Entendimento atual`, `Observado`, `Esperado` (com o item da spec) e `Como reproduzir`. Sem `Em aberto` pendente, o próximo passo é o hotfix, sem proposta.
 - A linha `Proposta: #<PR>` só existe depois que o PR de proposta abre. A partir daí o PR é a fonte do texto final.
 - Na dúvida entre incluir detalhe e manter curto, mantenha curto: a issue guarda intenção e decisões, não o texto final da spec.
 
 ## 3. Destino
-- **Issue nova** (sem argumento): só existe depois da triagem. Título curto; corpo no formato acima; label do resultado da triagem, criada com `gh issue create`: `requirement` ou `bug`. Triagem que descarta a ideia não gera issue: aponte o item que já a cobre e pare. Mistura de bug e requirement: crie duas issues, cada uma citando a outra. Sem original: o primeiro comentário já é o resumo (seção 4).
+- **Issue nova** (sem argumento): só existe depois da triagem, com origem numa ideia. Título curto; corpo no formato acima; label do resultado da triagem, criada com `gh issue create`: `requirement`, ou `bug` para a bug issue. Triagem que descarta a ideia não gera issue: aponte o item que já a cobre e pare. Mistura de bug e requirement: crie duas issues, cada uma citando a outra. Sem original: o primeiro comentário já é o resumo (seção 4).
 - **Issue existente** (`#N` ou link):
   1. **Primeiro toque**: nenhum comentário abre com `Solicitação original`. Vale mesmo que existam comentários de pessoas. Nesse caso, antes de reescrever o corpo, comente o corpo atual, sem alterar uma palavra:
      ```markdown
@@ -57,7 +57,7 @@ Proposta: #<PR>
      <corpo original, verbatim>
      ```
   2. Reescreva o corpo (`gh issue edit <N> --body-file <arquivo>`) no formato da seção 2, integrando o corpo anterior, os comentários e o que a conversa decidiu.
-  3. **Resultado da triagem**, se a issue estava sem triagem (sem `requirement`, `bug` ou `plan`) ou se ele mudou: registre a evidência no comentário de resumo e proponha, na confirmação, aplicar `requirement` ou `bug`, ou, se a triagem descartou a issue, fechá-la com um comentário que aponta o item da spec que já a cobre. A label aplicada por uma pessoa vence a sugestão: só troque uma label com o aval explícito do usuário.
+  3. **Resultado da triagem**, se a issue estava sem triagem (sem `requirement`, `bug` ou `plan`) ou se ele mudou: registre a evidência no comentário de resumo e proponha, na confirmação, aplicar `requirement` ou `bug`, ou, se a triagem descartou a issue, fechá-la como descartada (`gh issue close <N> --reason "not planned" --comment`) com um comentário que aponta o item da spec que já a cobre. A label aplicada por uma pessoa vence a sugestão: só troque uma label com o aval explícito do usuário.
   4. Issue `plan`: não segue este ciclo; recuse e não reescreva o corpo.
 - Antes de reescrever o corpo, confira `updatedAt` (`gh issue view <N> --json updatedAt,body`) contra o que foi lido: se mudou, releia e reintegre.
 
@@ -75,4 +75,4 @@ Sempre, a cada execução, um comentário novo com o delta da rodada, sem repeti
 Antes de publicar (corpo e comentários), mostre o texto ao usuário e peça confirmação.
 
 ## 5. Próximo passo
-Informe o link da issue. Para continuar a discussão: `/spec-grill #N`. Para registrar a proposta: `/spec-propose #N`. Se a issue for `bug`, sugira o hotfix: PR de código sem mudança na spec, com `Closes #N`.
+Informe o link da issue. Para continuar a discussão: `/spec-grill #N`. Para registrar a proposta: `/spec-propose #N`. Se for uma bug issue, o hotfix parte dela: PR de código sem mudança na spec, com `Closes #N`, fora deste ciclo.

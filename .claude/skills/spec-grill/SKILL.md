@@ -1,6 +1,6 @@
 ---
 name: spec-grill
-description: Faz a triagem de uma ideia ou relato (requirement issue, hotfix ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
+description: Faz a triagem de uma ideia ou relato (requirement issue, bug issue ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
 ---
 
 # spec-grill
@@ -33,8 +33,13 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 - Issue com a label `requirement` já está triada: não pergunte de novo; só reabra se o usuário discordar ou surgir evidência nova.
 - Issue com a label `plan`: não segue este ciclo. Recuse, diga que planos ainda não são tratados e encerre, sem esmiuçar.
 - Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare o relato com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
-- A triagem termina em **requirement issue** (siga), **hotfix** (o relato contradiz item `✓`: sugira um PR de código sem mudança na spec com `Closes #N` e encerre) ou **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado: aponte o item e encerre). **Mistura**: proponha separar em duas issues ligadas.
-- Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.
+- A triagem termina em:
+  - **requirement issue**: siga.
+  - **bug issue** (o relato contradiz item `✓`): sugira ao usuário a bug issue e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. O hotfix parte dela, como PR de código sem mudança na spec com `Closes #N`, fora deste ciclo.
+  - **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado, ou não é problema): aponte o item e encerre. Origem issue: a issue é fechada como descartada. Origem ideia: nada a publicar.
+  - **Mistura**: proponha separar em duas issues ligadas.
+- Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label, criar a bug issue ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.
+- Issue que ninguém levou à conversa continua sem triagem.
 
 O que perguntar:
 - **Contra o glossário**: termo usado com outro sentido, ou termo novo. "O glossário define X como…, e você parece querer dizer…". Proponha o termo canônico.
@@ -58,7 +63,7 @@ Formato do resumo:
 ```markdown
 <!-- spec-grill -->
 ## Esmiuçado
-- Triagem: <requirement issue | hotfix | descarte>, com a evidência (e o palpite do autor, se diferiu)
+- Triagem: <requirement issue | bug issue | descarte>, com a evidência (e o palpite do autor, se diferiu)
 - Tipo de mudança: <incompatível | compatível | editorial>
 - Decidido: <item → decisão, uma linha cada>
 - Porquês e alternativas: <para as decisões>

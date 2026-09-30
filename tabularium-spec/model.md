@@ -39,7 +39,7 @@
   - ✓ derivado das decisões da camada; nunca escrito à mão
 - ✓ **Requirement issue**
   - ✓ vive em 1 **Tracker**
-  - ✓ nasce da descrição de uma pessoa ou de uma conversa e só existe depois da triagem; a issue sem triagem pode virar requirement issue, hotfix ou ser descartada
+  - ✓ nasce da descrição de uma pessoa ou de uma conversa e só existe depois da triagem; a issue sem triagem pode virar requirement issue, bug issue ou ser descartada
   - ✓ corpo: o entendimento mais recente, escrito pela IA; comentários: o histórico resumido, com a solicitação original no primeiro comentário da IA
   - ✓ estados: aberta | fechada
   - ✓ aberta → fechada: a entrega que a implementa é aceita

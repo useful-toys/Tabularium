@@ -18,6 +18,13 @@ Mudança no próprio template (`tabularium-spec/`, só no repositório do templa
 - Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.
 - Se algo necessário não estiver decidido, pare e sugira `/spec-grill`.
 
+## 1a. Portão
+Esta etapa é o portão da proposta. Só siga se a ideia estiver madura o bastante para encaixar na spec vigente:
+- a triagem é requirement issue (label `requirement`, ou ideia da conversa triada como requirement);
+- nada necessário está em aberto: o `Em aberto` do corpo da issue não tem pendências e cada decisão tem o porquê;
+- o texto final se aplica à `main` atual, sem inconsistência (seção 3a).
+Se algo falhar, não abra nem atualize o PR: devolva à conversa (`/spec-grill`) com a lista do que falta.
+
 ## 2. Branch
 - **Origem PR**: use a branch do PR. Rebase na `main` atual (`git fetch`, `git rebase origin/main`) e publique com `git push --force-with-lease`.
   - A descrição do PR guia o reencaixe: reescreva o diff para cumprir a intenção descrita sobre a nova base, não só para resolver conflito de texto.

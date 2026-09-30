@@ -148,7 +148,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 ### Amadurecimento de ideias
 - ✓ Esmiuçar uma ideia contra a spec em rodadas de perguntas interativas, até cada ponto estar decidido
   - ✓ Aceita como entrada texto livre, issue ou proposta aberta; da issue lê o corpo, como entendimento atual, e os comentários, como histórico
-  - ✓ Começa pela triagem da ideia, salvo se a issue já a trouxer confirmada
+  - ✓ Começa pela triagem da ideia e a mantém em aberto durante toda a conversa
   - ✓ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
   - ✓ Lê sempre o documento de produto e o modelo conceitual inteiros; documentos técnicos e decisões, à medida que a ideia os alcança
   - ✓ Classifica a ideia pelo tipo de mudança e levanta a cascata
@@ -159,7 +159,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
 - ✓ Fazer a triagem de uma issue ou ideia contra a spec, na conversa, como sugestão que uma pessoa confirma
-  - ✓ A conversa aceita como origem uma ideia, uma issue sem triagem ou uma requirement issue já triada; a triagem é o primeiro passo dela, e a requirement issue já triada a pula
+  - ✓ A conversa aceita como origem uma ideia, uma issue sem triagem ou uma requirement issue já triada; a triagem é um processo contínuo da conversa, sem etapa definida, e a IA pode sugerir alterar uma triagem já decidida quando o entendimento amadurece; a alteração vale com a confirmação de uma pessoa
   - ✓ A issue só está triada quando vira requirement issue, vira bug issue ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
   - ✓ A issue sem conversa continua sem triagem, sem automação
   - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement issue, que segue o ciclo
@@ -185,7 +185,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Mudança incompatível sempre cria ou altera uma decisão; decisão nova não viola decisão vigente
   - ✓ Antes de criar ou atualizar a proposta, valida a consistência da spec resultante sobre a branch principal atual, nos itens tocados e na cascata
   - ✓ Com qualquer inconsistência, inclusive preexistente, não publica e aponta o que corrigir antes
-  - ✓ Funciona como portão: só abre a proposta se a ideia estiver madura o bastante para casar com a spec vigente; senão devolve à conversa com o que falta
+  - ✓ Aplica o portão da proposta: só abre a proposta se a ideia estiver madura o bastante para casar com a spec vigente; senão devolve à conversa com o que falta
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou

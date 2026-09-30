@@ -29,8 +29,8 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 - Use a ferramenta de pergunta interativa, com até 4 perguntas por chamada e 2–4 opções cada, colocando a recomendada primeiro, marcada "(Recomendado)". Sem essa ferramenta, use texto numerado com a recomendação.
 - Fatos você busca sozinho (código, spec, histórico). Decisões são do humano.
 
-**Raiz: a triagem.** Todo o resto depende do tipo, então ela é resolvida antes:
-- Issue com a label `requirement` já está triada: não pergunte de novo; só reabra se o usuário discordar ou surgir evidência nova.
+**Raiz: a triagem.** Todo o resto depende do tipo, então você começa por ela. Ela não é uma etapa: acompanha a conversa inteira. Se o entendimento amadurecer e mostrar que o tipo era outro (por exemplo, a requirement issue é na verdade um bug, ou já está coberta pela spec), sugira alterar a triagem já decidida, com a evidência; a alteração vale com a confirmação do usuário.
+- Issue com a label `requirement` já está triada: não pergunte de novo, mas reavalie se surgir evidência nova ou se o usuário discordar.
 - Issue com a label `plan`: não segue este ciclo. Recuse, diga que planos ainda não são tratados e encerre, sem esmiuçar.
 - Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare a issue ou ideia com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
 - A triagem termina em:

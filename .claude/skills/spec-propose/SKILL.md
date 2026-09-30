@@ -19,11 +19,11 @@ Mudança no próprio template (`tabularium-spec/`, só no repositório do templa
 - Se algo necessário não estiver decidido, pare e sugira `/spec-grill`.
 
 ## 1a. Portão
-Esta etapa é o portão da proposta. Só siga se a ideia estiver madura o bastante para casar com a spec vigente:
+Esta etapa aplica o portão da proposta. Só siga se a ideia estiver madura o bastante para casar com a spec vigente:
 - a triagem é requirement issue (label `requirement`, ou ideia da conversa triada como requirement);
 - nada necessário está em aberto: o `Em aberto` do corpo da issue não tem pendências e cada decisão tem o porquê;
-- o texto final se aplica à `main` atual, sem inconsistência (seção 3a).
-Se algo falhar, não abra nem atualize o PR: devolva à conversa (`/spec-grill`) com a lista do que falta.
+- o texto final se aplica à `main` atual e a spec resultante, com os documentos técnicos fundamentais e as decisões, não tem contradição (seção 3a); só pode contrariar item ou decisão vigente quem declara a mudança (`⇢` com decisão criada ou alterada).
+Se algo falhar, não abra nem atualize o PR: devolva à conversa com a lista do que falta e sugira `/spec-grill`.
 
 ## 2. Branch
 - **Origem PR**: use a branch do PR. Rebase na `main` atual (`git fetch`, `git rebase origin/main`) e publique com `git push --force-with-lease`.

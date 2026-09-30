@@ -31,7 +31,7 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
    - Invariantes que estavam nas regras transversais vão para o modelo.
    - `✓` com evidência no código, como nos requisitos.
 7. **Decisões** (`spec/decisions/product/`):
-   - ADRs e decisões antigas: converta ao novo formato só as decisões **de produto** e **vigentes**. As técnicas vão para a camada técnica correspondente, se existir em `spec/config.json`; senão, liste-as no relatório. As obsoletas não migram.
+   - ADRs e decisões antigas: converta ao novo formato só as decisões **vigentes**. As de produto ficam em `spec/decisions/product/`. As técnicas vão para a pasta da camada técnica correspondente, se ela existir em `spec/config.json`; senão, deixe-as de fora e liste-as no relatório. As obsoletas não migram e também vão para o relatório.
    - Histórico: `AAAA-MM-DD organização: migrada de <documento de origem>`, com a data de hoje.
    - Lacuna (escolha não óbvia sem justificativa): escreva `tema` e `decisao` e pergunte o contexto e as alternativas descartadas.
 8. **Valide**: `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`. O check também valida o `model.md`.
@@ -40,6 +40,6 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
 PR só com a spec; o CI deduz o tipo e aplica a label. A descrição do PR traz o relatório:
 - domínios e quantidade de requisitos extraídos; entidades do modelo conceitual, se houver;
 - itens `✓` duvidosos, com a evidência (arquivo) de cada um;
-- decisões migradas, técnicas deixadas de fora e obsoletas descartadas;
+- decisões migradas, por camada; técnicas deixadas de fora por falta de camada; obsoletas descartadas;
 - perguntas feitas e respostas;
 - documentação antiga que agora duplica a spec, para o humano decidir o destino.

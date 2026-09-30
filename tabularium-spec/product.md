@@ -67,6 +67,9 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Com `AGENTS.md`, coloca o processo no início do arquivo e não toca no resto
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
   - ✓ Recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`, e orienta migrá-lo à mão
+  - ✓ Recusa instalar no repositório do próprio tabularium
+  - ✓ Recusa instalar quando o `AGENTS.md` tem os marcadores do processo incompletos ou repetidos, e orienta corrigi-lo à mão
+  - ✓ Recusa instalar quando não há versão publicada, quando a versão está fora do padrão numerado ou quando a versão não traz a lista de arquivos a copiar
   - ✓ Nunca faz commit; o resultado entra por PR
 - ✓ Preparar o repositório remoto no GitHub
   - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
@@ -107,7 +110,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Item só documentado vira pergunta: compromisso ou documentação desatualizada
   - ✓ Divergência entre código e documentação vira pergunta; se valer o documentado, o item fica redefinido
   - ✓ Dúvidas são perguntadas durante a extração, uma a uma
-  - ✓ Decisões preexistentes de produto vigentes são convertidas ao formato; técnicas e obsoletas ficam de fora e são relatadas
+  - ✓ Decisões preexistentes vigentes são convertidas ao formato: as de produto, na camada de produto; as técnicas, na camada técnica correspondente, quando ela existe, e senão ficam de fora; as obsoletas não migram; as que ficam de fora e as obsoletas são relatadas
   - ✓ Documentação preexistente permanece intocada
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 

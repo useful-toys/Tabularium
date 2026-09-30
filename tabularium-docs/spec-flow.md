@@ -124,7 +124,7 @@ flowchart LR
 
 1. **Instalar ou atualizar**: `curl -fsSL <url>/INSTALL.sh | sh` ou `irm <url>/INSTALL.ps1 | iex`, na raiz do repositório. Precisa só de git e do shell nativo.
    - Instala a última tag `vX.Y.Z` publicada, ou a pedida em `TABULARIUM_VERSION`. A origem vem de `TABULARIUM_SOURCE`, do `.tabularium` ou do repositório oficial.
-   - Recusa rodar se existir `CLAUDE.md` na raiz ou em `spec/`, e orienta migrar o conteúdo para `AGENTS.md` à mão. Recusa também rodar no próprio repositório do tabularium.
+   - Recusa rodar se existir `CLAUDE.md` na raiz ou em `spec/`, e orienta migrar o conteúdo para `AGENTS.md` à mão. Recusa também rodar no próprio repositório do tabularium, com os marcadores do processo incompletos ou repetidos no `AGENTS.md` (corrija à mão), sem versão publicada, com versão fora do padrão `vX.Y.Z` ou com uma tag sem `tabularium.manifest`.
    - Recusa voltar para uma versão menor que a instalada, salvo com `TABULARIUM_ALLOW_DOWNGRADE=1`.
    - Apaga os arquivos que saíram do manifesto (os listados no `.tabularium` anterior e ausentes do novo) e copia os do manifesto, sobrescrevendo.
    - No `AGENTS.md`, troca só o bloco entre `<!-- tabularium:begin -->` e `<!-- tabularium:end -->`. Sem `AGENTS.md`, cria-o só com o bloco; sem os marcadores, põe o bloco no início. O resto do arquivo não é tocado.

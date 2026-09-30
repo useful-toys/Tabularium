@@ -18,6 +18,7 @@ O mesmo comando instala e atualiza:
 - no `AGENTS.md`: sem ele, cria-o só com o bloco do processo; com ele, troca só o bloco entre os marcadores, ou o insere no início se não houver, sem tocar o resto;
 - grava em `.tabularium` a origem, a versão e os arquivos instalados;
 - recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`: migre o conteúdo para `AGENTS.md` à mão e apague-o;
+- recusa instalar no próprio repositório do tabularium, com marcadores do processo incompletos ou repetidos no `AGENTS.md` (corrija à mão), sem versão publicada, com versão fora do padrão `vX.Y.Z` ou com uma tag sem `tabularium.manifest`;
 - recusa voltar para versão menor que a instalada;
 - nunca faz commit.
 

@@ -12,15 +12,22 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 Mudança no próprio template (`tabularium-spec/`, só no repositório do template): siga a seção "Mudança no próprio template" no lugar dos passos 3 a 5.
 
 ## 1. Fontes
-- Origem issue: `gh issue view <N> --comments`, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`.
+- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com issue triada como requirement (label `requirement`): com `bug` ou `plan`, pare e explique que essas issues não seguem este ciclo e terão tratamento próprio, por skills dedicadas, ainda por especificar; sem triagem, pare e sugira `/spec-grill #N`.
 - Origem PR: `gh pr view <N> --comments` e `gh pr diff <N>`, com os mesmos resumos.
 - Origem texto livre: o que foi decidido nesta conversa, inclusive os resumos de spec-grill e spec-ideas apresentados nela.
 - Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.
 - Se algo necessário não estiver decidido, pare e sugira `/spec-grill`.
 
+## 1a. Portão
+Esta etapa aplica o portão da proposta. Só siga se a ideia estiver madura o bastante para casar com a spec vigente:
+- a triagem é requirement issue (label `requirement`, ou ideia da conversa triada como requirement);
+- nada necessário está em aberto: o `Em aberto` do corpo da issue não tem pendências e cada decisão tem o porquê;
+- o texto final se aplica à `main` atual e a spec resultante, com os documentos técnicos fundamentais e as decisões, não tem contradição (seção 3a); só pode contrariar item ou decisão vigente quem declara a mudança (`⇢` com decisão criada ou alterada).
+Se algo falhar, não abra nem atualize o PR: a proposta volta ao passo 1 do fluxo, isto é, à conversa. Devolva a lista do que o portão apontou como faltando e sugira continuar o `/spec-grill`, agora com essa lista.
+
 ## 2. Branch
 - **Origem PR**: use a branch do PR. Rebase na `main` atual (`git fetch`, `git rebase origin/main`) e publique com `git push --force-with-lease`.
-  - A descrição do PR guia o reencaixe: reescreva o diff para cumprir a intenção descrita sobre a nova base, não só para resolver conflito de texto.
+  - A descrição do PR guia o novo casamento: reescreva o diff para cumprir a intenção descrita sobre a nova base, não só para resolver conflito de texto.
   - Se a intenção não couber mais na nova base, pare e pergunte ao usuário.
 - **Demais origens**: crie uma branch a partir da `main` atual.
 
@@ -47,7 +54,7 @@ Antes de criar ou atualizar o PR, valide a spec resultante: o diff aplicado sobr
 - termo usado fora do sentido do glossário, sinônimo não canônico ou termo de domínio sem definição;
 - lacuna de cascata: item que depende de outro inexistente ou removido.
 
-Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o reencaixe.
+Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o novo casamento.
 
 ## 4. PR
 - Commit e push. O PR nunca inclui código e não leva label de tipo: o CI deduz o tipo (`spec-compatible` ou `spec-incompatible`) e aplica a label. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.
@@ -67,7 +74,7 @@ Proposta de requisito. Refs #<issue>
 ```
   Sem issue, o resumo da conversa (esmiuçado e sugestões) vai também na descrição.
 - **Origem PR**: atualize o título e a descrição (`gh pr edit`) e comente o que mudou nesta revisão, inclusive a defasagem resolvida.
-- **Origem issue**: comente na issue as decisões adicionais tomadas desde o último resumo e o link do PR. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
+- **Origem issue**: atualize o corpo da issue (`gh issue edit <N> --body-file`) só na linha `Proposta: #<PR>`, sem reescrever o resto, e comente as decisões adicionais tomadas desde o último resumo, no formato de comentário do `/spec-issue`. Se a issue ainda não teve o primeiro toque, use antes o `/spec-issue` para guardar a `Solicitação original`. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
 
 ## 5. Fechamento
 Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.
@@ -79,7 +86,8 @@ A definição do template é `tabularium-spec/` junto com tudo o que o template 
   1. **Você**, que tem as decisões e os porquês da conversa: `tabularium-spec/` (documentos e decisões) e os arquivos da definição alinhados a ela: instruções, skills, script e testes, workflows, `tabularium.manifest` e `INSTALL.sh` e `INSTALL.ps1` (a mesma lógica nos dois). Se a mudança exigir, adapte também o exemplo em `spec/`. Todo item de `tabularium-spec/` fica com `✓`; sem item comprometido e sem `⇢`. Decisões seguem as mesmas operações do passo 3.
   2. **Revisão por subagente**, com contexto limpo: ele lê só `tabularium-spec/` e o diff da branch e aponta instrução, skill, script, workflow, manifesto ou INSTALL desalinhado com a spec, ou inválido. Corrija os achados, ou leve ao usuário os que pedirem decisão, antes de seguir.
   3. **Documentos derivados por subagentes, em paralelo**, cada um lendo só os arquivos finais, nunca a conversa:
-     - `README.md`: o que é e os diferenciais, conforme `tabularium-spec/product.md`; o fluxo resumido; cada skill em uma linha; as partes operacionais (estrutura, adoção, comandos) atualizadas;
+     - `README.md`: o que é e os diferenciais, conforme `tabularium-spec/product.md`; o fluxo resumido; cada skill em uma linha; uma seção com os links para `tabularium-docs/` (instalar, configurar e manter), sem comando de instalação nem detalhe técnico ou operacional;
+     - `tabularium-docs/install.md`, `config.md` e `maintenance.md`: o detalhe operacional (instalação, variáveis e versões; configuração; proteção da `main`, revisão consultiva e mudança do próprio tabularium), regerado dos arquivos finais, com o cabeçalho de documento derivado;
      - `tabularium-docs/spec-flow.md`: o fluxo completo, regerado a partir de `tabularium-spec/` e do comportamento das skills, com o cabeçalho de documento derivado.
   - Sem subagentes disponíveis, faça os passos 2 e 3 em sequência, relendo só os arquivos finais.
 - Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.

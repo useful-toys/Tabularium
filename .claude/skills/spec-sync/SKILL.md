@@ -19,7 +19,7 @@ Regras de formato: `spec/AGENTS.md`. Os compromissos já estão na `main` (itens
 4. **Mudança compatível com código**: requisito novo ou ajuste de item sem `✓`, sem contradizer nada, pode entrar direto neste PR, já com `✓`, inclusive com decisão nova que não viole decisão vigente.
 5. **Valide**: `node scripts/spec.mjs check --base origin/main`. O check informa o tipo deduzido: entrega pura é `spec-neutral`.
 
-PR de código que não entrega nem muda comportamento (refatoração, teste) não passa por esta skill: o CI o classifica como `spec-neutral`.
+PR de código que não entrega nem muda comportamento (refatoração, teste) não passa por esta skill: o CI o classifica como `spec-neutral`. O mesmo vale para a correção de um bug (o código contradiz item `✓`): não há compromisso a marcar e a spec não muda.
 
 ## PR
 - A descrição cita a issue com `Closes #N`, se houver: a issue fecha na entrega.

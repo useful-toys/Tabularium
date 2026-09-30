@@ -1,0 +1,31 @@
+name: Issue
+description: Um comportamento indesejado, uma necessidade ou uma ideia. A triagem decide o que é; nada é decidido aqui.
+body:
+  - type: dropdown
+    id: palpite
+    attributes:
+      label: Você acha que é
+      description: Só um palpite, para ajudar a triagem.
+      options:
+        - Um bug (o produto faz diferente do esperado)
+        - Um requisito (mudar, criar ou remover algo)
+        - Não sei
+    validations:
+      required: true
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição
+      description: O que acontece ou o que falta, e por que isso é um problema. Não precisa estar completo; o /spec-grill ajuda a amadurecer.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamento esperado
+      description: O que você esperava, e o item da spec que diz isso, se souber.
+  - type: textarea
+    id: reproduzir
+    attributes:
+      label: Como reproduzir
+      description: Passos, dados e ambiente, se for um comportamento observado.

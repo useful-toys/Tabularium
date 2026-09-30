@@ -7,7 +7,7 @@
 //   --spec <pasta>  pasta da spec (padrão: spec)
 //
 // Documentos com itens: product.md, model.md (modelo conceitual, opcional) e
-// <camada>.md (documento técnico opcional de cada camada além de product).
+// <camada>.md (documento técnico obrigatório de cada camada declarada além de product).
 //
 // Regras de formato: spec/AGENTS.md.
 
@@ -428,7 +428,22 @@ function git(root, args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' });
 }
 
-// Documentos com itens da spec: product.md sempre; model.md e <camada>.md se existirem.
+// Arquivo e pasta de decisões obrigatórios de cada camada declarada.
+function missingLayerFiles(root, spec, config) {
+  const errors = [];
+  for (const layer of config.layers) {
+    if (layer !== 'product' && !existsSync(join(root, spec, `${layer}.md`))) {
+      errors.push(`${spec}/${layer}.md ausente: o documento técnico da camada declarada é obrigatório`);
+    }
+    if (!existsSync(join(root, spec, 'decisions', layer))) {
+      errors.push(`${spec}/decisions/${layer}/ ausente: a pasta de decisões da camada declarada é obrigatória`);
+    }
+  }
+  return errors;
+}
+
+// Documentos com itens da spec que existem: product.md sempre; model.md, se existir; <camada>.md das
+// camadas declaradas (a falta de um deles é erro, reportado por missingLayerFiles).
 export function specDocs(root, spec, config) {
   const docs = [{ file: 'product.md', kind: 'product' }, { file: 'model.md', kind: 'model' }];
   for (const layer of config.layers) {
@@ -440,11 +455,12 @@ export function specDocs(root, spec, config) {
 export function check(root, { base, labels = [], spec = 'spec', requireType = false } = {}) {
   const config = loadConfig(root, spec);
   const { locale } = config;
-  const errors = [];
+  const errors = missingLayerFiles(root, spec, config);
   const warnings = [];
   const info = [];
 
   for (const layer of config.layers) {
+    if (!existsSync(join(root, spec, 'decisions', layer))) continue;
     const mapPath = join(root, spec, 'decisions', layer, 'README.md');
     const current = existsSync(mapPath) ? readFileSync(mapPath, 'utf8').replace(/\r\n/g, '\n') : '';
     if (current !== mapFor(root, layer, locale, spec)) {

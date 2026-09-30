@@ -526,6 +526,26 @@ test('check: documento técnico de camada é validado e segue as regras de PR', 
   }
 });
 
+test('check: camada declarada exige o documento técnico e a pasta de decisões', () => {
+  const r = repo();
+  try {
+    const cfg = join(r.dir, 'spec', 'config.json');
+    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"product"', '"product",\n    "architecture"'));
+    const errors = check(r.dir).errors;
+    assert.ok(errors.some((e) => e.includes('architecture.md ausente')));
+    assert.ok(errors.some((e) => e.includes('decisions/architecture/ ausente')));
+    mkdirSync(join(r.dir, 'spec', 'decisions', 'architecture'));
+    buildMaps(r.dir);
+    const after = check(r.dir).errors;
+    assert.ok(after.some((e) => e.includes('architecture.md ausente')));
+    assert.ok(!after.some((e) => e.includes('decisions/architecture/ ausente')));
+    writeFileSync(join(r.dir, 'spec', 'architecture.md'), '# Exemplo — Architecture\n');
+    assert.deepEqual(check(r.dir).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
 test('check avisa quando existe CLAUDE.md', () => {
   const r = repo();
   try {

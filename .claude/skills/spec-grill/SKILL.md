@@ -1,6 +1,6 @@
 ---
 name: spec-grill
-description: Esmiúça uma ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
+description: Faz a triagem de uma ideia ou issue (requirement issue, bug issue ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
 ---
 
 # spec-grill
@@ -13,7 +13,7 @@ Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-
 
 ## 1. Origem
 - **Texto livre**: a ideia descrita pelo usuário.
-- **Issue** (`#N` ou link): `gh issue view <N> --comments`. Leia o formulário e os resumos já publicados por spec-grill e spec-ideas; o que já está decidido ali não é perguntado de novo.
+- **Issue** (`#N` ou link): `gh issue view <N> --comments`. O corpo é o entendimento mais recente e os comentários são o histórico: importe os dois, inclusive a `Solicitação original` e o que pessoas escreveram. O que já está decidido no corpo não é perguntado de novo. Issue sem o formato de `/spec-issue` é texto bruto: trate o texto todo como o que se quer entender.
 - **PR de proposta** (`#N` ou link): `gh pr view <N> --comments` e `gh pr diff <N>`. Compare também com a `main` atual (`git fetch` e `git diff <base-do-PR>..origin/main -- spec/`): o que mudou na `main` desde que o PR foi aberto e que colide com a proposta é a **defasagem**, e entra como pergunta.
 
 ## 2. Contexto
@@ -29,13 +29,26 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 - Use a ferramenta de pergunta interativa, com até 4 perguntas por chamada e 2–4 opções cada, colocando a recomendada primeiro, marcada "(Recomendado)". Sem essa ferramenta, use texto numerado com a recomendação.
 - Fatos você busca sozinho (código, spec, histórico). Decisões são do humano.
 
+**Raiz: a triagem.** Todo o resto depende do tipo, então você começa por ela. Ela não é uma etapa: acompanha a conversa inteira. Se o entendimento amadurecer e mostrar que o tipo era outro (por exemplo, a requirement issue é na verdade um bug, ou já está coberta pela spec), sugira alterar a triagem já decidida, com a evidência; a alteração vale com a confirmação do usuário.
+- Issue com a label `requirement` já está triada: não pergunte de novo, mas reavalie se surgir evidência nova ou se o usuário discordar.
+- Issue com a label `plan`: não segue este ciclo. Hoje esta skill a recusa; diga que planos terão tratamento próprio, por skills dedicadas, ainda por especificar, e encerre, sem esmiuçar.
+- Issue com a label `bug`: recuse do mesmo modo, apontando que bugs terão skills dedicadas, e encerre.
+- Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare a issue ou ideia com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
+- A triagem termina em:
+  - **requirement issue**: siga.
+  - **bug issue** (a issue ou ideia contradiz item `✓`): sugira ao usuário a bug issue, recuse-a e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. Diga que hoje esta skill a recusa, e que bugs terão tratamento próprio, por skills dedicadas, ainda por especificar.
+  - **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado, ou não é problema): aponte o item e encerre. Origem issue: a issue é fechada como descartada. Origem ideia: nada a publicar.
+  - **Mistura**: proponha separar em duas issues ligadas.
+- Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label, criar a bug issue ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.
+- Issue que ninguém levou à conversa continua sem triagem.
+
 O que perguntar:
 - **Contra o glossário**: termo usado com outro sentido, ou termo novo. "O glossário define X como…, e você parece querer dizer…". Proponha o termo canônico.
 - **Contra o modelo conceitual**: relações, cardinalidades, estados, transições e invariantes que a ideia cria, muda ou contradiz. Entidade nova pede termo no glossário e bloco no modelo.
 - **Contra regras transversais e não funcionais**: a ideia respeita cada uma que a alcança?
 - **Contra decisões vigentes**: a ideia contraria alguma? Se sim, é mudança incompatível: confirme e pergunte o porquê da virada.
 - **Contra o código**: o que a ideia afirma sobre o comportamento atual confere?
-- **Tipo**: incompatível (`⇢`), compatível ou editorial (tipos em `spec/AGENTS.md`)?
+- **Tipo de mudança**: incompatível (`⇢`), compatível ou editorial (tipos em `spec/AGENTS.md`)?
 - **Consistência**: a ideia deixa a spec com contradição entre itens, entre documentos ou com decisões, conceito repetido, termo fora do sentido do glossário ou lacuna de cascata? Inconsistência que já existe na área tocada também vira pergunta: a proposta não publica sobre uma spec inconsistente.
 - **Cascata**: requisitos, regras, glossário, modelo conceitual, fora de escopo e decisões que mudam junto.
 - **Cenários de borda**: invente casos concretos que forcem a precisão (limites, vazio, erro, concorrência).
@@ -44,14 +57,15 @@ O que perguntar:
 
 ## 4. Memória
 Ao fim da sessão, ou quando o usuário pedir, apresente o resumo **na conversa**. Não o publique nem ofereça abrir issue por conta própria. Se o usuário quiser guardá-lo:
-- numa issue nova ou existente: `/spec-issue`;
+- numa requirement issue, nova ou existente: `/spec-issue`;
 - como proposta: `/spec-propose`.
 
 Formato do resumo:
 ```markdown
 <!-- spec-grill -->
 ## Esmiuçado
-- Tipo: <incompatível | compatível | editorial>
+- Triagem: <requirement issue | bug issue | descarte>, com a evidência (e o palpite do autor, se diferiu)
+- Tipo de mudança: <incompatível | compatível | editorial>
 - Decidido: <item → decisão, uma linha cada>
 - Porquês e alternativas: <para as decisões>
 - Cascata: <itens afetados>

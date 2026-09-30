@@ -17,17 +17,20 @@
   - ✓ pertence a 1 **Spec**; a Spec pode não ter modelo
   - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Documento técnico**
-  - ✓ pertence a 1 **Camada**; a Camada pode não ter documento técnico
+  - ✓ tipos: fundamental | auxiliar
+  - ✓ fundamental: pertence a 1 **Camada**, e toda Camada declarada além de produto tem um
+  - ✓ auxiliar: pertence a 1 **Spec**, opcional, e não é uma Camada
   - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Item**
-  - ✓ pertence a 1 **Documento de produto**
+  - ✓ pertence a 1 **Documento de produto** ou a 1 **Documento técnico**
   - ✓ tipos: **Requisito** | **Regra** | regra transversal | não funcional
   - ✓ **Regra** pertence a 1 **Requisito**
   - ✓ estados: comprometido | implementado | redefinido
   - ✓ comprometido → implementado: a entrega marca o item
-  - ✓ implementado → redefinido: uma mudança incompatível aceita anexa o texto desejado
+  - ✓ implementado → redefinido: uma mudança incompatível aceita anexa o texto desejado ou a indicação de remoção
   - ✓ redefinido → implementado: a entrega reescreve o item com o texto desejado
   - ✓ redefinido → implementado: a desistência descarta o texto desejado
+  - ✓ redefinido → apagado: a entrega de uma remoção apaga o item
 - ✓ **Camada**
   - ✓ pertence a 1 **Spec**
 - ✓ **Decisão**
@@ -37,22 +40,29 @@
 - ✓ **Mapa de decisões**
   - ✓ pertence a 1 **Camada**
   - ✓ derivado das decisões da camada; nunca escrito à mão
-- ✓ **Issue de requisito**
+- ✓ **Issue**
   - ✓ vive em 1 **Tracker**
-  - ✓ estados: aberta | fechada
-  - ✓ aberta → fechada: a entrega que a implementa é aceita
+  - ✓ nasce da descrição de uma pessoa ou de uma conversa
+  - ✓ estados: sem triagem | requirement | bug | plan | descartada
+  - ✓ sem triagem → requirement: a triagem a resolve como pedido de spec nova, diferente ou sem um item, ou omissa
+  - ✓ sem triagem → bug: a triagem a resolve como contradição de item implementado
+  - ✓ sem triagem → plan: a triagem a reconhece e, por ora, a recusa
+  - ✓ sem triagem → descartada: a spec já a cobre; ela é fechada
+  - ✓ requirement | bug | plan → outro estado: a triagem é alterada com evidência e confirmação de uma pessoa
+  - ✓ requirement: corpo é o entendimento mais recente, escrito pela IA; comentários são o histórico resumido, com a solicitação original no primeiro comentário da IA
+  - ✓ requirement fecha quando a entrega que a implementa é aceita
 - ✓ **Proposta**
   - ✓ altera 1 **Spec**
-  - ✓ refere 0..1 **Issue de requisito**
+  - ✓ refere 0..1 **Issue** em estado requirement
   - ✓ nunca contém código
-  - ✓ tipo: **Tipo de mudança**; compatível ou incompatível
-  - ✓ estados: rascunho | pronta | aceita | recusada
+  - ✓ tipo: **Tipo de mudança**; editorial, compatível ou incompatível
+  - ✓ estados, os do PR que a integra: rascunho | pronta | aceita | recusada
   - ✓ rascunho → pronta: o autor trata a revisão consultiva
   - ✓ pronta → rascunho: a proposta volta a ser discutida
   - ✓ pronta → aceita: um humano integra, ou o agente a pedido dele
-  - ✓ pronta → recusada: fechada sem integrar
+  - ✓ rascunho | pronta → recusada: fechada sem integrar
 - ✓ **Entrega**
-  - ✓ fecha 0..1 **Issue de requisito**
+  - ✓ fecha 0..1 **Issue** em estado requirement
   - ✓ implementa N **Item**
   - ✓ sempre contém código
   - ✓ tipo: **Tipo de mudança**; neutra, ou compatível ou incompatível quando traz mudança junto com o código

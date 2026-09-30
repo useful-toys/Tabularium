@@ -1,15 +1,17 @@
 ---
 tema: Como o ciclo de mudança é executado
-decisao: Skills para cada etapa, check bloqueante determinístico salvo a classificação do caso ambíguo, e revisão por agente só consultiva, feita pelo Copilot por padrão, pelo Claude ou pelos dois
+decisao: Skills para cada etapa, check bloqueante determinístico salvo a classificação do caso ambíguo, e revisão por agente só consultiva e independente da conversa, que não libera o rascunho, feita pelo Copilot por padrão, pelo Claude ou pelos dois
 carregar-quando: mudança nas etapas do ciclo, nas skills, no papel do CI ou em agentes no CI
 ---
-- Decisão: esmiuçar, sugerir, levar à issue, propor, revisar, sincronizar, verificar, extrair, configurar e organizar são skills; o CI bloqueia com regras determinísticas, do script ou do próprio fluxo de CI, e com uma exceção: no caso ambíguo, o tipo da mudança é julgado por um agente, e o tipo julgado pode bloquear, salvo quando uma pessoa aplica o rótulo de tipo; um agente revisa propostas e comenta, sem bloquear: a revisão de código do Copilot, seguindo o REVIEW.md, por padrão, e/ou o Claude num job do CI com chave própria, à escolha de quem adota
+- Decisão: esmiuçar, sugerir, levar à issue, propor, revisar, sincronizar, verificar, extrair, configurar e organizar são skills; o CI bloqueia com regras determinísticas, do script ou do próprio fluxo de CI, e com uma exceção: no caso ambíguo, o tipo da mudança é julgado por um agente, e o tipo julgado pode bloquear, salvo quando uma pessoa aplica o rótulo de tipo; um agente revisa propostas e comenta, sem bloquear, só pelo texto final da spec (arquivos ou diff), sem a conversa, como segunda visão das mesmas regras do portão da proposta, que o `/spec-propose` aplica com o contexto da conversa; o julgamento do agente nunca bloqueia nem libera o rascunho da proposta, que só o autor libera, e sem ressalvas o CI apenas sinaliza: a revisão de código do Copilot, seguindo o REVIEW.md, por padrão, e/ou o Claude num job do CI com chave própria, à escolha de quem adota
 - Contexto: processo só descrito em texto se perde; e um agente que decide sozinho pode ser manipulado pelo próprio conteúdo que avalia, além de variar entre execuções
 - Alternativas descartadas
   - Só documentação e modelos: sem garantia de que o ciclo é seguido
   - Skills sem CI: nada impede um PR que quebre a sincronia
   - Agente no CI como bloqueio: vulnerável a instruções embutidas na proposta e não determinístico; vale para a revisão, não para a classificação do caso ambíguo, em que o rótulo aplicado por uma pessoa sempre vence
   - Classificação por agente só consultiva: o tipo governa as regras do check, e um tipo errado as burla
+  - CI que libera o rascunho sem ressalvas: o rascunho é a declaração do autor de que a proposta está pronta, a ausência de ressalvas de um agente não é aprovação, o resultado pode variar entre execuções, e o CI passaria a precisar de mais permissão
+  - Ressalvas do agente como bloqueio, com override humano: complexidade sem necessidade; o que o script prova já bloqueia
   - Análise só pelo autor, localmente: depende de lembrar de rodar
   - Agente de revisão à escolha, sem padrão: o Copilot já vem com o GitHub, a plataforma assumida, e dispensa chave própria
   - Um único agente de revisão fixo: prende o template a uma assinatura ou chave específica
@@ -18,6 +20,7 @@ carregar-quando: mudança nas etapas do ciclo, nas skills, no papel do CI ou em 
   - Aceita: duas configurações a manter coerentes (REVIEW.md e o prompt do job); o Copilot não mantém o comentário único da revisão; um check bloqueante depende de agente no caso ambíguo
 
 ## Histórico
+- 2026-09-30 #21: a revisão é uma segunda visão, independente da conversa; o CI só bloqueia o que prova e não libera o rascunho
 - 2026-09-26 #14: classificação do caso ambíguo por agente pode bloquear
 - 2026-09-26 #13: regras determinísticas também no fluxo de CI
 - 2026-09-24 #10: sem o termo revisor

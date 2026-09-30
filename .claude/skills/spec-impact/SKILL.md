@@ -1,6 +1,6 @@
 ---
 name: spec-impact
-description: Analisa o impacto de uma ideia ou mudança sobre a spec viva. Três modos - sobre uma issue ou texto (o que mudaria, sob demanda), sobre um PR de proposta (revisão consultiva do texto proposto - tipo, cascata, decisões, conflitos, consistência e forma) e classificação (tipo de mudança do caso ambíguo, usado pelo CI). No modo PR, publica ou atualiza um comentário no PR; roda no CI e localmente. Nunca aprova nem reprova.
+description: Analisa o impacto de uma ideia ou mudança sobre a spec viva. Três modos - sobre uma issue ou texto (triagem sugerida e o que mudaria, sob demanda), sobre um PR de proposta (revisão consultiva do texto proposto - tipo, cascata, decisões, conflitos, consistência e forma) e classificação (tipo de mudança do caso ambíguo, usado pelo CI). No modo PR, publica ou atualiza um comentário no PR; roda no CI e localmente. Nunca aprova nem reprova.
 ---
 
 # spec-impact
@@ -15,12 +15,19 @@ Regras de formato: `spec/AGENTS.md`. Esta skill só analisa: não edita arquivos
 - Propostas abertas: `gh pr list --state open --search "label:spec-compatible,spec-incompatible"`.
 
 ## Modo issue ou texto
-Entrada: `#N` de uma issue (`gh issue view <N> --comments`) ou texto livre.
+Entrada: `#N` de uma issue (`gh issue view <N> --comments`) ou texto livre. Numa issue, o corpo é o entendimento mais recente e os comentários são o histórico.
 1. Resuma a necessidade em 2–3 linhas.
-2. Liste os itens tocados, inclusive em cascata: requisitos, regras, transversais, não funcionais, glossário, modelo conceitual, fora de escopo e decisões.
-3. Classifique cada efeito: incompatível, compatível ou editorial.
-4. Aponte conflitos com `⇢` em aberto, com outras propostas abertas e inconsistências da spec que o tema toca.
-5. Responda no chat. Comente na issue só se o usuário pedir.
+2. **Triagem**: só para issue sem triagem (sem os rótulos `requirement`, `bug` ou `plan`). O que quem abriu acha que ela é vale só como palpite. Compare a issue ou ideia com a spec e sugira o resultado, com a evidência (item da spec, decisão ou código):
+   - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue**;
+   - contradiz item `✓`: **bug issue**, que não segue o ciclo: terá tratamento próprio, por skills dedicadas, ainda por especificar;
+   - já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: **descarte**, com o item apontado;
+   - mistura de bug e requirement: sugira separar em duas issues ligadas;
+   - não dá para decidir: diga o que falta saber. O `/spec-grill` resolve com o usuário.
+   Issue `plan` ou `bug`: não segue o ciclo; diga isso e pare. Issue `requirement` já está triada: apenas confira se ainda vale.
+3. Só para requirement issue: liste os itens tocados, inclusive em cascata: requisitos, regras, transversais, não funcionais, glossário, modelo conceitual, fora de escopo e decisões.
+4. Classifique cada efeito: incompatível, compatível ou editorial.
+5. Aponte conflitos com `⇢` em aberto, com outras propostas abertas e inconsistências da spec que o tema toca.
+6. Responda no chat. É sugestão: quem decide é uma pessoa, e a label aplicada por ela vence. Não troque label. Comente na issue só se o usuário pedir.
 
 ## Modo PR (revisão consultiva)
 Entrada: `#N` de um PR (`gh pr view <N> --comments`, `gh pr diff <N>`). PR com a label `tabularium` é mudança no próprio template, não proposta de produto: não revise. Examine o diff da spec contra a `main` atual:

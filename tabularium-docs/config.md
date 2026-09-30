@@ -8,6 +8,8 @@ Alterado só pelo `/spec-init`, que pode ser refeito a qualquer momento.
 
 **Caminhos de código** (`codePaths`): as pastas ou arquivos do código do produto (ex.: `src/`, `app/`), casados por prefixo; só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código, e é perguntada de novo a cada `/spec-init`; configuração sem a lista é recusada pelo script. O `/spec-init` sugere a lista a partir das pastas do repositório e a atualiza quando o código muda de lugar.
 
+**Camadas** (`layers`): `product` sempre existe, e o projeto declara as camadas técnicas fundamentais, como `architecture`, `integration` ou `data`. Cada camada declarada exige o documento `spec/<camada>.md` e a pasta `spec/decisions/<camada>/`: o check falha se faltar um deles, e o `/spec-init` os cria. Documentos técnicos auxiliares, como telas ou guia de estilo, são opcionais e não são camadas.
+
 **Idioma**: estrutura sempre em inglês; conteúdo no idioma configurado. O script traz embutidos os textos da verificação em `pt-BR`; outro idioma recebe os textos em `spec/locales/<idioma>.json`, com as mesmas chaves, criado pelo `/spec-init`. O script nunca é editado no projeto. Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido.
 
 ## Repositório: proteção da `main`

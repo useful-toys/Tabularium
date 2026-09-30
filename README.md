@@ -109,20 +109,20 @@ A triagem termina em uma de três classificações:
 - **Requirement issue** (label `requirement`): pede uma spec nova, alterada ou removida, ou a spec é omissa no assunto. Segue o ciclo abaixo.
 - **Bug issue** (label `bug`): o produto contradiz um item que a spec diz estar implementado (`✓`). É um defeito do código, não uma mudança de requisito.
   - Se a origem é uma issue, ela ganha a label `bug`. Se é uma ideia, a issue é criada.
-  - A correção (hotfix) é um PR de código que parte dessa issue. Ela fica fora do ciclo de proposta e não muda a spec.
+  - O `/spec-grill` a recusa e para. O tratamento da bug issue será definido em um processo dedicado, ainda por especificar.
 - **Descarte**: a spec já cobre o pedido, mesmo que seja um item comprometido e ainda não implementado.
   - A issue de origem é fechada, com um comentário que aponta o item da spec.
   - Uma ideia é só abandonada.
 
-O `/spec-impact` pode sugerir a classificação. O `/spec-grill` resolve o que ficou incerto com o usuário. Quem decide é uma pessoa, e a label que ela aplica vence. Issue com a label `plan` é recusada, porque o tratamento de planos ainda não está definido.
+O `/spec-impact` pode sugerir a classificação. O `/spec-grill` resolve o que ficou incerto com o usuário. Quem decide é uma pessoa, e a label que ela aplica vence. Issue com a label `plan` também é recusada pelo `/spec-grill`. O tratamento de planos será definido em um processo dedicado, ainda por especificar.
 
 As labels das issues são aplicadas só pela triagem, e uma pessoa pode sempre trocá-las:
 
 | Label | Uso |
 |---|---|
 | `requirement` | issue triada com ideia de requisito, que segue o ciclo de proposta |
-| `bug` | issue triada como divergência do código em relação à spec, corrigida por hotfix |
-| `plan` | reconhecida só para recusa: a issue não segue o ciclo até o tratamento de planos ser definido |
+| `bug` | issue triada como divergência do código em relação à spec; recusada até o processo de bug ser especificado |
+| `plan` | reconhecida só para recusa: a issue não segue o ciclo até o processo de planos ser especificado |
 
 **3. A ideia amadurece, e a issue guarda o que já foi entendido.** Isso é útil quando o usuário decide continuar depois. A conversa não deixa nada no repositório. Para não perder o entendimento entre sessões, o usuário pede `/spec-issue`. Ele guarda tudo numa requirement issue, nova ou existente:
 - O corpo é sempre o entendimento mais recente, reescrito só pelo agente.

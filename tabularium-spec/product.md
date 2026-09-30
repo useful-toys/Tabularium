@@ -15,8 +15,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas, como interface ou arquitetura, dependem da aplicação
 - **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
-- **Documento técnico**: arquivo opcional que descreve o estado atual de uma camada técnica, como interface ou arquitetura
-- **Documento de referência**: documento com itens de uma camada: na de produto, o documento de produto e o modelo conceitual; numa técnica, o documento técnico, quando existe
+- **Documento técnico**: arquivo que descreve o estado atual de uma camada técnica, como interface ou arquitetura; o fundamental, de uma camada declarada, é obrigatório, e o auxiliar, complementar e de menor impacto, é opcional
+- **Documento de referência**: documento com itens de uma camada: na de produto, o documento de produto e o modelo conceitual; numa técnica, o documento técnico fundamental
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
 - **Tipo de domínio**: conjunto de valores válidos de um atributo, com natureza, restrições de negócio e unidade
@@ -38,7 +38,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
 - **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
 - **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue sem essa resolução está sem triagem
-- **Bug issue**: issue triada como comportamento que contradiz item implementado, a corrigir por hotfix, um PR de código sem mudança na spec
+- **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; seu tratamento será definido em processo dedicado
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -120,7 +120,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Produto sem estrutura relevante dispensa o modelo
 
 ### Documentos técnicos
-- ✓ Descrever uma camada técnica, como interface ou arquitetura, num documento técnico próprio, opcional
+- ✓ Descrever cada camada técnica fundamental, como arquitetura ou integração, num documento técnico próprio, obrigatório para a camada declarada
+  - ✓ Documento técnico auxiliar, sobre questões complementares e de menor impacto, como telas ou guia de estilo, é opcional e independente das camadas fundamentais
   - ✓ Seções livres; autocontido e atemporal, como o documento de produto
   - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
   - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
@@ -163,12 +164,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ A issue só está triada quando vira requirement issue, vira bug issue ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
   - ✓ A issue sem conversa continua sem triagem, sem automação
   - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement issue, que segue o ciclo
-  - ✓ Contradiz item implementado: bug; a conversa sugere a bug issue, aplicando o rótulo bug à issue de origem ou, se a origem é uma ideia, criando a issue; o hotfix parte dela e fica fora deste ciclo
+  - ✓ Contradiz item implementado: bug; a conversa sugere a bug issue, aplicando o rótulo bug à issue de origem ou, se a origem é uma ideia, criando a issue; a conversa a recusa e aponta o processo dedicado, ainda por definir
   - ✓ Já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: descartada; a issue de origem é fechada como descartada, com um comentário que aponta o item, e a ideia de origem é abandonada sem publicar nada
   - ✓ Mistura de bug e requirement: separa em duas issues ligadas
   - ✓ O que quem abre a issue acha que ela é vale só como palpite; o rótulo aplicado por uma pessoa vence a sugestão
   - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara, inclusive para a ideia nascida na conversa
-  - ✓ A issue de plano, com o rótulo plan, não segue este ciclo e é recusada na conversa
+  - ✓ A issue de plano, com o rótulo plan, é reconhecida e recusada na conversa, que aponta o processo dedicado, ainda por definir
 - ✓ Levar a pedido para uma requirement issue, nova ou existente, o que foi decidido e sugerido na conversa
   - ✓ Uma ideia nasce numa issue aberta por uma pessoa ou numa conversa com o agente
   - ✓ O corpo da issue é o entendimento mais recente: evidência da triagem, problema, decidido, descartado com motivo, cascata e o que está em aberto

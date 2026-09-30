@@ -45,15 +45,16 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
   - sem marca: comprometido, isto é, aceito e ainda não implementado;
   - `✓ atual ⇢ desejado`: redefinido; o texto atual vale até a entrega, e o desejado, depois dela.
 - **Modelo conceitual** (`model.md`, opcional): tipos e entidades do domínio, com relações, estados e invariantes. É um modelo de conceitos, não de banco de dados. Quando existe, é lido sempre junto com o `product.md`.
-- **Documentos técnicos** (`<camada>.md`, opcionais): estado atual de uma camada técnica, como interface ou arquitetura.
+- **Documentos técnicos fundamentais** (`<camada>.md`, obrigatórios): estado atual de cada camada fundamental que o projeto declara, como arquitetura, integração ou dados. Camada fundamental é aquela cuja alteração depois da adoção causa grande impacto.
+- **Documentos técnicos auxiliares** (opcionais): questões complementares e de menor impacto, como telas, fluxos ou guia de estilo. Não são camadas.
 - **Registros de decisão** (`decisions/<camada>/`): um arquivo curto por escolha não óbvia, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. Parecem ADRs, mas só as decisões em vigor ficam na pasta.
-- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, interface, arquitetura…) tem seu documento de referência e suas decisões; a de produto sempre existe.
+- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, arquitetura, integração…) tem seu documento de referência e suas decisões, ambos obrigatórios, e o check falha se faltar um deles; a de produto sempre existe.
 - **Textos de idioma** (`locales/<idioma>.json`, opcional): textos da verificação para um idioma que o script não traz embutido.
 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa requirement issue.
 
 **Como uma mudança de requisito acontece**
-1. **Conversa**: a conversa é o centro. Entram nela uma ideia, uma issue genérica (sem triagem; por exemplo, aberta pelo formulário `issue`, cujo palpite de tipo não vale nada) ou uma requirement issue já triada. A **triagem** é um processo contínuo da conversa, contra a spec, sem etapa definida; a IA pode sugerir alterá-la quando o entendimento amadurece. Ela termina em requirement issue, bug issue (o hotfix parte dela, fora do ciclo) ou descarte (a spec já cobre a issue ou ideia, inclusive com item comprometido). Issue `plan` é recusada. Para a requirement issue, a ideia é refinada: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. A pedido, o entendimento é guardado numa requirement issue, que volta à conversa quando preciso. Issue sem conversa fica sem triagem.
+1. **Conversa**: a conversa é o centro. Entram nela uma ideia, uma issue genérica (sem triagem; por exemplo, aberta pelo formulário `issue`, cujo palpite de tipo não vale nada) ou uma requirement issue já triada. A **triagem** é um processo contínuo da conversa, contra a spec, sem etapa definida; a IA pode sugerir alterá-la quando o entendimento amadurece. Ela termina em requirement issue, bug issue (recusada; o tratamento será definido em processo dedicado) ou descarte (a spec já cobre a issue ou ideia, inclusive com item comprometido). Issue `plan` também é recusada. Para a requirement issue, a ideia é refinada: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. A pedido, o entendimento é guardado numa requirement issue, que volta à conversa quando preciso. Issue sem conversa fica sem triagem.
 2. **Proposta**: o `/spec-propose` aplica o portão da proposta. Só passa com triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e spec resultante, com os documentos técnicos fundamentais e as decisões, sem contradição; contrariar item ou decisão vigente só vale se a mudança for declarada (`⇢` com decisão). Se falhar, devolve à conversa com o que falta; se passar, abre um pull request em draft, que altera só a spec.
 3. **Revisão**:
    - o CI deduz o **tipo da mudança** (editorial, neutra, compatível ou incompatível) e aplica a label; quando o diff não mostra se o sentido mudou, a IA julga; a label aplicada por uma pessoa vence;
@@ -62,7 +63,7 @@ Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou
 4. **Aceite**: uma pessoa com permissão de merge decide integrar. Não há aprovação formal obrigatória. O merge transforma a proposta em compromisso: os itens entram sem `✓`, ou com `⇢`.
 5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens com `✓`. O CI impede resolver um `⇢` num PR sem código.
 
-Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`. Um **bug** (comportamento que contradiz item `✓`) é hotfix: PR de código neutro, sem proposta e sem mudar a spec, com `Closes #N`.
+Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`. Um **bug** (comportamento que contradiz item `✓`) não segue o ciclo de requisitos: seu tratamento será definido em processo dedicado.
 
 **O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`, casados por prefixo. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
 
@@ -86,7 +87,7 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 |---|---|---|
 | `spec/product.md` | O que é, diferenciais, glossário, requisitos por domínio (requisito → regras), regras transversais, não funcionais, fora de escopo | Seções nessa ordem; autocontido (sem links nem referências), atemporal, só comportamento observável, sem IDs, uma casa por conceito |
 | `spec/model.md` | Modelo conceitual, opcional: `## Tipos` e `## Entidades` (relações com cardinalidade, estados, transições, invariantes) | Vem do comportamento, nunca do schema; sem implementação; tipos com natureza de lista fechada; todo nome em negrito é termo do glossário ou tipo declarado |
-| `spec/<camada>.md` | Documento técnico opcional de uma camada além de `product`, com seções livres | Autocontido e atemporal; mesmos estados e regras de mudança dos itens |
+| `spec/<camada>.md` | Documento técnico fundamental, obrigatório, de cada camada declarada além de `product`, com seções livres | Autocontido e atemporal; mesmos estados e regras de mudança dos itens; o check falha se faltar |
 | `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo, nomeado pelo slug: frontmatter `tema`, `decisao`, `carregar-quando`; depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas"; o porquê vem do humano |
 | `spec/decisions/<camada>/README.md` | Mapa de decisões, gerado por `node scripts/spec.mjs build-map` | Nunca editado à mão; o agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
 | `spec/config.json` | Camadas, idioma, caminhos de código (`codePaths`) | Alterado só pelo `/spec-init`; nenhuma camada se chama `model`; caminhos casados por prefixo; lista vazia é projeto sem código; config sem a lista é recusada pelo script |
@@ -175,8 +176,8 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 - **Proposta** é o PR sem código com `spec-compatible` ou `spec-incompatible`.
 - Outras labels:
   - `requirement`: requirement issue, triada e a amadurecer;
-  - `bug`: issue triada como comportamento que contradiz a spec, corrigida por hotfix;
-  - `plan`: issue de plano, reconhecida só para ser recusada (planos ainda não tratados);
+  - `bug`: issue triada como comportamento que contradiz a spec, recusada até o processo de bug ser especificado;
+  - `plan`: issue de plano, reconhecida só para ser recusada (processo de planos ainda por especificar);
   - `tabularium`: PR que muda a definição do próprio tabularium, só no repositório do tabularium.
 - Os rótulos de issue só são aplicados pela triagem; o formulário não aplica nenhum. Issue sem `requirement`, `bug` ou `plan` está sem triagem.
 - Todas as labels são em inglês. O `/spec-init` cria `requirement`, `bug` e as labels de tipo.
@@ -204,7 +205,7 @@ O job `spec-check` roda quando o PR é aberto, reaberto, atualizado, marcado com
 
 O agente não aplica label de tipo por conta própria. Só aplica quando o CI pede a classificação de uma pessoa, e com o aval do humano.
 
-PR só de código, sem mudança na spec, é neutro, inclusive o hotfix de um bug. Por ora, o CI não julga se ele muda comportamento: isso fica para a revisão e para o `/spec-check`.
+PR só de código, sem mudança na spec, é neutro, inclusive a correção de um bug. Por ora, o CI não julga se ele muda comportamento: isso fica para a revisão e para o `/spec-check`.
 
 ### Ciclo de evolução
 
@@ -218,7 +219,7 @@ flowchart LR
     D -- sugestão aceita --> G1
   end
   C -- "/spec-issue, a pedido" --> RI
-  C -- "não é requirement" --> B["Bug issue (sugerida ao usuário)<br/>hotfix parte dela"]
+  C -- "não é requirement" --> B["Bug issue (sugerida ao usuário)<br/>recusada"]
   C -- "já coberta pela spec" --> X["Descartada"]
   C --> G{"Portão: maduro e consistente<br/>com a spec atual?<br/>(aplicado pelo /spec-propose)"}
   G -- "não: o que falta" --> C
@@ -226,20 +227,21 @@ flowchart LR
   P --> R["CI: tipo + label + check (bloqueia)<br/>revisão consultiva"] --> A["Humano decide o merge<br/>merge = compromisso"] --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
-Issue com o rótulo `plan` fica fora do ciclo:
+Issue com o rótulo `plan` ou `bug` fica fora do ciclo e é recusada pelo `/spec-grill`:
 
 ```mermaid
 flowchart LR
-  PL["Plan issue (rótulo plan)"] --> Z["Recusada: planos ainda não são tratados"]
+  PL["Plan issue (rótulo plan)"] --> Z["Recusada<br/>(comportamento a especificar)"]
+  BL["Bug issue (rótulo bug)"] --> Z
 ```
 
 1. **Triar e esmiuçar (`/spec-grill`)**: converge. Faz rodadas de perguntas sobre uma árvore de decisões; em cada rodada, pergunta tudo o que já pode ser decidido, com opções e uma recomendada.
    - **A raiz da árvore é a triagem**, processo contínuo da conversa, sem etapa definida: começa cedo, mas a IA pode sugerir alterá-la, com a confirmação de uma pessoa, quando o entendimento amadurece. Entram na conversa uma ideia, uma issue genérica ou uma requirement issue já triada. O palpite de quem abriu a issue não vale, e a issue sem `requirement`, `bug` ou `plan` está sem triagem. A issue ou ideia é comparada com a spec, e a triagem termina em:
-     - contradiz item `✓`: **bug issue** (rótulo `bug`): a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia; o hotfix parte dela, fora do ciclo;
+     - contradiz item `✓`: **bug issue** (rótulo `bug`): a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia; a conversa a recusa, e o tratamento será definido em processo dedicado;
      - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue** (rótulo `requirement`), segue o ciclo;
      - a spec já cobre a issue ou ideia, inclusive item comprometido sem `✓`: **descarte**, com a issue de origem fechada como descartada, com comentário que aponta o item; ideia descartada é só abandonada;
      - mistura de bug e requirement: duas issues ligadas.
-   - Requirement issue já triada vai direto à conversa. Issue com rótulo `plan` não segue o ciclo: é recusada, sem esmiuçar.
+   - Requirement issue já triada vai direto à conversa. Issue com rótulo `plan` ou `bug` não segue o ciclo: é recusada, sem esmiuçar.
    - O `/spec-impact` em modo issue é insumo opcional: sugere o veredito, com a evidência (item, decisão ou código); o `/spec-grill` resolve o que ficou incerto, inclusive para a ideia nascida na conversa; uma pessoa decide. O rótulo de uma pessoa vence a sugestão, e o tipo pode mudar durante a conversa, com a evidência em comentário. Triagem já confirmada no corpo da issue não é perguntada de novo, mas é reavaliada se surgir evidência nova.
    - Aceita texto livre, issue ou PR de proposta. Com issue, lê o corpo (entendimento mais recente) e os comentários (histórico), inclusive a `Solicitação original`. Com PR, compara com a `main` atual e transforma a defasagem em pergunta.
    - Lê sempre o `product.md` e o `model.md` inteiros e os mapas de decisões. Abre documentos técnicos e decisões à medida que a ideia os alcança.

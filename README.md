@@ -55,7 +55,7 @@ Descrevem questões complementares, cujo impacto é menor e que podem ser altera
 São independentes das camadas fundamentais e dos requisitos, e podem ser criados ou modificados sem afetar o núcleo do sistema.
 Tipicamente descrevem como são realizados os requisitos na prática, detalhando padrões, casos específicos.
 
-São opcionais, um por camada: por exemplo `spec/interface.md` (telas), `spec/flows.md` (fluxos) e `spec/style.md` (guia de estilo).
+São opcionais, e cada um trata de um assunto: por exemplo `spec/interface.md` (telas), `spec/flows.md` (fluxos) e `spec/style.md` (guia de estilo).
 
 ### Decisões
 

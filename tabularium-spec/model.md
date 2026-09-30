@@ -55,11 +55,11 @@
   - ✓ refere 0..1 **Issue** em estado requirement
   - ✓ nunca contém código
   - ✓ tipo: **Tipo de mudança**; editorial, compatível ou incompatível
-  - ✓ estados: rascunho | pronta | aceita | recusada
+  - ✓ estados, os do PR que a integra: rascunho | pronta | aceita | recusada
   - ✓ rascunho → pronta: o autor trata a revisão consultiva
   - ✓ pronta → rascunho: a proposta volta a ser discutida
   - ✓ pronta → aceita: um humano integra, ou o agente a pedido dele
-  - ✓ pronta → recusada: fechada sem integrar
+  - ✓ rascunho | pronta → recusada: fechada sem integrar
 - ✓ **Entrega**
   - ✓ fecha 0..1 **Issue** em estado requirement
   - ✓ implementa N **Item**

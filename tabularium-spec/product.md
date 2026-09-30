@@ -73,11 +73,11 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Nunca faz commit; o resultado entra por PR
 - ✓ Preparar o repositório remoto no GitHub
   - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
-  - ✓ Sugere a proteção da branch principal: verifica a situação atual da proteção no repositório remoto; se estiver desabilitada, pergunta ao usuário se deseja habilitá-la automaticamente; se sim, configura o GitHub remoto; senão, apresenta como configurá-la manualmente; se estiver habilitada, não faz nada
-  - ✓ Sugere a conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente: verifica no repositório remoto qual conferência está ligada, a do GitHub ou a do Claude, se houver alguma, e pergunta ao usuário qual deseja, mostrando a atual
-  - ✓ Só uma conferência fica ligada: se a escolhida já está ligada, não faz nada; senão, liga a escolhida e desliga a outra, depois de dizer ao usuário o que vai desligar e de ele confirmar
-  - ✓ Ligar ou desligar uma conferência é configurar o repositório remoto, ou apresentar como fazê-lo manualmente se o usuário preferir
-  - ✓ Se o usuário não quiser nenhuma, desliga a que estiver ligada e avisa o risco: a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente
+  - ✓ Sugere a proteção da branch principal e a conferência por agente, configurações do repositório remoto que se ligam e desligam: para cada uma, verifica a situação atual no repositório remoto e pergunta ao usuário o que deseja, mostrando a atual
+  - ✓ Se a situação atual já é a desejada, não faz nada; senão, liga ou desliga, depois de dizer ao usuário o que vai alterar e de ele confirmar
+  - ✓ Ligar ou desligar é configurar o repositório remoto, ou apresentar como fazê-lo manualmente se o usuário preferir
+  - ✓ A proteção da branch principal faz o merge exigir PR, o check `spec-check` e a branch atualizada; se o usuário a desliga, a skill avisa o risco: o merge deixa de exigir PR, o check e a branch atualizada, e uma proposta pode ser integrada sem revalidação depois de outra aceita antes dela
+  - ✓ A conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente, é a do GitHub ou a do Claude, e só uma fica ligada: ligar a escolhida desliga a outra; se o usuário não quer nenhuma, a skill avisa o risco: a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente
   - ✓ A chave de acesso que a conferência pelo Claude exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança

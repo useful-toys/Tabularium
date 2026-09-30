@@ -52,38 +52,49 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Documento derivado**: documento gerado a partir da definição do tabularium, como o README e os guias de instalação, configuração e manutenção; nunca é fonte, e em conflito vale a spec
 - **Tracker**: sistema externo de solicitações (GitHub Issues)
 - **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem produto de exemplo; a spec dele descreve o template e nunca chega aos projetos
+- **Arquivos do tabularium**: arquivos que a instalação copia para o projeto; nunca incluem a spec do próprio tabularium nem os documentos derivados
+- **Processo**: regras de como a spec evolui, que o tabularium coloca em `AGENTS.md`, num bloco delimitado
+- **Preparação**: etapa depois da instalação, que pode ser refeita: prepara o repositório, configura o projeto, cria a estrutura da spec e, depois de uma atualização, adapta a spec ao formato novo
+- **Caminhos de código**: pastas ou arquivos da configuração onde está o código do produto; cada um abrange tudo o que começa por ele, e só o que está neles conta como código nas regras de PR
 
 ## Requisitos
 
 ### Adoção
-- ✓ Instalar o tabularium num repositório, novo ou existente, com um comando que baixa uma versão e copia os arquivos dela
-  - ✓ Copia só os arquivos listados pelo tabularium; a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto
+- ✓ Instalar o tabularium num repositório, novo ou existente, com um comando
   - ✓ Instala a última versão publicada, ou a versão informada
-  - ✓ Sem arquivo de instruções comuns, cria-o só com o processo; com ele, o processo fica num bloco delimitado, e o resto do arquivo não é tocado
+  - ✓ Copia para o projeto só os arquivos do tabularium
+  - ✓ Sem `AGENTS.md`, cria o arquivo só com o processo
+  - ✓ Com `AGENTS.md`, coloca o processo no início do arquivo e não toca no resto
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
-  - ✓ Recusa instalar enquanto existir arquivo de instruções específico de um agente que anula as instruções comuns, e orienta migrá-lo à mão
+  - ✓ Recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`, e orienta migrá-lo à mão
   - ✓ Nunca faz commit; o resultado entra por PR
-- ✓ Atualizar o tabularium de um projeto com o mesmo comando
-  - ✓ Sobrescreve os arquivos do tabularium e troca só o bloco do processo; a mesma versão dá o mesmo resultado em qualquer projeto
-  - ✓ Apaga os arquivos do tabularium que saíram da versão nova
-  - ✓ Recusa voltar para versão menor que a instalada, salvo pedido explícito
-  - ✓ Avisa quando a versão nova exige adaptar a spec ao formato
-- ✓ Publicar o tabularium em versões numeradas, quando uma pessoa decide
-- ✓ Adaptar a spec ao formato de uma versão nova do tabularium, no mesmo PR da atualização
-  - ✓ Nunca muda o sentido de item; o que exigir isso vira proposta
-  - ✓ Cada adaptação é confirmada, em lote ou item a item
+- ✓ Preparar o repositório no tracker
+  - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
+  - ✓ Orienta a proteção da branch principal; a pessoa a configura, e o agente nunca a altera
+  - ✓ Orienta a revisão consultiva por agente, opcional: a pessoa escolhe qual usar, se algum, e a configura
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
-  - ✓ Configuração pode ser refeita a qualquer momento; o existente é preservado e cada mudança é confirmada
-  - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
-  - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
-  - ✓ Idioma sem textos embutidos na verificação recebe os textos num arquivo da própria spec
-  - ✓ Só o que está nos caminhos de código conta como código nas regras de PR; cada caminho abrange tudo o que começa por ele
-  - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
-  - ✓ Nunca altera os arquivos do tabularium
-- ✓ Preparar o repositório na configuração: criar os rótulos do fluxo no tracker e orientar a proteção da branch principal
-  - ✓ Cria os rótulos de issue (requirement, bug, plan) e de PR (os quatro tipos de mudança) que ainda não existem
-  - ✓ Orienta a proteção da branch principal e a revisão consultiva por agente; a pessoa as configura, e o agente nunca altera essas configurações
-- ✓ Criar o esqueleto do modelo conceitual a pedido
+  - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
+  - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las
+  - ✓ Idioma novo vale para o conteúdo novo; o existente só é traduzido a pedido
+  - ✓ Idioma cujas mensagens de verificação o tabularium não traz recebe as mensagens num arquivo da spec do projeto
+  - ✓ Lista de caminhos de código vazia significa projeto sem código, e a pergunta se repete a cada configuração
+- ✓ Criar a estrutura da spec do projeto a partir da configuração
+  - ✓ Cria o documento de produto, sem requisitos, e uma pasta de decisões para cada camada
+  - ✓ Cria o documento técnico fundamental, só com o título, de cada camada técnica
+  - ✓ Cria o modelo conceitual só a pedido
+  - ✓ Cria um documento técnico auxiliar só a pedido
+  - ✓ Cria só o que falta; nada existente é sobrescrito
+- ✓ Atualizar o tabularium de um projeto com o mesmo comando
+  - ✓ Vale na atualização o que vale na instalação, além do que segue
+  - ✓ Sobrescreve os arquivos do tabularium, que ficam idênticos aos da versão instalada, e troca só o processo em `AGENTS.md`
+  - ✓ Apaga os arquivos do tabularium que saíram da versão nova
+  - ✓ Recusa instalar versão menor que a instalada, salvo pedido explícito
+  - ✓ Avisa ao cruzar uma versão maior, que exige adaptar a spec ao formato
+- ✓ Adaptar a spec às regras de formato da versão nova do tabularium, no mesmo PR da atualização
+  - ✓ Nunca muda o sentido de um item; o que exigir isso vira proposta
+  - ✓ Cada adaptação é confirmada com o usuário, em lote ou item a item
+- ✓ Publicar o tabularium em versões numeradas, quando uma pessoa decide
+  - ✓ A versão maior muda quando a spec dos projetos precisa ser adaptada ao formato; a escolha das demais fica com quem publica
 
 ### Extração da spec de código existente
 - ✓ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
@@ -135,7 +146,6 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Seções livres; autocontido e atemporal, como o documento de produto
   - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
   - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
-- ✓ Criar o esqueleto do documento técnico fundamental de cada camada declarada e, a pedido, o de um documento técnico auxiliar
 
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
@@ -253,7 +263,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Barrar camada declarada sem documento técnico fundamental ou sem pasta de decisões
 - ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - ✓ Avisar sobre termos de implementação no modelo conceitual
-- ✓ Avisar quando existe arquivo de instruções específico de um agente que anula as instruções comuns
+- ✓ Avisar quando existe `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`
 
 ### Exportação
 - ✓ Exportar a spec em formato convencional a pedido
@@ -271,6 +281,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ O agente só integra um PR a pedido explícito do humano, PR a PR
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado
+- ✓ O que é do projeto fica fora dos arquivos do tabularium: a atualização os sobrescreve e a preparação nunca os altera, nem ao processo em `AGENTS.md`
 
 ## Não funcionais
 - ✓ Economia de contexto: documentos densos; decisões carregadas sob demanda pelo mapa

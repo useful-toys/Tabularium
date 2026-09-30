@@ -29,7 +29,7 @@ Variáveis opcionais (no PowerShell, `$env:NOME = 'valor'` antes do comando):
 | `TABULARIUM_SOURCE=<url git>` | repositório de origem (padrão: o do `.tabularium`, ou o oficial) |
 | `TABULARIUM_ALLOW_DOWNGRADE=1` | permite instalar tag menor que a instalada |
 
-Depois, rode `/spec-init`: na adoção, cria a estrutura e as preferências; numa atualização, adapta a spec ao formato novo sem mudar o sentido de nenhum item (o que mudaria sentido vira proposta). Se o repositório já tiver código, siga com `/spec-extract`. Revise o diff e leve tudo, instalação e adaptação, num PR.
+Depois, rode `/spec-init`: na adoção, prepara o repositório, grava as preferências e cria a estrutura; numa atualização, adapta a spec ao formato novo sem mudar o sentido de nenhum item (o que mudaria sentido vira proposta). Se o repositório já tiver código, siga com `/spec-extract`. Revise o diff e leve tudo, instalação e adaptação, num PR.
 
 Customizações nos arquivos do tabularium se perdem a cada atualização; o que é do projeto fica fora deles.
 

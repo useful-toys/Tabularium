@@ -1,7 +1,7 @@
 # Decisões: product
 <!-- Gerado por `node scripts/spec.mjs build-map`. Não edite à mão. -->
 
-- adocao-em-duas-etapas.md — Adoção da spec num repositório: Depois da instalação, duas etapas - preparação reexecutável, com estrutura, preferências e adaptação ao formato; extração a partir de código com perguntas durante. Carregar quando: mudança em adoção, configuração do projeto ou extração da spec de código existente
+- adocao-em-duas-etapas.md — Adoção da spec num repositório: Depois da instalação, duas etapas - preparação reexecutável, com repositório, preferências, estrutura e adaptação ao formato; extração a partir de código com perguntas durante. Carregar quando: mudança em adoção, configuração do projeto ou extração da spec de código existente
 - afinidade-com-git.md — Plataforma e processo em que o template se apoia: Git e GitHub - primitivas do hub no lugar de processo próprio; amarração consciente. Carregar quando: mudança em plataforma, hub git, tracker, CI, provedor de modelo ou em novo estado ou fluxo de processo
 - camadas-da-spec.md — Organização da spec e das decisões por natureza: A spec se divide em camadas configuradas, cada uma com seu documento de referência e uma pasta de decisões, todas com o mesmo esquema. Carregar quando: mudança em camadas da spec, na organização das pastas ou em decisões técnicas
 - ciclo-com-skills-e-ci.md — Como o ciclo de mudança é executado: Skills para cada etapa, check bloqueante determinístico salvo a classificação do caso ambíguo, e revisão por agente só consultiva e independente da conversa, que não libera o rascunho, feita pelo Copilot por padrão, pelo Claude ou pelos dois. Carregar quando: mudança nas etapas do ciclo, nas skills, no papel do CI ou em agentes no CI

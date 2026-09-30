@@ -193,7 +193,7 @@ Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
 
 Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
-- `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria os rótulos; reexecutável.
+- `/spec-init`: depois do INSTALL, prepara o repositório (rótulos e proteção da `main`), grava camadas, idioma e caminhos de código em `spec/config.json`, cria a estrutura da spec e adapta a spec ao formato de uma versão nova; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
 - `/spec-grill`: faz a triagem (requirement issue, bug issue ou descarte) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.

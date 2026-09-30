@@ -1,9 +1,9 @@
 ---
 tema: Adoção da spec num repositório
-decisao: Depois da instalação, duas etapas - preparação reexecutável, com estrutura, preferências e adaptação ao formato; extração a partir de código com perguntas durante
+decisao: Depois da instalação, duas etapas - preparação reexecutável, com repositório, preferências, estrutura e adaptação ao formato; extração a partir de código com perguntas durante
 carregar-quando: mudança em adoção, configuração do projeto ou extração da spec de código existente
 ---
-- Decisão: depois que o comando de instalação copia o tabularium, uma etapa de preparação cria só a estrutura e grava as preferências numa configuração lida por scripts e skills, podendo ser refeita para mudar a configuração, e, depois de uma atualização, adapta a spec ao formato novo sem mudar sentido; outra etapa extrai a spec de código existente, marcando implementado só com evidência no código, perguntando a cada dúvida e deixando a documentação antiga intocada
+- Decisão: depois que o comando de instalação copia o tabularium, uma etapa de preparação prepara o repositório no tracker (rótulos e orientação da proteção da branch principal), grava as preferências numa configuração lida por scripts e skills, cria só a estrutura da spec e, depois de uma atualização, adapta a spec ao formato novo sem mudar sentido, podendo ser refeita para mudar a configuração; outra etapa extrai a spec de código existente, marcando implementado só com evidência no código, perguntando a cada dúvida e deixando a documentação antiga intocada
 - Contexto: repositório novo não tem o que extrair; repositório com código ou documentação antiga precisa de engenharia reversa assistida
 - Alternativas descartadas
   - Uma etapa única com modos: mistura configuração com extração
@@ -17,5 +17,6 @@ carregar-quando: mudança em adoção, configuração do projeto ou extração d
   - Aceita: extração lenta e interativa
 
 ## Histórico
+- 2026-09-30 #22: preparação passa a incluir o preparar do repositório no tracker
 - 2026-09-28 #19: preparação depois da instalação, com adaptação da spec ao formato de uma versão nova
 - 2026-09-24 plano-inicial: decisão criada

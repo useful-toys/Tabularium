@@ -117,7 +117,7 @@ O tabularium se instala por um comando. O repositório do tabularium não é um 
 ```mermaid
 flowchart LR
   I["INSTALL (curl | sh ou irm | iex)<br/>na raiz do repositório"] --> C["copia os arquivos do manifesto da tag<br/>troca o bloco do AGENTS.md<br/>grava .tabularium"]
-  C --> S["/spec-init<br/>preferências, estrutura<br/>e, numa atualização, adaptação ao formato"]
+  C --> S["/spec-init<br/>repositório, preferências, estrutura<br/>e, numa atualização, adaptação ao formato"]
   S --> P["PR com o diff da instalação<br/>e da adaptação"]
   P --> E["/spec-extract, se já há código"]
 ```
@@ -131,7 +131,7 @@ flowchart LR
    - Grava em `.tabularium` a origem, a versão e os arquivos instalados.
    - Avisa quando a versão maior mudou: o formato da spec pode ter mudado.
    - Nunca faz commit. A mesma versão dá o mesmo resultado em qualquer projeto, e o diff mostra tudo o que mudou.
-2. **Preparar (`/spec-init`)**: grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo, no mesmo PR (ver Manutenção).
+2. **Preparar (`/spec-init`)**: prepara o repositório no tracker (rótulos e orientação da proteção da `main`), grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo, no mesmo PR (ver Manutenção).
 3. **Abrir o PR**: o resultado entra por PR, como toda mudança.
 
 **Por que sobrescrever é seguro.** O que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra em `spec/locales/<idioma>.json`, e não no script; conteúdo próprio no `AGENTS.md` fora do bloco. Customização feita nos arquivos do tabularium se perde na atualização; não há mescla.
@@ -331,15 +331,15 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Item `✓` vence o conflito; nos demais casos, pergunta. Lacunas ganham rascunho, sem inventar o porquê.
   - Nunca altera o sentido de item `✓`: isso vira proposta.
   - Nada muda sem aprovação, em lote ou item a item. Aplica numa branch própria e abre um PR.
-- **`/spec-init`**: roda depois do INSTALL. Cria a estrutura, grava as preferências e, depois de uma atualização, adapta a spec ao formato novo. Pode ser refeito para mudar a configuração; o existente é preservado e cada mudança é confirmada.
+- **`/spec-init`**: roda depois do INSTALL. Prepara o repositório, grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo. Pode ser refeito para mudar a configuração; o existente é preservado e cada mudança é confirmada.
   - Para se faltar `.tabularium`, `spec/AGENTS.md` ou `scripts/spec.mjs` (pede para rodar o INSTALL) ou se existir `CLAUDE.md`.
-  - Camadas: cada uma tem documento de referência e decisões. Camada nova ganha pasta de decisões e, se o usuário quiser, documento técnico; camada removida com decisões: o usuário escolhe mover ou apagar as decisões.
+  - Camadas: cada uma tem documento de referência e decisões. Camada nova ganha pasta de decisões e documento técnico fundamental; camada removida com decisões: o usuário escolhe mover ou apagar as decisões.
   - Idioma: vale para conteúdo novo; o existente só é traduzido a pedido. Idioma sem textos embutidos no script recebe `spec/locales/<idioma>.json`, criado por ele.
   - Sugere os caminhos de código a partir das pastas do repositório e confirma. Pergunta sempre por eles quando a lista está vazia. Quando o código muda de lugar, a lista é atualizada por ele.
-  - Cria `product.md` a partir do esqueleto e, só a pedido, o `model.md` e os documentos técnicos.
+  - Cria só o que falta, sem sobrescrever: `product.md` a partir do esqueleto, uma pasta de decisões e um documento técnico fundamental, só com o título, para cada camada; o `model.md` e os documentos técnicos auxiliares, só a pedido.
   - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
   - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
-  - Cria os rótulos e orienta a proteção da `main` e a revisão consultiva.
+  - Cria os rótulos que faltam e orienta a proteção da `main` e a revisão consultiva, opcional; a pessoa as configura, e o agente nunca as altera.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
 ### Definição do próprio tabularium

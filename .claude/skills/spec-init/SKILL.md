@@ -52,14 +52,14 @@ Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o form
   - `spec-compatible`: PR que cria requisito, altera item não implementado ou cria decisão, sem contradizer nada;
   - `spec-incompatible`: PR que altera o sentido de item implementado, contradiz item ou vai contra decisão.
   O CI aplica a label de tipo: o workflow declara permissão de escrita nos PRs só para isso.
-- Oriente a proteção da `main` (Settings → Rules), que o usuário configura:
+- Sugira a proteção da `main` (ruleset em Settings → Rules) e pergunte se o usuário aceita que você a configure, pelo `gh`. Se aceitar e a configuração falhar, ou se não aceitar, mostre como configurá-la à mão. Nunca a altere sem a resposta. A proteção tem:
   - exigir PR;
   - exigir o check `spec-check`, que também classifica o tipo e bloqueia quando o tipo torna o PR inválido;
   - exigir branch atualizada com a `main` antes do merge;
   - não é preciso exigir aprovação: a aceitação é o merge decidido por um humano. Se a equipe quiser exigir aprovação, oriente também descartar aprovações quando houver commits novos.
 - Revisão consultiva por agente (opcional). Pergunte qual usar; pode ser mais de um, ou nenhum:
-  - **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md`. Usa a assinatura do Copilot, sem secret.
-  - **Claude**: o job `spec-review` do workflow roda o `spec-impact` quando existe o secret `ANTHROPIC_API_KEY`; sem ele, o job é pulado.
+  - **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md`. Usa a assinatura do Copilot, sem secret. Como a proteção da `main`, pergunte se o usuário aceita que você a configure, pelo `gh`; senão, mostre como configurá-la à mão.
+  - **Claude**: o job `spec-review` do workflow roda o `spec-impact` quando existe o secret `ANTHROPIC_API_KEY`; sem ele, o job é pulado. O job já vem no tabularium: só o secret falta. A chave é do usuário: oriente-o a criar o secret (Settings → Secrets and variables → Actions, ou `gh secret set`, rodado por ele) e nunca peça, receba nem digite a chave.
   - Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo; sem ele, ou em PR de fork, o caso ambíguo pede que uma pessoa aplique a label de tipo.
   - Se nenhum for usado, `REVIEW.md` e o job podem ficar: não têm efeito.
 - Se o repositório já tiver código, sugira `/spec-extract` como próximo passo.

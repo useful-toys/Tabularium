@@ -131,7 +131,7 @@ flowchart LR
    - Grava em `.tabularium` a origem, a versão e os arquivos instalados.
    - Avisa quando a versão maior mudou: o formato da spec pode ter mudado.
    - Nunca faz commit. A mesma versão dá o mesmo resultado em qualquer projeto, e o diff mostra tudo o que mudou.
-2. **Preparar (`/spec-init`)**: prepara o repositório no tracker (rótulos e orientação da proteção da `main`), grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo, no mesmo PR (ver Manutenção).
+2. **Preparar (`/spec-init`)**: prepara o repositório remoto no GitHub (rótulos e sugestão da proteção da `main`), grava as preferências, cria a estrutura e, depois de uma atualização, adapta a spec ao formato novo, no mesmo PR (ver Manutenção).
 3. **Abrir o PR**: o resultado entra por PR, como toda mudança.
 
 **Por que sobrescrever é seguro.** O que é do projeto fica fora dos arquivos do tabularium: textos de idioma extra em `spec/locales/<idioma>.json`, e não no script; conteúdo próprio no `AGENTS.md` fora do bloco. Customização feita nos arquivos do tabularium se perde na atualização; não há mescla.
@@ -339,7 +339,7 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Cria só o que falta, sem sobrescrever: `product.md` a partir do esqueleto, uma pasta de decisões e um documento técnico fundamental, só com o título, para cada camada; o `model.md` e os documentos técnicos auxiliares, só a pedido.
   - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
   - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
-  - Cria os rótulos que faltam e orienta a proteção da `main` e a revisão consultiva, opcional; a pessoa as configura, e o agente nunca as altera.
+  - Cria os rótulos que faltam. Sugere a proteção da `main` e a revisão consultiva por agente, opcional: pergunta se a pessoa aceita que a skill configure o repositório e, se não aceitar, mostra como fazê-lo à mão. A chave que a revisão por agente exige é criada pela pessoa; a skill só orienta e nunca a recebe.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
 ### Definição do próprio tabularium

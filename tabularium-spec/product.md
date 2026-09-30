@@ -68,10 +68,11 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
   - ✓ Recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`, e orienta migrá-lo à mão
   - ✓ Nunca faz commit; o resultado entra por PR
-- ✓ Preparar o repositório no tracker
+- ✓ Preparar o repositório remoto no github
   - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
-  - ✓ Orienta a proteção da branch principal; a pessoa a configura, e o agente nunca a altera
-  - ✓ Orienta a revisão consultiva por agente, opcional: a pessoa escolhe qual usar, se algum, e a configura
+  - ✓ Sugere a proteção da branch principal: pergunta se a pessoa aceita que a skill a configure e, se não aceitar, mostra como configurá-la à mão
+  - ✓ Sugere a revisão consultiva por agente, opcional: a pessoa escolhe qual usar, se algum, e a configuração do repositório segue a mesma pergunta da proteção
+  - ✓ A chave de acesso que a revisão por agente exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
   - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las

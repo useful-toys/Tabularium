@@ -14,7 +14,7 @@ Alterado só pelo `/spec-init`, que pode ser refeito a qualquer momento.
 
 ## Repositório: proteção da `main`
 
-O `/spec-init` cria os rótulos `requirement`, `bug`, `plan`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
+O `/spec-init` cria os rótulos `requirement`, `bug`, `plan`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e sugere a proteção da `main` (ruleset em Settings → Rules). Ele pergunta se você aceita que ele a configure; se não aceitar, ele mostra como fazê-lo à mão. A proteção tem:
 - exigir PR;
 - exigir o check `spec-check`, que deduz o tipo, aplica o rótulo (o workflow tem escrita nos PRs só para isso) e bloqueia quando o tipo torna o PR inválido;
 - exigir branch atualizada com a `main` antes do merge;
@@ -22,8 +22,8 @@ O `/spec-init` cria os rótulos `requirement`, `bug`, `plan`, `spec-editorial`, 
 
 ## Repositório: revisão consultiva
 
-Por agente, opcional e nunca bloqueante; um, os dois ou nenhum:
-- **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot, sem secret.
-- **Claude**: job `spec-review` do workflow, que roda o `/spec-impact` em modo PR nos PRs que tocam `spec/`, quando existe o secret `ANTHROPIC_API_KEY`.
+Por agente, opcional e nunca bloqueante; um, os dois ou nenhum. O `/spec-init` pergunta qual usar:
+- **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot, sem secret. Como na proteção, o `/spec-init` pergunta se você aceita que ele configure o ruleset e, senão, mostra como fazê-lo.
+- **Claude**: job `spec-review` do workflow, que já vem com o tabularium e roda o `/spec-impact` em modo PR nos PRs que tocam `spec/`, quando existe o secret `ANTHROPIC_API_KEY`. Só o secret falta: você o cria (Settings → Secrets and variables → Actions, ou `gh secret set`), e o `/spec-init` só orienta, sem nunca receber a chave.
 
 Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo. Sem ele, ou em PR de fork, o caso ambíguo exige que uma pessoa aplique o rótulo de tipo.

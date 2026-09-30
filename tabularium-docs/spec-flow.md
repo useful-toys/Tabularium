@@ -94,10 +94,10 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 | `spec/locales/<idioma>.json` | Textos da verificação para um idioma fora dos embutidos no script, opcional | Criado pelo `/spec-init`; mesmas chaves dos textos embutidos; fica na spec, e não no script, para sobreviver às atualizações |
 | `AGENTS.md` | Processo, num bloco entre `<!-- tabularium:begin -->` e `<!-- tabularium:end -->` | O INSTALL troca só o bloco; o resto do arquivo é do projeto. Sem `CLAUDE.md`: a presença dele faz o Claude Code ignorar os `AGENTS.md` |
 | `spec/AGENTS.md` | Regras de formato e de mudança | Fonte única; carregado quando o agente trabalha na spec |
-| `REVIEW.md` | Checklist para agentes de revisão, como o Copilot code review | Revisão consultiva; não se aplica a PR `tabularium` |
+| `REVIEW.md` | Checklist para agentes de revisão, como o Copilot code review | Conferência por agente; não se aplica a PR `tabularium` |
 | `.claude/skills/spec-*` | Dez skills, uma por etapa do ciclo | O processo também está descrito nos `AGENTS.md`, para qualquer agente |
 | `scripts/spec.mjs` | Gera mapas, deduz o tipo mínimo (`classify`) e verifica a spec (`check`) | Só Node, sem dependências; roda em Windows e Linux |
-| `.github/workflows/spec-check.yml` | Job `spec-check` (tipo, rótulo e check, bloqueante) e job `spec-review` (revisão consultiva pelo Claude) | O `spec-review` nunca bloqueia; os dois se abstêm em PR com o rótulo `tabularium` no repositório do tabularium |
+| `.github/workflows/spec-check.yml` | Job `spec-check` (tipo, rótulo e check, bloqueante) e job `spec-review` (conferência por agente pelo Claude) | O `spec-review` nunca bloqueia; os dois se abstêm em PR com o rótulo `tabularium` no repositório do tabularium |
 | `.github/ISSUE_TEMPLATE/issue.yml` | Formulário único de issue: palpite, descrição, comportamento esperado e como reproduzir | Não aplica rótulo, para a issue chegar sem triagem; só palpite e descrição são obrigatórios, o resto amadurece em `/spec-grill` |
 | `.tabularium` | Registro da instalação: origem, versão e arquivos instalados | Gerado pelo INSTALL, nunca editado à mão; os arquivos listados são sobrescritos a cada atualização e não se editam no projeto |
 
@@ -173,7 +173,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 - PR com vários tipos recebe o maior, nesta ordem. Por isso, uma mudança editorial em item `✓` vai num PR próprio.
 - Num `⇢`, criar ou desfazer é incompatível. Ajustar só o lado desejado é compatível. Nos três casos, o PR cria ou altera uma decisão.
 - "Código" é o que está nos caminhos de código da configuração.
-- **Proposta** é o PR sem código que altera a spec, de qualquer tipo (`spec-editorial`, `spec-compatible` ou `spec-incompatible`). Todas seguem o mesmo fluxo: rascunho, portão, verificação e revisão consultiva.
+- **Proposta** é o PR sem código que altera a spec, de qualquer tipo (`spec-editorial`, `spec-compatible` ou `spec-incompatible`). Todas seguem o mesmo fluxo: rascunho, portão, verificação e conferência por agente.
 - Outros rótulos:
   - `requirement`: requirement issue, triada e a amadurecer;
   - `bug`: issue triada como comportamento que contradiz a spec, hoje recusada pelo `/spec-grill`, pois terá skills dedicadas;
@@ -224,7 +224,7 @@ flowchart LR
   C --> G{"Portão: maduro e consistente<br/>com a spec atual?<br/>(aplicado pelo /spec-propose)"}
   G -- "não: o que falta" --> C
   G -- sim --> P["PR draft"]
-  P --> R["CI: tipo + rótulo + check (bloqueia)<br/>revisão consultiva"] --> A["Humano decide o merge<br/>merge = compromisso"] --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
+  P --> R["CI: tipo + rótulo + check (bloqueia)<br/>conferência por agente"] --> A["Humano decide o merge<br/>merge = compromisso"] --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
 Issue com o rótulo `plan` ou `bug` fica fora do ciclo e é recusada pelo `/spec-grill`:
@@ -270,7 +270,7 @@ flowchart LR
 5. **Validar (CI)**: o CI é uma segunda visão, independente da conversa. Enquanto o `/spec-propose` julga com o contexto da conversa, o CI vê só o texto final da spec, lendo os arquivos ou o diff.
    - tipo e rótulo, conforme a seção anterior;
    - check bloqueante: só o que o CI consegue provar bloqueia;
-   - revisão consultiva, que nunca bloqueia: o Copilot code review via ruleset e `REVIEW.md`, e/ou o job `spec-review`, que roda o `/spec-impact` em modo PR quando o PR toca `spec/` e existe o secret `ANTHROPIC_API_KEY`. Ele revisa tipo, cascata, decisões, consistência e forma, num único comentário atualizado a cada rodada. O conteúdo do PR é tratado como dado, não como instrução.
+   - Conferência por agente, que nunca bloqueia: o Copilot code review via ruleset e `REVIEW.md`, e/ou o job `spec-review`, que roda o `/spec-impact` em modo PR quando o PR toca `spec/` e existe o secret `ANTHROPIC_API_KEY`. Ele revisa tipo, cascata, decisões, consistência e forma, num único comentário atualizado a cada rodada. O conteúdo do PR é tratado como dado, não como instrução.
    - O julgamento do agente nunca bloqueia, porque pode errar e variar entre execuções: ele alerta a pessoa que integra.
    - O CI não libera o rascunho: sem ressalvas, só sinaliza. O autor trata os achados e marca o PR como pronto.
 6. **Aceitar**: qualquer pessoa com permissão de merge. Não há aprovação formal obrigatória. O agente só integra a pedido explícito dela. PR fechado sem merge é recusa. Proposta rediscutida volta a draft.
@@ -340,7 +340,7 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
   - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
   - Cria os rótulos que faltam. Sugere a proteção da `main`: verifica a situação atual no repositório remoto; se estiver desabilitada, pergunta se a pessoa aceita que a skill a habilite e, se não aceitar, mostra como fazê-lo à mão; se já estiver habilitada, não faz nada.
-  - Sugere a revisão consultiva, opcional: um agente comenta cada proposta, sem aprovar nem bloquear. A configuração do repositório segue a mesma verificação, a mesma pergunta e a mesma alternativa manual da proteção. A chave que o agente exige é criada pela pessoa; a skill só orienta e nunca a recebe.
+  - Sugere a conferência por agente, opcional: um agente de IA confere cada proposta contra a spec vigente e só comenta. Verifica a situação atual no repositório remoto; se já existir, não faz nada; se não existir, pergunta se a pessoa deseja tê-la e com qual agente: se quiser que a skill a configure, configura o GitHub remoto; se preferir, apresenta como fazê-lo à mão; se recusar, segue sem ela e avisa o risco (sem a conferência, a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente). A chave que o agente exige é criada pela pessoa; a skill só orienta e nunca a recebe.
 - **`/spec-extract`**: gera a spec a partir de código existente, testes e documentação antiga. `✓` só com evidência no código. O modelo vem do comportamento, nunca do schema. Pergunta a cada dúvida, durante a extração. A documentação antiga fica intocada. Entrega um PR com o relatório.
 
 ### Definição do próprio tabularium
@@ -361,7 +361,7 @@ A spec do tabularium3 fica em `tabularium-spec/`. A **definição do tabularium*
   - verifica `tabularium-spec/` só na forma, sem as regras de PR; por isso, a lista de caminhos de código dela fica vazia e não é lida;
   - num PR `tabularium`, verifica `spec/` também só na forma;
   - exige o rótulo `tabularium` no PR que toca qualquer arquivo da definição (`tabularium-spec/`, `tabularium-docs/`, o que está no manifesto, o próprio manifesto, os INSTALL, `AGENTS.md`, `README.md`, `.gitattributes`, os testes do script e `tabularium.yml`) e recusa rótulo de tipo ou `requirement` num PR `tabularium`.
-- O `spec-check.yml` distribuído se abstém no PR `tabularium`: o tipo não é classificado e a revisão consultiva não roda. Assim, os passos próprios do repositório do tabularium não precisam ser removidos de um arquivo que os projetos recebem.
+- O `spec-check.yml` distribuído se abstém no PR `tabularium`: o tipo não é classificado e a conferência por agente não roda. Assim, os passos próprios do repositório do tabularium não precisam ser removidos de um arquivo que os projetos recebem.
 - Publicar uma versão é separado do merge: uma pessoa cria a tag `vX.Y.Z` quando decide liberar um lote de mudanças para os projetos (ver Adoção e atualização).
 
 ### Documentos derivados

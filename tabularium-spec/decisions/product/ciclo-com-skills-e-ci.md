@@ -1,6 +1,6 @@
 ---
 tema: Como o ciclo de mudança é executado
-decisao: Skills para cada etapa, check bloqueante determinístico salvo a classificação do caso ambíguo, e revisão por agente só consultiva e independente da conversa, que não libera o rascunho, feita pelo Copilot por padrão, pelo Claude ou pelos dois
+decisao: Skills para cada etapa, check bloqueante determinístico salvo a classificação do caso ambíguo, e conferência por agente só consultiva e independente da conversa, que não libera o rascunho, feita pelo Copilot por padrão, pelo Claude ou pelos dois
 carregar-quando: mudança nas etapas do ciclo, nas skills, no papel do CI ou em agentes no CI
 ---
 - Decisão: esmiuçar, sugerir, levar à issue, propor, revisar, sincronizar, verificar, extrair, configurar e organizar são skills; o CI bloqueia com regras determinísticas, do script ou do próprio fluxo de CI, e com uma exceção: no caso ambíguo, o tipo da mudança é julgado por um agente, e o tipo julgado pode bloquear, salvo quando uma pessoa aplica o rótulo de tipo; um agente revisa propostas e comenta, sem bloquear, só pelo texto final da spec (arquivos ou diff), sem a conversa, como segunda visão das mesmas regras do portão da proposta, que o `/spec-propose` aplica com o contexto da conversa; o julgamento do agente nunca bloqueia nem libera o rascunho da proposta, que só o autor libera, e sem ressalvas o CI apenas sinaliza: a revisão de código do Copilot, seguindo o REVIEW.md, por padrão, e/ou o Claude num job do CI com chave própria, à escolha de quem adota

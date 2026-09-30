@@ -17,7 +17,7 @@ carregar-quando: mudança em como requisitos são propostos, discutidos, aceitos
   - Aprovação restrita a um dono do produto: não reflete como as equipes do template trabalham
 - Consequências
   - Ganha: aceitação com um único ato, rastreável no PR
-  - Aceita: recusas ficam só no PR fechado, salvo se viram item de fora de escopo; sem segundo par de olhos obrigatório além da revisão consultiva
+  - Aceita: recusas ficam só no PR fechado, salvo se viram item de fora de escopo; sem segundo par de olhos obrigatório além da conferência por agente
 
 ## Histórico
 - 2026-09-30 #21: issue é discussão em prosa, PR é a spec redigida que passa pelo fluxo formal; aceite continua no merge, não na issue

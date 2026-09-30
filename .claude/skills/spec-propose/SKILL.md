@@ -58,7 +58,7 @@ Achou qualquer inconsistência, inclusive uma que já existia na `main`: não pu
 
 ## 4. PR
 - Commit e push. O PR nunca inclui código e não leva label de tipo: o CI deduz o tipo (`spec-compatible` ou `spec-incompatible`) e aplica a label. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.
-- **Draft**: PR novo abre em draft (`gh pr create --draft`). O agente consultivo do CI comenta. O autor trata os achados e marca como pronto (`gh pr ready`). PR existente mantém o estado em que está.
+- **Draft**: PR novo abre em draft (`gh pr create --draft`). O agente da conferência, no CI, comenta. O autor trata os achados e marca como pronto (`gh pr ready`). PR existente mantém o estado em que está.
 - Descrição do PR:
 ```markdown
 Proposta de requisito. Refs #<issue>
@@ -77,7 +77,7 @@ Proposta de requisito. Refs #<issue>
 - **Origem issue**: atualize o corpo da issue (`gh issue edit <N> --body-file`) só na linha `Proposta: #<PR>`, sem reescrever o resto, e comente as decisões adicionais tomadas desde o último resumo, no formato de comentário do `/spec-issue`. Se a issue ainda não teve o primeiro toque, use antes o `/spec-issue` para guardar a `Solicitação original`. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
 
 ## 5. Fechamento
-Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.
+Informe o link do PR. A conferência por agente (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.
 
 ## Mudança no próprio template
 A definição do template é `tabularium-spec/` junto com tudo o que o template entrega. Regras em `tabularium-spec/AGENTS.md`.
@@ -87,9 +87,9 @@ A definição do template é `tabularium-spec/` junto com tudo o que o template 
   2. **Revisão por subagente**, com contexto limpo: ele lê só `tabularium-spec/` e o diff da branch e aponta instrução, skill, script, workflow, manifesto ou INSTALL desalinhado com a spec, ou inválido. Corrija os achados, ou leve ao usuário os que pedirem decisão, antes de seguir.
   3. **Documentos derivados por subagentes, em paralelo**, cada um lendo só os arquivos finais, nunca a conversa:
      - `README.md`: o que é e os diferenciais, conforme `tabularium-spec/product.md`; o fluxo resumido; cada skill em uma linha; uma seção com os links para `tabularium-docs/` (instalar, configurar e manter), sem comando de instalação nem detalhe técnico ou operacional;
-     - `tabularium-docs/install.md`, `config.md` e `maintenance.md`: o detalhe operacional (instalação, variáveis e versões; configuração; proteção da `main`, revisão consultiva e mudança do próprio tabularium), regerado dos arquivos finais, com o cabeçalho de documento derivado;
+     - `tabularium-docs/install.md`, `config.md` e `maintenance.md`: o detalhe operacional (instalação, variáveis e versões; configuração; proteção da `main`, conferência por agente e mudança do próprio tabularium), regerado dos arquivos finais, com o cabeçalho de documento derivado;
      - `tabularium-docs/spec-flow.md`: o fluxo completo, regerado a partir de `tabularium-spec/` e do comportamento das skills, com o cabeçalho de documento derivado.
   - Sem subagentes disponíveis, faça os passos 2 e 3 em sequência, relendo só os arquivos finais.
 - Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
 - PR pronto (sem draft), só com a label `tabularium`: sem label de tipo. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
-- O merge, decidido por um humano, é aceite e entrega. Não há revisão consultiva nem `/spec-sync`.
+- O merge, decidido por um humano, é aceite e entrega. Não há conferência por agente nem `/spec-sync`.

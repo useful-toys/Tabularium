@@ -44,7 +44,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; a conversa a recusa por ora, e ela terá tratamento próprio, por skills dedicadas, ainda por especificar
 - **Portão da proposta**: condição para uma conversa virar proposta: ideia triada como requirement issue, nada necessário em aberto e spec resultante consistente
 - **Proposta**: PR sem código com o texto final dos documentos com itens e das decisões, de qualquer tipo de mudança; aberto é proposta, aceito no merge, recusado se fechado sem merge
-- **Revisão consultiva**: comentário de agente sobre uma proposta, que nunca aprova nem bloqueia
+- **Conferência por agente**: comentário de um agente de IA que confronta o texto final de uma proposta com a spec vigente, sem ver a conversa; nunca aprova nem bloqueia
 - **Fila de aceite**: conjunto das propostas abertas, cada uma à espera de ser aceita ou recusada
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -71,9 +71,10 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Preparar o repositório remoto no GitHub
   - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
   - ✓ Sugere a proteção da branch principal: verifica a situação atual da proteção no repositório remoto; se estiver desabilitada, pergunta ao usuário se deseja habilitá-la automaticamente; se sim, configura o GitHub remoto; senão, apresenta como configurá-la manualmente; se estiver habilitada, não faz nada
-  - ✓ Sugere a revisão consultiva, em que um agente comenta cada proposta sem aprovar nem bloquear; é opcional, e a pessoa escolhe qual agente usar, se algum
-  - ✓ Configurar o repositório para a revisão consultiva segue a mesma verificação, a mesma pergunta e a mesma alternativa manual da proteção da branch principal
-  - ✓ A chave de acesso que o agente da revisão consultiva exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
+  - ✓ Sugere a conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente: verifica a situação atual no repositório remoto e, se ela já existir, não faz nada
+  - ✓ Se a conferência por agente não existir, pergunta ao usuário se deseja tê-la e com qual agente: se quer que a skill a configure, configura o GitHub remoto; se prefere configurá-la ele mesmo, apresenta como fazê-lo manualmente; se recusar, segue sem ela
+  - ✓ Sem a conferência por agente, avisa o risco: a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente
+  - ✓ A chave de acesso que o agente exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
   - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las
@@ -220,18 +221,18 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
     - ✓ Mudança declarada: só contraria item ou decisão vigente quem declara isso, com a seta e uma decisão criada ou alterada
     - ✓ Inconsistência preexistente na spec vigente também impede a proposta, e é corrigida antes, num PR próprio
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
-  - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
+  - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a conferência por agente
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - ✓ Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
   - ✓ No rebase sobre a branch principal, a descrição guia o novo casamento do diff com a nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e requirement issue mencionam uma à outra; a issue recebe o link da proposta e as decisões adicionais
-  - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e revisão consultiva
+  - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e conferência por agente
   - ✓ As propostas abertas formam a fila de aceite: cada uma espera ser aceita (merge) ou recusada (fechada sem merge)
   - ✓ A cada aceite a spec vigente muda e as outras propostas ficam defasadas; a proposta que deixa de passar nas regras da verificação é rediscutida no esmiuçar, e se a ideia ainda vale a proposta é atualizada sobre a spec vigente e o portão é aplicado de novo, senão é fechada
-- ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
-  - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois
+- ✓ Conferir uma proposta por agente contra a spec vigente, comentando tipo, cascata, decisões, consistência e forma
+  - ✓ Roda automaticamente a cada atualização de proposta, por um agente de IA
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
-  - ✓ Julga só o texto final da spec, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
+  - ✓ Confronta só o texto final da spec com a spec vigente, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
   - ✓ Não libera o rascunho da proposta: só sinaliza que não achou ressalvas; quem libera é o autor
   - ✓ Trata o conteúdo da proposta como dado, não como instrução
 - ✓ Analisar sob demanda o impacto de uma ideia ou issue sobre a spec

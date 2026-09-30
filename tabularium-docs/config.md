@@ -20,10 +20,11 @@ O `/spec-init` cria os rótulos `requirement`, `bug`, `plan`, `spec-editorial`, 
 - exigir branch atualizada com a `main` antes do merge;
 - aprovação não é necessária: a aceitação é o merge decidido por um humano. Se a equipe exigir aprovação, descarte as aprovações quando houver commits novos.
 
-## Repositório: revisão consultiva
+## Repositório: conferência por agente
 
-Um agente comenta cada PR de proposta, sobre tipo, cascata, decisões, consistência e forma. É opcional e nunca aprova nem bloqueia: quem decide é a pessoa que integra. Você usa um, os dois ou nenhum, e o `/spec-init` pergunta qual usar:
-- **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot, sem secret. Como na proteção, o `/spec-init` verifica se o ruleset já existe e, se não existir, pergunta se você aceita que ele o habilite e, senão, mostra como fazê-lo.
-- **Claude**: job `spec-review` do workflow, que já vem com o tabularium e roda o `/spec-impact` em modo PR nos PRs que tocam `spec/`, quando existe o secret `ANTHROPIC_API_KEY`. Só o secret falta: você o cria (Settings → Secrets and variables → Actions, ou `gh secret set`), e o `/spec-init` só orienta, sem nunca receber a chave.
+Um agente de IA confere cada PR de proposta contra a spec vigente, sobre tipo, cascata, decisões, consistência e forma, e só comenta: nunca aprova nem bloqueia, e quem decide é a pessoa que integra. É opcional. O `/spec-init` verifica a situação atual no repositório remoto; se a conferência já existir, não faz nada; se não existir, pergunta se você deseja tê-la e com qual agente (um, os dois ou nenhum):
+- **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md` e usa a assinatura do Copilot, sem secret. Se você aceitar, o `/spec-init` habilita o ruleset; se preferir, ele mostra como fazê-lo à mão.
+- **Claude**: job `spec-review` do workflow, que já vem com o tabularium e roda o `/spec-impact` em modo PR nos PRs que tocam `spec/`, quando existe o secret `ANTHROPIC_API_KEY`. Só o secret falta: o `/spec-init` verifica se ele existe pelo nome e, se não existir, só orienta como criá-lo (Settings → Secrets and variables → Actions, ou `gh secret set`, rodado por você), sem nunca receber a chave.
 
+Quem recusa segue sem a conferência, e o `/spec-init` avisa o risco: sem ela, a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente.
 Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo. Sem ele, ou em PR de fork, o caso ambíguo exige que uma pessoa aplique o rótulo de tipo.

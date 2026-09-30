@@ -57,7 +57,7 @@
   - ✓ nunca contém código
   - ✓ tipo: **Tipo de mudança**; editorial, compatível ou incompatível
   - ✓ estados, os do PR que a integra: rascunho | pronta | aceita | recusada
-  - ✓ rascunho → pronta: o autor trata a revisão consultiva
+  - ✓ rascunho → pronta: o autor trata a conferência por agente
   - ✓ pronta → rascunho: a proposta volta a ser discutida
   - ✓ pronta → aceita: um humano integra, ou o agente a pedido dele
   - ✓ rascunho | pronta → recusada: fechada sem integrar

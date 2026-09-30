@@ -9,7 +9,7 @@ carregar-quando: mudança em detecção de inconsistências, na validação ante
   - Organização só das decisões contra o documento de referência: contradições entre itens e entre documentos passam despercebidas
   - Skill nova só para consistência: mais uma skill para aprender, e a organização já é a spec contra si mesma
   - Verificação de drift com código também para consistência: mistura o drift entre spec e código com o drift da spec consigo mesma
-  - Consistência verificada no CI a cada proposta, ou periodicamente: tokens a cada PR, e a revisão consultiva já cobre os conflitos da proposta
+  - Consistência verificada no CI a cada proposta, ou periodicamente: tokens a cada PR, e a conferência por agente já cobre os conflitos da proposta
   - Registro bloquear só a inconsistência introduzida pela proposta: nenhuma proposta é aceita sobre spec inconsistente; a inconsistência antiga é dívida a pagar antes de evoluir, senão se acumula
   - Registro perguntar e corrigir a inconsistência ali mesmo, ou publicar com ressalva: o registro não entrevista, e publicar leva a inconsistência adiante
   - Validação do registro sobre a spec inteira: mais tokens a cada proposta; os itens tocados e a cascata bastam

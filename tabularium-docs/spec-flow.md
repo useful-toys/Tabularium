@@ -180,7 +180,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
   - `plan`: issue de plano, reconhecida só para ser recusada (processo de planos ainda por especificar);
   - `tabularium`: PR que muda a definição do próprio tabularium, só no repositório do tabularium.
 - Os rótulos de issue só são aplicados pela triagem; o formulário não aplica nenhum. Issue sem `requirement`, `bug` ou `plan` está sem triagem.
-- Todas as labels são em inglês. O `/spec-init` cria `requirement`, `bug` e as labels de tipo.
+- Todas as labels são em inglês. O `/spec-init` cria `requirement`, `bug`, `plan` e as labels de tipo.
 
 ### Classificação pelo CI
 

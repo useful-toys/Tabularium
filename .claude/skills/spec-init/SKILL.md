@@ -46,6 +46,7 @@ Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o form
 - Crie as labels, se não existirem (`gh label create`):
   - `requirement`: requirement issue, isto é, triada e a amadurecer; só a triagem a aplica;
   - `bug`: bug issue, isto é, triada como comportamento que contradiz a spec, recusada até o processo dedicado; só a triagem a aplica;
+  - `plan`: issue de plano, recusada até o processo dedicado; só a triagem a aplica;
   - `spec-editorial`: PR que muda só o texto da spec, sem mudar sentido;
   - `spec-neutral`: PR que não altera o sentido de nenhum requisito (código sem spec, ou entrega de compromisso);
   - `spec-compatible`: PR que cria requisito, altera item não implementado ou cria decisão, sem contradizer nada;

@@ -14,7 +14,7 @@ Alterado só pelo `/spec-init`, que pode ser refeito a qualquer momento.
 
 ## Repositório: proteção da `main`
 
-O `/spec-init` cria as labels `requirement`, `bug`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
+O `/spec-init` cria as labels `requirement`, `bug`, `plan`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
 - exigir PR;
 - exigir o check `spec-check`, que deduz o tipo, aplica a label (o workflow tem escrita nos PRs só para isso) e bloqueia quando o tipo torna o PR inválido;
 - exigir branch atualizada com a `main` antes do merge;

@@ -37,7 +37,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Camada**: parte da spec de mesma natureza (produto, interface, arquitetura…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
 - **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
-- **Triagem**: comparação do relato de uma issue com a spec para decidir o que ela é: requirement, bug ou entrega pendente
+- **Triagem**: comparação do relato de uma issue com a spec, que a resolve de três formas: vira requirement issue, vira hotfix ou é descartada; a issue sem essa resolução está sem triagem
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -158,21 +158,23 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
 - ✓ Fazer a triagem de um relato contra a spec, como sugestão que uma pessoa confirma
-  - ✓ Contradiz item implementado: bug, tratado por um PR de código sem mudança na spec
-  - ✓ Contradiz item comprometido e não implementado: entrega pendente, que só espera a implementação
-  - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement, que segue o ciclo
+  - ✓ Aceita qualquer issue como entrada: a sem triagem passa por ela; a requirement issue já triada segue direto para a conversa
+  - ✓ A issue só está triada quando vira requirement issue, vira hotfix ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
+  - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement issue, que segue o ciclo
+  - ✓ Contradiz item implementado: bug, que vira hotfix, um PR de código sem mudança na spec
+  - ✓ Já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: descartada, fechada com um comentário que aponta o item
   - ✓ Mistura de bug e requirement: separa em duas issues ligadas
-  - ✓ O tipo pode mudar durante a conversa; a mudança vem com a evidência em comentário
-  - ✓ O tipo escolhido por quem abre a issue é só um palpite; o rótulo aplicado por uma pessoa vence a sugestão
-  - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara
+  - ✓ O que quem abre a issue acha que ela é vale só como palpite; o rótulo aplicado por uma pessoa vence a sugestão
+  - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara, inclusive para a ideia nascida na conversa
+  - ✓ A issue de plano, com o rótulo plan, não segue este ciclo e é recusada na conversa
 - ✓ Levar a pedido para uma requirement issue, nova ou existente, o que foi decidido e sugerido na conversa
   - ✓ Uma ideia nasce numa issue aberta por uma pessoa ou numa conversa com o agente
-  - ✓ O corpo da issue é o entendimento mais recente: triagem, problema, decidido, descartado com motivo, cascata e o que está em aberto
+  - ✓ O corpo da issue é o entendimento mais recente: evidência da triagem, problema, decidido, descartado com motivo, cascata e o que está em aberto
   - ✓ Cada vez que o resumo é levado, o corpo é reescrito e um comentário novo registra o resumo da rodada
   - ✓ No primeiro toque numa issue existente, o texto original é guardado, sem alteração, como primeiro comentário da IA, com o título Solicitação original; o primeiro toque é reconhecido pela falta desse comentário
   - ✓ Pessoas contribuem por comentários; o corpo é mantido pelo agente
   - ✓ O corpo é conferido com o estado publicado antes de ser reescrito, para não sobrescrever edição concorrente
-- ✓ Oferecer formulários de issue de requirement e de bug, com só o relato obrigatório
+- ✓ Oferecer um formulário de issue com o relato e o palpite de quem abre (bug, requisito ou não sei), sem aplicar rótulo, para a issue chegar sem triagem
 
 ### Proposta
 - ✓ Registrar uma ideia madura como proposta com texto final, sem nova entrevista

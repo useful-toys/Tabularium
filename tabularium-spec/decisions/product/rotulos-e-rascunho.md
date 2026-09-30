@@ -3,7 +3,7 @@ tema: Rótulos e rascunho nas propostas
 decisao: Rótulos em inglês - requirement e bug nas issues e um rótulo por tipo de mudança nos PRs (spec-editorial, spec-neutral, spec-compatible, spec-incompatible); proposta nasce em rascunho e volta a ele na rediscussão
 carregar-quando: mudança em labels, estado draft ou filtros de issues e PRs de requisito
 ---
-- Decisão: a requirement issue leva o rótulo requirement e a issue de bug, o rótulo bug, podendo o rótulo mudar com a triagem (`triagem-de-issues`); todo PR leva exatamente um rótulo de tipo, aplicado pelo CI: spec-editorial, spec-neutral, spec-compatible ou spec-incompatible; proposta é o PR sem código com spec-compatible ou spec-incompatible; a proposta nasce em rascunho até o autor tratar a revisão consultiva, e volta a rascunho quando é rediscutida
+- Decisão: os rótulos de issue só são aplicados pela triagem: requirement na requirement issue e bug na issue que vira hotfix; o rótulo plan, de plano, é reconhecido apenas para ser recusado (`triagem-de-issues`); todo PR leva exatamente um rótulo de tipo, aplicado pelo CI: spec-editorial, spec-neutral, spec-compatible ou spec-incompatible; proposta é o PR sem código com spec-compatible ou spec-incompatible; a proposta nasce em rascunho até o autor tratar a revisão consultiva, e volta a rascunho quando é rediscutida
 - Contexto: é preciso achar propostas abertas para detectar conflitos, distinguir texto pronto para aceitar de texto em ajuste, e o check precisa saber o tipo de cada PR
 - Alternativas descartadas
   - Rótulos requirement e spec-only no PR de proposta, spec-mismatch na divergência e no-spec-change no código sem spec: cada um cobria uma exceção do check, sem dizer o tipo do PR; spec-only misturava proposta e correção de redação
@@ -18,6 +18,7 @@ carregar-quando: mudança em labels, estado draft ou filtros de issues e PRs de 
   - Aceita: rótulos precisam existir no repositório; buscar propostas combina dois rótulos
 
 ## Histórico
+- 2026-09-29 #21: rótulos de issue aplicados só pela triagem; plan reconhecido só para recusa
 - 2026-09-29 #21: rótulo bug nas issues, ao lado de requirement
 - 2026-09-26 #14: um rótulo por tipo de mudança nos PRs; requirement só nas issues; saem spec-only, spec-mismatch e no-spec-change
 - 2026-09-26 #13: rótulo no-spec-change

@@ -17,14 +17,14 @@ Regras de formato: `spec/AGENTS.md`. Esta skill só analisa: não edita arquivos
 ## Modo issue ou texto
 Entrada: `#N` de uma issue (`gh issue view <N> --comments`) ou texto livre. Numa issue, o corpo é o entendimento mais recente e os comentários são o histórico.
 1. Resuma a necessidade em 2–3 linhas.
-2. **Triagem**: o tipo escolhido por quem abriu é palpite. Compare o relato com a spec e sugira o tipo, com a evidência (item da spec, decisão ou código):
-   - contradiz item `✓`: **bug**, corrigido por PR de código sem mudança na spec;
-   - contradiz item comprometido, sem `✓`: **entrega pendente**;
-   - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement**;
+2. **Triagem**: só para issue sem triagem (sem os rótulos `requirement`, `bug` ou `plan`). O que quem abriu acha que ela é vale só como palpite. Compare o relato com a spec e sugira o resultado, com a evidência (item da spec, decisão ou código):
+   - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue**;
+   - contradiz item `✓`: **hotfix**, corrigido por PR de código sem mudança na spec;
+   - já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: **descarte**, com o item apontado;
    - mistura de bug e requirement: sugira separar em duas issues ligadas;
-   - não dá para decidir: **indefinido**, com o que falta saber. O `/spec-grill` resolve com o usuário.
-   Se o corpo já traz a triagem confirmada, apenas confira se ainda vale.
-3. Só para requirement: liste os itens tocados, inclusive em cascata: requisitos, regras, transversais, não funcionais, glossário, modelo conceitual, fora de escopo e decisões.
+   - não dá para decidir: diga o que falta saber. O `/spec-grill` resolve com o usuário.
+   Issue `plan`: não segue o ciclo; diga isso e pare. Issue `requirement` já está triada: apenas confira se ainda vale.
+3. Só para requirement issue: liste os itens tocados, inclusive em cascata: requisitos, regras, transversais, não funcionais, glossário, modelo conceitual, fora de escopo e decisões.
 4. Classifique cada efeito: incompatível, compatível ou editorial.
 5. Aponte conflitos com `⇢` em aberto, com outras propostas abertas e inconsistências da spec que o tema toca.
 6. Responda no chat. É sugestão: quem decide é uma pessoa, e a label aplicada por ela vence. Não troque label. Comente na issue só se o usuário pedir.

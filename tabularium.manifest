@@ -7,8 +7,7 @@ spec/AGENTS.md
 REVIEW.md
 scripts/spec.mjs
 .github/workflows/spec-check.yml
-.github/ISSUE_TEMPLATE/requirement.yml
-.github/ISSUE_TEMPLATE/bug.yml
+.github/ISSUE_TEMPLATE/relato.yml
 .claude/skills/spec-check/SKILL.md
 .claude/skills/spec-extract/SKILL.md
 .claude/skills/spec-grill/SKILL.md

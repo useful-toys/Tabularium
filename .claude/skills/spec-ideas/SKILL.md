@@ -12,8 +12,8 @@ Trabalhe só na conversa. Não edite arquivos da spec e não crie nem altere nad
 Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-spec/`, só no repositório do template): use essa pasta no lugar de `spec/` e siga `tabularium-spec/AGENTS.md`.
 
 ## 1. Origem e contexto
-- Leia a origem (texto, `gh issue view <N> --comments` ou `gh pr view <N> --comments` + `gh pr diff <N>`) e o resumo `<!-- spec-grill -->`, que pode estar na conversa ou nos comentários da origem. Numa issue, o corpo é o entendimento mais recente (triagem, decidido, descartado, em aberto) e os comentários são o histórico.
-- Issue com triagem `bug`, `entrega pendente` ou `indefinido`: não há ideia a expandir. Sugira `/spec-grill #N` para fechar a triagem.
+- Leia a origem (texto, `gh issue view <N> --comments` ou `gh pr view <N> --comments` + `gh pr diff <N>`) e o resumo `<!-- spec-grill -->`, que pode estar na conversa ou nos comentários da origem. Numa issue, o corpo é o entendimento mais recente (evidência da triagem, decidido, descartado, em aberto) e os comentários são o histórico.
+- Issue sem o rótulo `requirement` (sem triagem, `bug` ou `plan`): não há ideia a expandir. Sugira `/spec-grill #N` para fazer a triagem.
 - Leia `spec/product.md`, o `spec/model.md` se existir, o mapa de decisões e as decisões relevantes pelo `carregar-quando`.
 
 ## 2. Sugestões

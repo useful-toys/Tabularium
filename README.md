@@ -16,21 +16,23 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 ```mermaid
 flowchart LR
   ID["Ideia"] --> G["Conversa<br/>/spec-grill · /spec-ideas<br/>(a triagem se resolve aqui)"]
-  N["Issue nova<br/>(de uma pessoa)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>pessoa decide"]
-  T -->|requirement| I["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"]
+  N["Issue<br/>(nova, sem triagem, ou já triada)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>pessoa decide"]
+  T -->|requirement issue| I["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"]
   T -->|bug| H["Hotfix: PR de código<br/>spec-neutral, Closes #issue"]
-  T -->|entrega pendente| C
-  G -.->|"/spec-issue, a pedido"| I
+  T -->|já coberta| X["Descartada<br/>fechada com o item apontado"]
+  N -->|plan| Z["Recusada<br/>(plano ainda não tratado)"]
   I -->|"/spec-grill #issue"| G
+  G -.->|"/spec-issue, a pedido"| I
   G -->|bug| H
+  G -->|já coberta| X
   G --> P["/spec-propose<br/>valida a consistência<br/>PR draft com texto final"]
   P --> R["CI: tipo + check bloqueante<br/>revisão consultiva<br/>(Copilot e/ou Claude)"]
   R --> A["Merge decidido por humano<br/>= compromisso"]
   A --> C["Código + /spec-sync<br/>Closes #issue"]
 ```
 
-- A ideia nasce numa issue aberta por uma pessoa (formulário `requirement` ou `bug`; o tipo escolhido é só um palpite) ou numa conversa com o agente.
-- A triagem compara o relato com a spec: contradiz item `✓` é bug, corrigido por hotfix (PR de código `spec-neutral`, sem proposta); contradiz item comprometido é entrega pendente; pede spec nova ou alterada, ou a spec é omissa, é requirement e segue o ciclo. O `/spec-impact` sugere, o `/spec-grill` resolve o que ficou incerto como primeira coisa, e uma pessoa decide: label aplicada por pessoa vence.
+- A ideia nasce numa issue aberta por uma pessoa (formulário único `relato`; o tipo escolhido é só um palpite e nenhum rótulo é aplicado) ou numa conversa com o agente. Qualquer issue é entrada; sem os rótulos `requirement`, `bug` ou `plan`, está sem triagem.
+- A triagem compara o relato com a spec e termina em uma de três saídas: contradiz item `✓` é bug, corrigido por hotfix (rótulo `bug`; PR de código `spec-neutral` com `Closes #N`, sem proposta); pede spec nova, alterada ou removida, ou a spec é omissa, vira requirement issue (rótulo `requirement`) e segue o ciclo; já coberta por item da spec, inclusive comprometido e ainda não implementado, é descartada, fechada com comentário que aponta o item. O `/spec-impact` sugere, o `/spec-grill` resolve o que ficou incerto como primeira coisa, e uma pessoa decide: label aplicada por pessoa vence. Requirement issue já triada vai direto à conversa; issue com rótulo `plan` não segue o ciclo e é recusada na conversa, até o tratamento de planos ser definido.
 - A ideia amadurece na conversa; vai para uma requirement issue apenas a pedido, como memória entre sessões: o corpo é o entendimento mais recente, os comentários são o histórico resumido e o primeiro deles, `Solicitação original`, guarda o texto de quem abriu a issue.
 - A proposta traz o texto final da spec e das decisões, sem código, e só é publicada se a spec resultante for consistente. Nasce em draft; o autor a libera depois de tratar a revisão consultiva.
 - O CI deduz o tipo, aplica a label e bloqueia PR inválido; a revisão por agente só comenta. Não há aprovação formal obrigatória: qualquer pessoa com permissão de merge aceita.
@@ -56,8 +58,9 @@ Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maio
 | `spec-neutral` | não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso |
 | `spec-compatible` | cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente |
 | `spec-incompatible` | altera o sentido de item `✓`, contradiz item ou vai contra decisão; exige `⇢` e decisão criada ou alterada no mesmo PR |
-| `requirement` | issue com ideia de requisito, que segue o ciclo de proposta |
-| `bug` | issue de divergência do código em relação à spec, corrigida por hotfix |
+| `requirement` | issue triada com ideia de requisito, que segue o ciclo de proposta; aplicada só pela triagem |
+| `bug` | issue triada como divergência do código em relação à spec, corrigida por hotfix; aplicada só pela triagem |
+| `plan` | reconhecida só para recusa: a issue não segue o ciclo até o tratamento de planos ser definido |
 | `tabularium` | só neste repositório: PR que muda a definição do próprio tabularium, sem label de tipo |
 
 ## Skills
@@ -66,11 +69,11 @@ Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
 - `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria as labels; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
-- `/spec-grill`: faz a triagem (requirement, bug ou entrega pendente) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
+- `/spec-grill`: faz a triagem (requirement issue, hotfix ou descarte) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.
 - `/spec-issue`: a pedido, leva o entendimento da conversa para uma requirement issue, nova ou existente: reescreve o corpo, comenta o resumo da rodada e, no primeiro toque, guarda o original como comentário.
 - `/spec-propose`: escreve o texto final e as operações nas decisões, valida a consistência da spec resultante e abre ou atualiza o PR de proposta em draft, reencaixando uma proposta defasada.
-- `/spec-impact`: triagem sugerida e impacto de uma issue ou texto; revisão consultiva de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
+- `/spec-impact`: triagem sugerida (requirement issue, hotfix ou descarte) e impacto de uma issue ou texto; revisão consultiva de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
 - `/spec-sync`: no PR do código, marca `✓` no entregue, reescreve os `⇢` entregues e trata divergências entre entrega e compromisso.
 - `/spec-check`: roda o check e revisa o drift entre spec e código, com achados e evidências; só verifica.
 - `/spec-reconcile`: restaura a consistência da spec consigo mesma, uma camada por vez, e organiza as decisões; nada muda sem aprovação.
@@ -85,8 +88,7 @@ spec/AGENTS.md                     regras de formato e de mudança da spec
 REVIEW.md                          instruções para agentes de revisão (ex.: Copilot code review)
 scripts/spec.mjs                   build-map, classify e check (Node, sem dependências)
 .github/workflows/spec-check.yml   tipo, check bloqueante e revisão consultiva por agente
-.github/ISSUE_TEMPLATE/requirement.yml   formulário de requirement issue (só o relato é obrigatório)
-.github/ISSUE_TEMPLATE/bug.yml           formulário de bug (só o relato é obrigatório)
+.github/ISSUE_TEMPLATE/relato.yml  formulário único de issue (palpite e relato obrigatórios; não aplica rótulo)
 .claude/skills/                    as dez skills, com os esqueletos de product.md e model.md do /spec-init
 .tabularium                        gerado pelo INSTALL: origem, versão e arquivos instalados
 ```

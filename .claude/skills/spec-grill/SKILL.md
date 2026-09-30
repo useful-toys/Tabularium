@@ -1,6 +1,6 @@
 ---
 name: spec-grill
-description: Faz a triagem de uma ideia ou relato (requirement, bug ou entrega pendente) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
+description: Faz a triagem de uma ideia ou relato (requirement issue, hotfix ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
 ---
 
 # spec-grill
@@ -30,10 +30,11 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 - Fatos você busca sozinho (código, spec, histórico). Decisões são do humano.
 
 **Raiz: a triagem.** Todo o resto depende do tipo, então ela é resolvida antes:
-- Corpo com `Triagem` confirmada (tipo diferente de `indefinido`): não pergunte de novo; só reabra se o usuário discordar ou surgir evidência nova.
-- Sem triagem, `indefinido`, ou ideia nascida na conversa: compare o relato com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar o tipo, com a evidência (item da spec, decisão, código). O tipo escolhido por quem abriu a issue é só palpite.
-- **Bug** (contradiz item `✓`): sugira o hotfix, um PR de código sem mudança na spec com `Closes #N`, e encerre. **Entrega pendente** (contradiz item sem `✓`): aponte o item e encerre. **Requirement**: siga. **Mistura**: proponha separar em duas issues ligadas.
-- Se o tipo mudou em relação ao palpite ou à label, registre a evidência no campo `Triagem` do resumo.
+- Issue com a label `requirement` já está triada: não pergunte de novo; só reabra se o usuário discordar ou surgir evidência nova.
+- Issue com a label `plan`: não segue este ciclo. Recuse, diga que planos ainda não são tratados e encerre, sem esmiuçar.
+- Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare o relato com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
+- A triagem termina em **requirement issue** (siga), **hotfix** (o relato contradiz item `✓`: sugira um PR de código sem mudança na spec com `Closes #N` e encerre) ou **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado: aponte o item e encerre). **Mistura**: proponha separar em duas issues ligadas.
+- Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.
 
 O que perguntar:
 - **Contra o glossário**: termo usado com outro sentido, ou termo novo. "O glossário define X como…, e você parece querer dizer…". Proponha o termo canônico.
@@ -57,7 +58,7 @@ Formato do resumo:
 ```markdown
 <!-- spec-grill -->
 ## Esmiuçado
-- Triagem: <requirement | bug | entrega pendente | indefinido>, com a evidência (e o palpite do autor, se diferiu)
+- Triagem: <requirement issue | hotfix | descarte>, com a evidência (e o palpite do autor, se diferiu)
 - Tipo de mudança: <incompatível | compatível | editorial>
 - Decidido: <item → decisão, uma linha cada>
 - Porquês e alternativas: <para as decisões>

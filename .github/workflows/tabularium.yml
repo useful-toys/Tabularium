@@ -28,11 +28,6 @@ jobs:
       - name: Testes do script
         run: node --test scripts/spec.test.mjs
 
-      # O exemplo acompanha a mudança de regra e é verificado só na forma, sem tipo.
-      - name: Check do exemplo (PR tabularium)
-        if: contains(github.event.pull_request.labels.*.name, 'tabularium')
-        run: node scripts/spec.mjs check
-
       - name: Check da spec do tabularium
         run: node scripts/spec.mjs check --spec tabularium-spec
 

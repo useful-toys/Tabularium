@@ -95,7 +95,6 @@ spec/decisions/<camada>/           uma decisão vigente por arquivo + mapa gerad
 O que fica só neste repositório e nunca chega aos projetos:
 
 ```
-spec/ (menos spec/AGENTS.md)       exemplo: o Iconula, app de figurinhas da Copa 2026
 tabularium-spec/                   spec do próprio tabularium (requisitos e decisões que o moldaram)
 tabularium-docs/                   documentos derivados, como spec-flow.md (o fluxo com o porquê de cada etapa)
 README.md                          este arquivo
@@ -146,7 +145,7 @@ Tags `vX.Y.Z`, criadas à mão por uma pessoa quando decide publicar um lote de 
 
 Em `spec/config.json`, alterado só pelo `/spec-init`, que pode ser refeito a qualquer momento.
 
-**Caminhos de código** (`codePaths`): as pastas ou arquivos do código do produto (ex.: `src/`, `app/`), casados por prefixo; só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código, como o exemplo, e é perguntada de novo a cada `/spec-init`; configuração sem a lista é recusada pelo script. O `/spec-init` sugere a lista a partir das pastas do repositório e a atualiza quando o código muda de lugar.
+**Caminhos de código** (`codePaths`): as pastas ou arquivos do código do produto (ex.: `src/`, `app/`), casados por prefixo; só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código, como um projeto sem código, e é perguntada de novo a cada `/spec-init`; configuração sem a lista é recusada pelo script. O `/spec-init` sugere a lista a partir das pastas do repositório e a atualiza quando o código muda de lugar.
 
 **Idioma**: estrutura sempre em inglês; conteúdo no idioma configurado. O script traz embutidos os textos da verificação em `pt-BR`; outro idioma recebe os textos em `spec/locales/<idioma>.json`, com as mesmas chaves, criado pelo `/spec-init`. O script nunca é editado no projeto. Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido.
 
@@ -182,13 +181,9 @@ O `check` valida o formato do `product.md`, do `model.md` (inclusive se todo nom
 - alterar ou marcar `✓` sem código só em PR `spec-editorial`;
 - criar, alterar ou desfazer `⇢`, e toda mudança incompatível, exigem decisão criada ou alterada.
 
-## Experimentar com o exemplo
-
-Num clone ou fork deste repositório, `spec/` traz o Iconula preenchido, com decisões e um item redefinido. Ele passa pelas mesmas verificações de um produto e serve para experimentar o ciclo de proposta: `/spec-grill`, `/spec-ideas`, `/spec-propose` e o CI. Não tem código: sua lista de caminhos de código é vazia, e a entrega não pode ser experimentada com ele. O INSTALL recusa rodar neste repositório.
-
 ## Mudar o próprio tabularium
 
-A definição do tabularium é `tabularium-spec/` junto com os arquivos deste repositório. Muda por PR único com a label `tabularium`, sem issue, sem label de tipo e sem entrega separada, já com spec, decisões, arquivos, exemplo, `README.md` e `tabularium-docs/` alinhados; o CI em `tabularium.yml` exige a label em todo PR que toca a definição. Detalhes em `tabularium-spec/AGENTS.md`.
+A definição do tabularium é `tabularium-spec/` junto com os arquivos deste repositório. Muda por PR único com a label `tabularium`, sem issue, sem label de tipo e sem entrega separada, já com spec, decisões, arquivos, `README.md` e `tabularium-docs/` alinhados; o CI em `tabularium.yml` exige a label em todo PR que toca a definição. Detalhes em `tabularium-spec/AGENTS.md`.
 
 ## Instruções para agentes
 

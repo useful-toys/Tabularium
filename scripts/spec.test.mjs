@@ -545,7 +545,7 @@ test('trechos em código não contam como marcador, link ou ⇢', () => {
 
 // ---------- tabularium.manifest ----------
 
-test('tabularium.manifest lista arquivos existentes, sem exemplo nem arquivos do próprio tabularium', () => {
+test('tabularium.manifest lista arquivos existentes, sem spec de produto nem arquivos do próprio tabularium', () => {
   const root = fileURLToPath(new URL('..', import.meta.url));
   const files = readFileSync(join(root, 'tabularium.manifest'), 'utf8').replace(/\r/g, '').split('\n')
     .filter((l) => l.trim() && !l.startsWith('#'));
@@ -554,7 +554,7 @@ test('tabularium.manifest lista arquivos existentes, sem exemplo nem arquivos do
   const excluded = /^(tabularium-(spec|docs)\/|README\.md$|AGENTS\.md$|INSTALL\.|tabularium\.manifest$|\.github\/workflows\/tabularium\.yml$|scripts\/spec(\.test\.mjs|-fixtures\/))/;
   for (const f of files) {
     assert.ok(!excluded.test(f), `não distribuível: ${f}`);
-    assert.ok(!f.startsWith('spec/') || f === 'spec/AGENTS.md', `exemplo no manifesto: ${f}`);
+    assert.ok(!f.startsWith('spec/') || f === 'spec/AGENTS.md', `spec de produto no manifesto: ${f}`);
   }
   const skills = execFileSync('git', ['ls-files', '.claude/skills'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
   for (const s of skills) assert.ok(files.includes(s), `skill fora do manifesto: ${s}`);

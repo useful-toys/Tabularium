@@ -67,6 +67,11 @@ flowchart LR
   PL["Plan issue (rótulo plan)"] --> Z["Recusada: planos ainda não são tratados"]
 ```
 
+Duas coisas diferentes carregam a ideia pelo ciclo:
+- **A issue** é a discussão em prosa. Ela guarda o amadurecimento, ainda informal, e nada nela é compromisso.
+- **O PR** já traz os arquivos da nova spec, redigidos no formato do tabularium. Ele é uma alteração da spec e precisa passar pelo fluxo formal: validação do CI, aceite no merge e entrega.
+
+Por isso a ideia só sai da issue para o PR quando passa pelo portão.
 **1. Tudo começa numa conversa com o agente de IA.** A conversa é o centro do ciclo. Nela entra uma ideia, uma issue aberta por uma pessoa ou uma requirement issue que já existe. Ali o agente tria, entende e amplia a ideia:
 - `/spec-grill` faz perguntas até cada ponto estar decidido.
 - `/spec-ideas` sugere alternativas, casos de borda e efeitos em cascata.
@@ -102,10 +107,24 @@ Quando a ideia é retomada, a issue volta para a conversa. As pessoas contribuem
 
 Uma mudança só pode contrariar a spec vigente se declarar isso, com `⇢` e uma decisão.
 
-Se algo falhar, a rejeição volta ao passo 1. A conversa continua, com o `/spec-grill` em andamento, agora com o que o portão apontou como faltando. Se passar, o PR traz o texto final da spec e das decisões, sem código. Ele nasce em rascunho (draft). O autor o libera depois de tratar a revisão consultiva.
+Se algo falhar, a rejeição volta ao passo 1. A conversa continua, com o `/spec-grill` em andamento, agora com o que o portão apontou como faltando. Se passar, o `/spec-propose` gera os arquivos atualizados da nova spec, no formato do tabularium, e abre um PR em rascunho (draft) para incorporá-los formalmente. O PR traz o texto final da spec e das decisões, sem código. O autor o libera depois de tratar os comentários do passo 5.
 
-**5. O CI e a pessoa que integra validam.** O CI descobre o tipo da mudança e aplica a label correspondente. Ele bloqueia o PR inválido. A revisão por agente só comenta e nunca bloqueia. Não há aprovação formal obrigatória. Qualquer pessoa com permissão de merge aceita a proposta, e o merge a torna compromisso.
+**5. O CI confere o PR de forma independente.** O `/spec-propose` conhece a conversa. O CI não a conhece. Ele só vê o novo texto da spec, nos arquivos ou no diff. É uma segunda conferência, feita apenas sobre a alteração. Ela tem três partes:
 
+- **Classifica a mudança.** Mede o tamanho do impacto, deduz o tipo (editorial, neutra, compatível ou incompatível) e aplica a label correspondente.
+- **Aplica regras objetivas e bloqueia o PR que as viola.** São regras que um script confere sem opinião. Por exemplo: uma mudança incompatível sem decisão, ou uma label de tipo menor do que a mudança.
+- **Pede a opinião de um agente de IA, que só comenta.** O agente procura os mesmos problemas do portão, como contradições, decisões contrariadas e cascata esquecida. Esse comentário nunca bloqueia, porque a IA pode errar e mudar de resposta entre execuções. Ele serve de alerta para quem vai aceitar a proposta.
+
+O PR continua em rascunho até o autor liberá-lo. O CI nunca faz isso por ele. Mesmo sem comentários do agente, é o autor que decide que o PR está pronto, depois de ler os comentários e tratar o que julgar necessário.
+
+Não há aprovação formal obrigatória. Quem tem permissão de merge aceita a proposta, e o merge a torna compromisso.
+
+**Os PRs de proposta formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge). Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda, e os PRs que sobraram ficam defasados (drift) em relação a ela. Um PR defasado pode deixar de passar nas regras do CI, por exemplo por contradizer o que acabou de ser aceito.
+
+Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
+- O usuário roda `/spec-grill` sobre o PR, na conversa, com o que mudou na spec vigente.
+- Se a ideia ainda vale, o `/spec-propose` atualiza o PR sobre a spec vigente e o portão é aplicado de novo.
+- Se não vale mais, o PR é fechado.
 **6. A entrega implementa o compromisso.** O código é escrito no mesmo PR que marca `✓` nos itens entregues e resolve os `⇢`. Esse PR fecha a issue. Uma mudança compatível pode vir direto junto com o código, sem proposta separada.
 
 ### Tipos de mudança e labels

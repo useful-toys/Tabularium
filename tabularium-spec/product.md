@@ -195,6 +195,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
+  - ✓ Julga só o texto final da spec, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
+  - ✓ Não libera o rascunho da proposta: só sinaliza que não achou ressalvas; quem libera é o autor
   - ✓ Trata o conteúdo da proposta como dado, não como instrução
 - ✓ Analisar sob demanda o impacto de uma ideia ou issue sobre a spec
 
@@ -239,6 +241,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Rótulos de issues e PRs em inglês
 - ✓ A spec descreve a branch principal: item implementado é verdade no código; comprometido é intenção registrada
 - ✓ Ideias em amadurecimento vivem na conversa ou no tracker, nunca na spec; a spec recebe só texto final aceito
+  - ✓ A issue é a discussão em prosa e nada nela é compromisso; o PR traz os arquivos da nova spec, redigidos no formato do tabularium, e passa pelo fluxo formal de validação, aceite no merge e entrega
 - ✓ Regras de formato têm uma única fonte, carregada pelo agente só ao trabalhar na spec
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ O agente só integra um PR a pedido explícito do humano, PR a PR

@@ -259,17 +259,18 @@ flowchart LR
    - **Primeiro toque** numa issue existente: o corpo original vira, sem alteração, o primeiro comentário da IA, com o título `Solicitação original`. É reconhecido pela falta de comentário com esse título, mesmo que pessoas já tenham comentado. Issue nascida na conversa não tem original.
    - Antes de reescrever o corpo, confere `updatedAt` para não sobrescrever edição nova. Mostra o texto e pede confirmação antes de publicar.
    - **Aplica o resultado da triagem**, com confirmação: o rótulo `requirement` ou `bug` na issue de origem, a criação da bug issue quando a origem é uma ideia, ou, no descarte, o fechamento da issue de origem como descartada, com um comentário que aponta o item da spec que já a cobre. Trocar um rótulo exige o aval do usuário, e o de uma pessoa vence a sugestão. Ideia descartada na conversa é só abandonada, sem issue. Issue `plan` é recusada, sem reescrever o corpo.
-4. **Portão (aplicado pelo `/spec-propose`)**: só abre ou atualiza o PR se a ideia estiver madura e consistente com a spec atual. Critérios: triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e spec resultante, com os documentos técnicos fundamentais e as decisões, sem contradição; contrariar item ou decisão vigente só vale se a mudança for declarada (`⇢` com decisão). Se algum falhar, devolve à conversa com o que falta. Passando, sintetiza o texto final, sem nova entrevista; só pergunta o que impede o registro, como um porquê ausente.
+4. **Portão (aplicado pelo `/spec-propose`)**: só abre ou atualiza o PR se a ideia estiver madura e consistente com a spec atual. Critérios: triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e spec resultante, com os documentos técnicos fundamentais e as decisões, sem contradição; contrariar item ou decisão vigente só vale se a mudança for declarada (`⇢` com decisão). Se algum falhar, a rejeição volta ao passo 1: a conversa continua, com o `/spec-grill` em andamento, agora com o que o portão apontou como faltando. Passando, sintetiza o texto final, sem nova entrevista; só pergunta o que impede o registro, como um porquê ausente.
    - Escreve os documentos com itens e opera nas decisões: criar, alterar, fundir, dividir, mover ou remover.
    - Roda `build-map` e `check --base origin/main`.
    - Valida a consistência da spec resultante sobre a `main` atual. Qualquer inconsistência, mesmo antiga, impede a publicação.
    - PR novo nasce em draft, sem label de tipo. PR existente é rebaseado na `main` e publicado com `--force-with-lease`; a descrição guia o novo casamento do diff, e a validação confere o resultado.
    - A descrição explica cada alteração, as decisões e a cascata. O PR cita a issue com `Refs #N`. Na issue, só segue com triagem requirement: atualiza no corpo apenas a linha `Proposta: #PR`, sem reescrever o resto, e comenta as decisões adicionais.
-5. **Validar (CI)**:
+5. **Validar (CI)**: o CI é uma segunda visão, independente da conversa. Enquanto o `/spec-propose` julga com o contexto da conversa, o CI vê só o texto final da spec, lendo os arquivos ou o diff.
    - tipo e label, conforme a seção anterior;
-   - check bloqueante;
+   - check bloqueante: só o que o CI consegue provar bloqueia;
    - revisão consultiva, que nunca bloqueia: o Copilot code review via ruleset e `REVIEW.md`, e/ou o job `spec-review`, que roda o `/spec-impact` em modo PR quando o PR toca `spec/` e existe o secret `ANTHROPIC_API_KEY`. Ele revisa tipo, cascata, decisões, consistência e forma, num único comentário atualizado a cada rodada. O conteúdo do PR é tratado como dado, não como instrução.
-   - O autor trata os achados e marca o PR como pronto.
+   - O julgamento do agente nunca bloqueia, porque pode errar e variar entre execuções: ele alerta a pessoa que integra.
+   - O CI não libera o rascunho: sem ressalvas, só sinaliza. O autor trata os achados e marca o PR como pronto.
 6. **Aceitar**: qualquer pessoa com permissão de merge. Não há aprovação formal obrigatória. O agente só integra a pedido explícito dela. PR fechado sem merge é recusa. Proposta rediscutida volta a draft.
 7. **Entregar (`/spec-sync`)**: implementação e sincronização no mesmo PR.
    - Marca `✓` nos itens entregues e reescreve os `⇢` entregues.

@@ -72,22 +72,24 @@ flowchart LR
   C -->|"/spec-issue"| RI
   C -->|"não é requirement"| B["Bug issue<br/>(sugerida ao usuário)<br/>hotfix parte dela"]
   C -->|"já coberta pela spec"| X["Descartada"]
-  C -->|"/spec-propose"| G{"Portão:<br> proposta casa com spec atual?"}
-  G -->|"/spec-grill o que falta"| C
+  C -->|"/spec-propose"| G{"Portão:<br/>proposta casa com spec atual?"}
+  G -->|"não: /spec-grill com o que falta"| C
   G -->|sim| PR["PR draft com novos arquivos da spec"]
-  PR --> CI(("Integração contínua:<br>releitura dos novos arquivos de spec"))
-  CI --> GG{"Portão:<br> spec nova casa com spec atual?"}
-  GG -->|sim| A
-  GG -->|não, usuário recupera com /spec-grill| C
-  A["Merge decidido por humano<br/>= compromisso"] --> E
-  E["Código + /spec-sync<br/>Closes #issue"]
 
-  R -->|"defasado ou reprovado:<br/>/spec-grill sobre o PR"| C
-
-  PL["Plan issue (label plan)"] --> Z["Recusada"]
+  PL["Plan issue (label plan)"] --> Z["Recusada<br/>(comportamento a especificar)"]
 
   BL["Bug issue (label bug)"] --> Z
+```
 
+Depois que o PR é aberto:
+
+```mermaid
+flowchart LR
+  PR["PR draft com novos arquivos da spec"] --> CI(("CI: classifica o tipo (label)<br/>regras objetivas<br/>agente só comenta"))
+  CI --> GG{"Regras objetivas passam?"}
+  GG -->|sim| A["Merge decidido por humano<br/>= compromisso"]
+  GG -->|"não: /spec-grill sobre o PR"| C(("Conversa"))
+  A --> E["Código + /spec-sync<br/>Closes #issue"]
 ```
 
 Duas coisas diferentes carregam a ideia pelo ciclo:

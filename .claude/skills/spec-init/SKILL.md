@@ -9,7 +9,7 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR; o CI deduz
 
 ## 1. Diagnóstico
 - Verifique o que já existe: `.tabularium`, `AGENTS.md`, `spec/AGENTS.md`, `spec/config.json`, `spec/product.md`, `spec/model.md`, `spec/decisions/`, `scripts/spec.mjs`, `.github/workflows/spec-check.yml`.
-- Se faltar `.tabularium`, `spec/AGENTS.md` ou `scripts/spec.mjs`, pare. O tabularium se instala e se atualiza pelo INSTALL (ver o `README.md` do tabularium); peça ao usuário para rodá-lo na raiz do repositório e rode de novo.
+- Se faltar `.tabularium`, `spec/AGENTS.md` ou `scripts/spec.mjs`, pare. O tabularium se instala e se atualiza pelo INSTALL (ver `tabularium-docs/install.md` do tabularium); peça ao usuário para rodá-lo na raiz do repositório e rode de novo.
 - Se existir `CLAUDE.md` na raiz ou em `spec/`, pare: com ele presente, o Claude Code ignora o `AGENTS.md`, e o tabularium não funciona. Peça ao usuário para migrar o conteúdo para `AGENTS.md` manualmente e apagar o `CLAUDE.md`.
 
 ## 2. Preferências

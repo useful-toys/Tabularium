@@ -6,7 +6,7 @@ carregar-quando: mudança em como requisitos são propostos, discutidos, aceitos
 - Decisão: a ideia nasce numa issue aberta por uma pessoa ou numa conversa e amadurece na conversa, e a requirement issue guarda o entendimento mais recente quando o usuário pede, com o histórico em comentários (`requirement-issue-estado-e-historico`); o PR de proposta traz o diff final do documento de produto e as operações nas decisões, nunca ideias soltas, e a descrição menciona e explica cada alteração; PR aberto é proposta, merge é aceitação, fechado sem merge é recusa; a aceitação é o merge decidido por um humano, sem aprovação formal obrigatória; o merge é feito por ele ou pelo agente, que só integra a pedido explícito do humano, PR a PR, e nesse caso o pedido é o ato de aceitação; o PR de proposta cita a issue com `Refs #N` e a issue recebe o link dele; PR sem issue vale quando a ideia já está madura, usando o próprio número como identificador; qualquer pessoa com permissão de merge pode aceitar
 - Contexto: propostas precisam chegar prontas para serem comprometidas, e a discussão exploratória precisa de um lugar que não seja a spec
 - Alternativas descartadas
-  - PR só com o diff, sem explicação: o diff não carrega intenção, e a conversa e a issue opcional não servem de memória para a pessoa que integra nem para o reencaixe
+  - PR só com o diff, sem explicação: o diff não carrega intenção, e a conversa e a issue opcional não servem de memória para a pessoa que integra nem para o novo casamento
   - Aceitação na issue antes do PR: dois atos de aceite para a mesma coisa
   - Estado de proposto no documento de produto: terceiro marcador para algo que ainda não foi aceito
   - Sempre exigir issue: burocracia para ideias já maduras

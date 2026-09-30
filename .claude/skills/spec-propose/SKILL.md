@@ -19,7 +19,7 @@ Mudança no próprio template (`tabularium-spec/`, só no repositório do templa
 - Se algo necessário não estiver decidido, pare e sugira `/spec-grill`.
 
 ## 1a. Portão
-Esta etapa é o portão da proposta. Só siga se a ideia estiver madura o bastante para encaixar na spec vigente:
+Esta etapa é o portão da proposta. Só siga se a ideia estiver madura o bastante para casar com a spec vigente:
 - a triagem é requirement issue (label `requirement`, ou ideia da conversa triada como requirement);
 - nada necessário está em aberto: o `Em aberto` do corpo da issue não tem pendências e cada decisão tem o porquê;
 - o texto final se aplica à `main` atual, sem inconsistência (seção 3a).
@@ -27,7 +27,7 @@ Se algo falhar, não abra nem atualize o PR: devolva à conversa (`/spec-grill`)
 
 ## 2. Branch
 - **Origem PR**: use a branch do PR. Rebase na `main` atual (`git fetch`, `git rebase origin/main`) e publique com `git push --force-with-lease`.
-  - A descrição do PR guia o reencaixe: reescreva o diff para cumprir a intenção descrita sobre a nova base, não só para resolver conflito de texto.
+  - A descrição do PR guia o novo casamento: reescreva o diff para cumprir a intenção descrita sobre a nova base, não só para resolver conflito de texto.
   - Se a intenção não couber mais na nova base, pare e pergunte ao usuário.
 - **Demais origens**: crie uma branch a partir da `main` atual.
 
@@ -54,7 +54,7 @@ Antes de criar ou atualizar o PR, valide a spec resultante: o diff aplicado sobr
 - termo usado fora do sentido do glossário, sinônimo não canônico ou termo de domínio sem definição;
 - lacuna de cascata: item que depende de outro inexistente ou removido.
 
-Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o reencaixe.
+Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o novo casamento.
 
 ## 4. PR
 - Commit e push. O PR nunca inclui código e não leva label de tipo: o CI deduz o tipo (`spec-compatible` ou `spec-incompatible`) e aplica a label. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.

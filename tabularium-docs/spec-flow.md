@@ -263,7 +263,7 @@ flowchart LR
    - Escreve os documentos com itens e opera nas decisões: criar, alterar, fundir, dividir, mover ou remover.
    - Roda `build-map` e `check --base origin/main`.
    - Valida a consistência da spec resultante sobre a `main` atual. Qualquer inconsistência, mesmo antiga, impede a publicação.
-   - PR novo nasce em draft, sem label de tipo. PR existente é rebaseado na `main` e publicado com `--force-with-lease`; a descrição guia o reencaixe do diff, e a validação confere o resultado.
+   - PR novo nasce em draft, sem label de tipo. PR existente é rebaseado na `main` e publicado com `--force-with-lease`; a descrição guia o novo casamento do diff, e a validação confere o resultado.
    - A descrição explica cada alteração, as decisões e a cascata. O PR cita a issue com `Refs #N`. Na issue, só segue com triagem requirement: atualiza no corpo apenas a linha `Proposta: #PR`, sem reescrever o resto, e comenta as decisões adicionais.
 5. **Validar (CI)**:
    - tipo e label, conforme a seção anterior;

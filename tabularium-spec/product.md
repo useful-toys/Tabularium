@@ -1,7 +1,7 @@
 # tabularium3 — Template de spec viva
 
 ## O que é
-Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma especificação viva do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga: cada ideia é esmiuçada e proposta até encaixar na spec vigente, e reencaixada se a spec mudar antes do aceite. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
+Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma especificação viva do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga: cada ideia é esmiuçada e proposta até casar com a spec vigente, e casada de novo se a spec mudar antes do aceite. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
 
 ## Diferenciais
 - A spec cabe no contexto de um agente: arquivos densos, lidos de uma vez ou sob demanda
@@ -185,12 +185,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Mudança incompatível sempre cria ou altera uma decisão; decisão nova não viola decisão vigente
   - ✓ Antes de criar ou atualizar a proposta, valida a consistência da spec resultante sobre a branch principal atual, nos itens tocados e na cascata
   - ✓ Com qualquer inconsistência, inclusive preexistente, não publica e aponta o que corrigir antes
-  - ✓ Funciona como portão: só abre a proposta se a ideia estiver madura o bastante para encaixar na spec vigente; senão devolve à conversa com o que falta
+  - ✓ Funciona como portão: só abre a proposta se a ideia estiver madura o bastante para casar com a spec vigente; senão devolve à conversa com o que falta
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
   - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - ✓ Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
-  - ✓ No rebase sobre a branch principal, a descrição guia o reencaixe do diff na nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
+  - ✓ No rebase sobre a branch principal, a descrição guia o novo casamento do diff com a nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e requirement issue mencionam uma à outra; a issue recebe o link da proposta e as decisões adicionais
 - ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois

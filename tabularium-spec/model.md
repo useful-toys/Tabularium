@@ -27,9 +27,10 @@
   - ✓ **Regra** pertence a 1 **Requisito**
   - ✓ estados: comprometido | implementado | redefinido
   - ✓ comprometido → implementado: a entrega marca o item
-  - ✓ implementado → redefinido: uma mudança incompatível aceita anexa o texto desejado
+  - ✓ implementado → redefinido: uma mudança incompatível aceita anexa o texto desejado ou a indicação de remoção
   - ✓ redefinido → implementado: a entrega reescreve o item com o texto desejado
   - ✓ redefinido → implementado: a desistência descarta o texto desejado
+  - ✓ redefinido → apagado: a entrega de uma remoção apaga o item
 - ✓ **Camada**
   - ✓ pertence a 1 **Spec**
 - ✓ **Decisão**

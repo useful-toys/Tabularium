@@ -25,7 +25,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - **Regra**: fato testável que restringe um requisito
 - **Item implementado**: item com a marca de visto; o código faz o que ele diz
 - **Item comprometido**: item sem marca; decidido, ainda não implementado
-- **Item redefinido**: item implementado seguido da seta e do texto desejado; o texto atual vale até a entrega, e o desejado, depois dela
+- **Item redefinido**: item implementado seguido da seta e do texto desejado, ou da indicação de remoção; o texto atual vale até a entrega, e o desejado, depois dela; na remoção, o item deixa de existir
 - **Tipo de mudança**: o que um PR faz com a spec vigente; o PR com vários recebe o maior, nesta ordem
   - **Editorial**: muda só o texto da spec, sem mudar sentido
   - **Neutra**: não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso
@@ -189,6 +189,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 ### Proposta
 - ✓ Registrar uma ideia madura como proposta com texto final, sem nova entrevista
   - ✓ Mudança compatível entra como item comprometido; incompatível redefine o item, sem alterar o que vale hoje
+  - ✓ Remover um item implementado é mudança incompatível: o item fica redefinido com a indicação de remoção no lugar do texto desejado, e vale até a entrega
   - ✓ Opera nas decisões: criar, alterar, fundir, dividir, mover ou remover
   - ✓ Mudança incompatível sempre cria ou altera uma decisão; decisão nova não viola decisão vigente
   - ✓ Antes de criar ou atualizar a proposta, valida a consistência da spec resultante sobre a branch principal atual, nos itens tocados e na cascata
@@ -222,7 +223,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ### Entrega
 - ✓ Sincronizar a spec com a entrega, no mesmo PR do código
-  - ✓ Marca como implementado o que foi entregue e reescreve os itens redefinidos entregues
+  - ✓ Marca como implementado o que foi entregue e reescreve os itens redefinidos entregues; o item cuja remoção foi entregue é apagado
   - ✓ Pequena divergência entre compromisso e entrega é ajustada no próprio PR como mudança incompatível, com aval da pessoa que integra
   - ✓ Divergência grande vira nova proposta antes da entrega
   - ✓ Mudança compatível pode entrar junto com o código, inclusive com decisão nova

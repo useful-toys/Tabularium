@@ -13,7 +13,7 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR; o CI deduz
 - Se existir `CLAUDE.md` na raiz ou em `spec/`, pare: com ele presente, o Claude Code ignora o `AGENTS.md`, e o tabularium não funciona. Peça ao usuário para migrar o conteúdo para `AGENTS.md` manualmente e apagar o `CLAUDE.md`.
 
 ## 2. Preferências
-Se `spec/config.json` existir, mostre os valores atuais e pergunte só o que o usuário quer mudar; se `codePaths` estiver vazio, pergunte-o sempre. Senão, pergunte tudo:
+Se `spec/config.json` existir, mostre os valores atuais, pergunte só o que o usuário quer mudar e confirme cada mudança antes de gravar; se `codePaths` estiver vazio, pergunte-o sempre. Senão, pergunte tudo:
 - **Camadas fundamentais** além de `product`: aquelas cuja alteração depois da adoção causa grande impacto, como `architecture`, `integration`, `data` (modelo de dados) ou outras. Cada camada tem seu documento técnico e suas decisões, ambos obrigatórios. Documento técnico auxiliar (`interface`, `flows`, `style`) não é camada. Nenhuma se chama `model`, nome reservado ao modelo conceitual.
 - **Idioma do conteúdo** (ex.: `pt-BR`). A estrutura fica sempre em inglês. Idioma fora de `LOCALES`, em `scripts/spec.mjs`, precisa de `spec/locales/<idioma>.json`, com as mesmas chaves de `LOCALES['pt-BR']`, traduzidas (em `mapTitle`, `{layer}` marca o nome da camada). Se o arquivo não existir, avise e crie-o.
 - **Caminhos de código** (`codePaths`): as pastas ou arquivos onde está o código do produto (ex.: `src/`, `app/`, `lib/`), casados por prefixo. Sugira a lista a partir das pastas do repositório e confirme. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia: projeto sem código. Quando o código mudar de lugar, a lista é atualizada por aqui.
@@ -52,14 +52,19 @@ Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o form
   - `spec-compatible`: PR que cria requisito, altera item não implementado ou cria decisão, sem contradizer nada;
   - `spec-incompatible`: PR que altera o sentido de item implementado, contradiz item ou vai contra decisão.
   O CI aplica a label de tipo: o workflow declara permissão de escrita nos PRs só para isso.
-- Oriente a proteção da `main` (Settings → Rules), que o usuário configura:
+- Sugira a proteção da `main` (ruleset em Settings → Rules). Antes, verifique a situação atual no repositório remoto, pelo `gh`. Se já estiver habilitada, com o que segue, não faça nada. Se estiver desabilitada, ou faltar parte, pergunte se o usuário aceita que você a habilite automaticamente, pelo `gh`. Se aceitar, configure o repositório remoto; se a configuração falhar, ou se não aceitar, mostre como configurá-la à mão. Nunca a altere sem a resposta. A proteção tem:
   - exigir PR;
   - exigir o check `spec-check`, que também classifica o tipo e bloqueia quando o tipo torna o PR inválido;
   - exigir branch atualizada com a `main` antes do merge;
   - não é preciso exigir aprovação: a aceitação é o merge decidido por um humano. Se a equipe quiser exigir aprovação, oriente também descartar aprovações quando houver commits novos.
-- Revisão consultiva por agente (opcional). Pergunte qual usar; pode ser mais de um, ou nenhum:
-  - **Copilot code review**: ruleset da `main` com "Automatically request Copilot code review" e "Review new pushes". Segue o `REVIEW.md`. Usa a assinatura do Copilot, sem secret.
-  - **Claude**: o job `spec-review` do workflow roda o `spec-impact` quando existe o secret `ANTHROPIC_API_KEY`; sem ele, o job é pulado.
-  - Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo; sem ele, ou em PR de fork, o caso ambíguo pede que uma pessoa aplique a label de tipo.
-  - Se nenhum for usado, `REVIEW.md` e o job podem ficar: não têm efeito.
+- Conferência por agente (opcional): um agente de IA confere cada PR de proposta contra a spec vigente e só comenta, sem aprovar nem bloquear. Só uma fica ligada: a do GitHub (Copilot code review) ou a do Claude. Explique isso ao usuário e siga assim:
+  - Verifique, pelo `gh`, qual está ligada: a do GitHub, se o ruleset da `main` tem "Automatically request Copilot code review"; a do Claude, se a variável do repositório `SPEC_REVIEW_AGENT` vale `claude`, ou se não existe e há o secret `ANTHROPIC_API_KEY` (verifique pelo nome com `gh secret list`, nunca pelo valor).
+  - Pergunte qual o usuário deseja: GitHub, Claude ou nenhuma, mostrando a atual. Se a escolhida já está ligada, não faça nada.
+  - Se a escolha muda a que está ligada, diga exatamente o que vai desligar e só siga com a confirmação do usuário.
+  - Ligar ou desligar é configurar o repositório remoto, pelo `gh`, se o usuário aceitar; se preferir, ou se a configuração falhar, mostre como fazê-lo à mão. Nunca altere sem a resposta.
+  - **GitHub (Copilot code review)**: liga com o ruleset da `main` ("Automatically request Copilot code review" e "Review new pushes"), que segue o `REVIEW.md` e usa a assinatura do Copilot, sem secret; grave `SPEC_REVIEW_AGENT=github` para desligar o job do Claude. Desliga removendo a regra do ruleset.
+  - **Claude**: liga gravando `SPEC_REVIEW_AGENT=claude` (`gh variable set`); o job `spec-review` do workflow já vem no tabularium e roda o `spec-impact` quando a variável é `claude`, ou não existe, e há o secret `ANTHROPIC_API_KEY`. Só o secret falta, e a chave é do usuário: aqui "configurar" é orientar. Explique como criar o secret (Settings → Secrets and variables → Actions, ou `gh secret set`, rodado por ele) e nunca peça, receba nem digite a chave. Desliga gravando `SPEC_REVIEW_AGENT=github` ou `none`; o secret não é apagado, porque é do usuário.
+  - **Nenhuma**: desligue a que estiver ligada, grave `SPEC_REVIEW_AGENT=none` e avise o risco: sem a conferência por agente, a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente.
+  - Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo, qualquer que seja a conferência ligada; sem ele, ou em PR de fork, o caso ambíguo pede que uma pessoa aplique a label de tipo.
+  - Com a conferência desligada, `REVIEW.md` e o job podem ficar: não têm efeito.
 - Se o repositório já tiver código, sugira `/spec-extract` como próximo passo.

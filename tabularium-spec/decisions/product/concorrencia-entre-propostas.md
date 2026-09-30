@@ -3,7 +3,7 @@ tema: Propostas concorrentes e defasagem
 decisao: Branch atualizada antes do merge e revalidação; aprovação descartada se a equipe exigir aprovação; rediscussão sobre a base atual
 carregar-quando: mudança em proteção de branch, conflitos entre propostas, rediscussão ou atualização de PR
 ---
-- Decisão: a branch principal exige branch atualizada antes do merge; atualizar dispara de novo o check e a revisão consultiva; se a equipe exigir aprovação, a anterior é descartada; proposta rediscutida volta a rascunho e é atualizada por rebase na principal com envio forçado protegido; no rebase, a descrição do PR guia o novo casamento do diff, que é reescrito para cumprir a intenção descrita
+- Decisão: a branch principal exige branch atualizada antes do merge; atualizar dispara de novo o check e a conferência por agente; se a equipe exigir aprovação, a anterior é descartada; proposta rediscutida volta a rascunho e é atualizada por rebase na principal com envio forçado protegido; no rebase, a descrição do PR guia o novo casamento do diff, que é reescrito para cumprir a intenção descrita
 - Contexto: uma proposta aceita antes de outra pode invalidá-la, inclusive por contradição sem conflito de texto
 - Alternativas descartadas
   - Confiar só no conflito de merge: contradição semântica passa despercebida

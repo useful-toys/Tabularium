@@ -44,7 +44,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; a conversa a recusa por ora, e ela terá tratamento próprio, por skills dedicadas, ainda por especificar
 - **Portão da proposta**: condição para uma conversa virar proposta: ideia triada como requirement issue, nada necessário em aberto e spec resultante consistente
 - **Proposta**: PR sem código com o texto final dos documentos com itens e das decisões, de qualquer tipo de mudança; aberto é proposta, aceito no merge, recusado se fechado sem merge
-- **Revisão consultiva**: comentário de agente sobre uma proposta, que nunca aprova nem bloqueia
+- **Conferência por agente**: comentário de um agente de IA que confronta o texto final de uma proposta com a spec vigente, sem ver a conversa; nunca aprova nem bloqueia
 - **Fila de aceite**: conjunto das propostas abertas, cada uma à espera de ser aceita ou recusada
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -52,38 +52,56 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Documento derivado**: documento gerado a partir da definição do tabularium, como o README e os guias de instalação, configuração e manutenção; nunca é fonte, e em conflito vale a spec
 - **Tracker**: sistema externo de solicitações (GitHub Issues)
 - **Tabularium**: conjunto versionado de regras, instruções, verificação e skills que se instala num projeto, sem produto de exemplo; a spec dele descreve o template e nunca chega aos projetos
+- **Arquivos do tabularium**: arquivos que a instalação copia para o projeto; nunca incluem a spec do próprio tabularium nem os documentos derivados
+- **Processo**: regras de como a spec evolui, que o tabularium coloca em `AGENTS.md`, num bloco delimitado
+- **Preparação**: etapa depois da instalação, que pode ser refeita: prepara o repositório, configura o projeto, cria a estrutura da spec e, depois de uma atualização, adapta a spec ao formato novo
+- **Caminhos de código**: pastas ou arquivos da configuração onde está o código do produto; cada um abrange tudo o que começa por ele, e só o que está neles conta como código nas regras de PR
 
 ## Requisitos
 
 ### Adoção
-- ✓ Instalar o tabularium num repositório, novo ou existente, com um comando que baixa uma versão e copia os arquivos dela
-  - ✓ Copia só os arquivos listados pelo tabularium; a spec do próprio tabularium e os documentos derivados nunca chegam ao projeto
+- ✓ Instalar o tabularium num repositório, novo ou existente, com um comando
   - ✓ Instala a última versão publicada, ou a versão informada
-  - ✓ Sem arquivo de instruções comuns, cria-o só com o processo; com ele, o processo fica num bloco delimitado, e o resto do arquivo não é tocado
+  - ✓ Copia para o projeto só os arquivos do tabularium
+  - ✓ Sem `AGENTS.md`, cria o arquivo só com o processo
+  - ✓ Com `AGENTS.md`, coloca o processo no início do arquivo e não toca no resto
   - ✓ Registra no projeto a origem, a versão e os arquivos instalados
-  - ✓ Recusa instalar enquanto existir arquivo de instruções específico de um agente que anula as instruções comuns, e orienta migrá-lo à mão
+  - ✓ Recusa instalar enquanto existir `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`, e orienta migrá-lo à mão
+  - ✓ Recusa instalar no repositório do próprio tabularium
+  - ✓ Recusa instalar quando o `AGENTS.md` tem os marcadores do processo incompletos ou repetidos, e orienta corrigi-lo à mão
+  - ✓ Recusa instalar quando não há versão publicada, quando a versão está fora do padrão numerado ou quando a versão não traz a lista de arquivos a copiar
   - ✓ Nunca faz commit; o resultado entra por PR
-- ✓ Atualizar o tabularium de um projeto com o mesmo comando
-  - ✓ Sobrescreve os arquivos do tabularium e troca só o bloco do processo; a mesma versão dá o mesmo resultado em qualquer projeto
-  - ✓ Apaga os arquivos do tabularium que saíram da versão nova
-  - ✓ Recusa voltar para versão menor que a instalada, salvo pedido explícito
-  - ✓ Avisa quando a versão nova exige adaptar a spec ao formato
-- ✓ Publicar o tabularium em versões numeradas, quando uma pessoa decide
-- ✓ Adaptar a spec ao formato de uma versão nova do tabularium, no mesmo PR da atualização
-  - ✓ Nunca muda o sentido de item; o que exigir isso vira proposta
-  - ✓ Cada adaptação é confirmada, em lote ou item a item
+- ✓ Preparar o repositório remoto no GitHub
+  - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
+  - ✓ Sugere a proteção da branch principal: verifica a situação atual da proteção no repositório remoto; se estiver desabilitada, pergunta ao usuário se deseja habilitá-la automaticamente; se sim, configura o GitHub remoto; senão, apresenta como configurá-la manualmente; se estiver habilitada, não faz nada
+  - ✓ Sugere a conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente: verifica no repositório remoto qual conferência está ligada, a do GitHub ou a do Claude, se houver alguma, e pergunta ao usuário qual deseja, mostrando a atual
+  - ✓ Só uma conferência fica ligada: se a escolhida já está ligada, não faz nada; senão, liga a escolhida e desliga a outra, depois de dizer ao usuário o que vai desligar e de ele confirmar
+  - ✓ Ligar ou desligar uma conferência é configurar o repositório remoto, ou apresentar como fazê-lo manualmente se o usuário preferir
+  - ✓ Se o usuário não quiser nenhuma, desliga a que estiver ligada e avisa o risco: a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente
+  - ✓ A chave de acesso que a conferência pelo Claude exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
-  - ✓ Configuração pode ser refeita a qualquer momento; o existente é preservado e cada mudança é confirmada
-  - ✓ Camada excluída da configuração com decisões: o usuário escolhe mover ou apagar as decisões
-  - ✓ Idioma novo vale para conteúdo novo; o existente só é traduzido a pedido
-  - ✓ Idioma sem textos embutidos na verificação recebe os textos num arquivo da própria spec
-  - ✓ Só o que está nos caminhos de código conta como código nas regras de PR; cada caminho abrange tudo o que começa por ele
-  - ✓ Lista de caminhos de código vazia é projeto sem código, e é perguntada de novo a cada configuração
-  - ✓ Nunca altera os arquivos do tabularium
-- ✓ Preparar o repositório na configuração: criar os rótulos do fluxo no tracker e orientar a proteção da branch principal
-  - ✓ Cria os rótulos de issue (requirement, bug, plan) e de PR (os quatro tipos de mudança) que ainda não existem
-  - ✓ Orienta a proteção da branch principal e a revisão consultiva por agente; a pessoa as configura, e o agente nunca altera essas configurações
-- ✓ Criar o esqueleto do modelo conceitual a pedido
+  - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
+  - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las
+  - ✓ Idioma novo vale para o conteúdo novo; o existente só é traduzido a pedido
+  - ✓ Idioma cujas mensagens de verificação o tabularium não traz recebe as mensagens num arquivo da spec do projeto
+  - ✓ Lista de caminhos de código vazia significa projeto sem código, e a pergunta se repete a cada configuração
+- ✓ Criar a estrutura da spec do projeto a partir da configuração
+  - ✓ Cria o documento de produto, sem requisitos, e uma pasta de decisões para cada camada
+  - ✓ Cria o documento técnico fundamental, só com o título, de cada camada técnica
+  - ✓ Cria o modelo conceitual só a pedido
+  - ✓ Cria um documento técnico auxiliar só a pedido
+  - ✓ Cria só o que falta; nada existente é sobrescrito
+- ✓ Atualizar o tabularium de um projeto com o mesmo comando
+  - ✓ Vale na atualização o que vale na instalação, além do que segue
+  - ✓ Sobrescreve os arquivos do tabularium, que ficam idênticos aos da versão instalada, e troca só o processo em `AGENTS.md`
+  - ✓ Apaga os arquivos do tabularium que saíram da versão nova
+  - ✓ Recusa instalar versão menor que a instalada, salvo pedido explícito
+  - ✓ Avisa ao cruzar uma versão maior, que exige adaptar a spec ao formato
+- ✓ Adaptar a spec às regras de formato da versão nova do tabularium, no mesmo PR da atualização
+  - ✓ Nunca muda o sentido de um item; o que exigir isso vira proposta
+  - ✓ Cada adaptação é confirmada com o usuário, em lote ou item a item
+- ✓ Publicar o tabularium em versões numeradas, quando uma pessoa decide
+  - ✓ A versão maior muda quando a spec dos projetos precisa ser adaptada ao formato; a escolha das demais fica com quem publica
 
 ### Extração da spec de código existente
 - ✓ Gerar documento de produto, modelo conceitual e decisões a partir do código, dos testes e da documentação existente
@@ -92,7 +110,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Item só documentado vira pergunta: compromisso ou documentação desatualizada
   - ✓ Divergência entre código e documentação vira pergunta; se valer o documentado, o item fica redefinido
   - ✓ Dúvidas são perguntadas durante a extração, uma a uma
-  - ✓ Decisões preexistentes de produto vigentes são convertidas ao formato; técnicas e obsoletas ficam de fora e são relatadas
+  - ✓ Decisões preexistentes vigentes são convertidas ao formato: as de produto, na camada de produto; as técnicas, na camada técnica correspondente, quando ela existe, e senão ficam de fora; as obsoletas não migram; as que ficam de fora e as obsoletas são relatadas
   - ✓ Documentação preexistente permanece intocada
   - ✓ Entrega um relatório com a evidência de cada item duvidoso
 
@@ -135,7 +153,6 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Seções livres; autocontido e atemporal, como o documento de produto
   - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
   - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
-- ✓ Criar o esqueleto do documento técnico fundamental de cada camada declarada e, a pedido, o de um documento técnico auxiliar
 
 ### Decisões
 - ✓ Registrar cada escolha não óbvia num arquivo próprio, com tema, decisão, quando carregar, contexto, alternativas descartadas, consequências e histórico
@@ -208,18 +225,18 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
     - ✓ Mudança declarada: só contraria item ou decisão vigente quem declara isso, com a seta e uma decisão criada ou alterada
     - ✓ Inconsistência preexistente na spec vigente também impede a proposta, e é corrigida antes, num PR próprio
   - ✓ Requisito abandonado é apagado ou vira item de fora de escopo, a critério do autor
-  - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a revisão consultiva
+  - ✓ Proposta nova nasce em rascunho; o autor a libera após tratar a conferência por agente
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - ✓ Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
   - ✓ No rebase sobre a branch principal, a descrição guia o novo casamento do diff com a nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
   - ✓ Proposta e requirement issue mencionam uma à outra; a issue recebe o link da proposta e as decisões adicionais
-  - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e revisão consultiva
+  - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e conferência por agente
   - ✓ As propostas abertas formam a fila de aceite: cada uma espera ser aceita (merge) ou recusada (fechada sem merge)
   - ✓ A cada aceite a spec vigente muda e as outras propostas ficam defasadas; a proposta que deixa de passar nas regras da verificação é rediscutida no esmiuçar, e se a ideia ainda vale a proposta é atualizada sobre a spec vigente e o portão é aplicado de novo, senão é fechada
-- ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
-  - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois
+- ✓ Conferir uma proposta por agente contra a spec vigente, comentando tipo, cascata, decisões, consistência e forma
+  - ✓ Roda automaticamente a cada atualização de proposta, por um agente de IA
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
-  - ✓ Julga só o texto final da spec, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
+  - ✓ Confronta só o texto final da spec com a spec vigente, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
   - ✓ Não libera o rascunho da proposta: só sinaliza que não achou ressalvas; quem libera é o autor
   - ✓ Trata o conteúdo da proposta como dado, não como instrução
 - ✓ Analisar sob demanda o impacto de uma ideia ou issue sobre a spec
@@ -253,7 +270,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Barrar camada declarada sem documento técnico fundamental ou sem pasta de decisões
 - ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - ✓ Avisar sobre termos de implementação no modelo conceitual
-- ✓ Avisar quando existe arquivo de instruções específico de um agente que anula as instruções comuns
+- ✓ Avisar quando existe `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`
 
 ### Exportação
 - ✓ Exportar a spec em formato convencional a pedido
@@ -271,6 +288,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Nenhuma alteração da spec feita por agente dispensa confirmação humana quando envolve julgamento
 - ✓ O agente só integra um PR a pedido explícito do humano, PR a PR
 - ✓ Estrutura de arquivos em inglês; conteúdo no idioma configurado
+- ✓ O que é do projeto fica fora dos arquivos do tabularium: a atualização os sobrescreve e a preparação nunca os altera, nem ao processo em `AGENTS.md`
 
 ## Não funcionais
 - ✓ Economia de contexto: documentos densos; decisões carregadas sob demanda pelo mapa

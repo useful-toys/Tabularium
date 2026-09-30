@@ -20,7 +20,7 @@ Serve a equipes que desenvolvem com agentes de IA. Elas querem que spec e códig
 Os detalhes operacionais ficam em `tabularium-docs/`. São documentos derivados: a fonte é a spec do tabularium, e eles são regerados a cada mudança. Em caso de conflito, vale a spec.
 
 - [`install.md`](tabularium-docs/install.md): instalar e atualizar o tabularium num projeto;
-- [`config.md`](tabularium-docs/config.md): configurar o projeto (caminhos de código, idioma) e o repositório (rótulos, proteção da `main`, revisão por agentes);
+- [`config.md`](tabularium-docs/config.md): configurar o projeto (caminhos de código, idioma) e o repositório (rótulos, proteção da `main`, conferência por agente);
 - [`maintenance.md`](tabularium-docs/maintenance.md): mudar o próprio tabularium;
 - [`spec-flow.md`](tabularium-docs/spec-flow.md): o fluxo completo e o porquê.
 
@@ -193,13 +193,13 @@ Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
 
 Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
-- `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria os rótulos; reexecutável.
+- `/spec-init`: depois do INSTALL, prepara o repositório (rótulos e proteção da `main`), grava camadas, idioma e caminhos de código em `spec/config.json`, cria a estrutura da spec e adapta a spec ao formato de uma versão nova; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
 - `/spec-grill`: faz a triagem (requirement issue, bug issue ou descarte) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.
 - `/spec-issue`: a pedido, leva o entendimento da conversa para uma requirement issue, nova ou existente: reescreve o corpo, comenta o resumo da rodada e, no primeiro toque, guarda o original como comentário.
 - `/spec-propose`: aplica o portão da proposta: só se a ideia estiver madura e consistente com a spec vigente escreve o texto final e as operações nas decisões, valida a consistência da spec resultante e abre ou atualiza o PR de proposta em draft, casando de novo uma proposta defasada.
-- `/spec-impact`: triagem sugerida (requirement issue, bug issue ou descarte) e impacto de uma issue ou texto; revisão consultiva de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
+- `/spec-impact`: triagem sugerida (requirement issue, bug issue ou descarte) e impacto de uma issue ou texto; conferência por agente de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
 - `/spec-sync`: no PR do código, marca `✓` no entregue, reescreve os `⇢` entregues e trata divergências entre entrega e compromisso.
 - `/spec-check`: roda o check e revisa o drift entre spec e código, com achados e evidências; só verifica.
 - `/spec-reconcile`: restaura a consistência da spec consigo mesma, uma camada por vez, e organiza as decisões; nada muda sem aprovação.

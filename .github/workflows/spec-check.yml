@@ -123,11 +123,12 @@ jobs:
           LABEL: ${{ steps.type.outputs.label }}
         run: node scripts/spec.mjs check --base "$BASE_REF" --labels "$LABEL" --require-type
 
-  # Revisão consultiva por agente: comenta no PR, nunca bloqueia.
+  # Conferência por agente: comenta no PR, nunca bloqueia.
   # Roda só quando o PR toca spec/, não é da definição do template e existe o secret ANTHROPIC_API_KEY (forks não recebem secrets).
+  # A variável do repositório SPEC_REVIEW_AGENT, gravada pelo /spec-init, liga (claude) ou desliga (github ou none) este job; sem a variável, vale só o secret.
   spec-review:
     runs-on: ubuntu-latest
-    if: github.event.action != 'labeled' && github.event.action != 'unlabeled'
+    if: (github.event.action != 'labeled' && github.event.action != 'unlabeled') && (vars.SPEC_REVIEW_AGENT == '' || vars.SPEC_REVIEW_AGENT == 'claude')
     continue-on-error: true
     # Só leitura do repositório: o agente comenta, mas não pode integrar nem escrever código.
     permissions:
@@ -142,7 +143,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # PR da definição do template (label tabularium) não é proposta de produto: sem revisão consultiva.
+      # PR da definição do template (label tabularium) não é proposta de produto: sem conferência por agente.
       - name: PR toca spec/?
         id: scope
         env:
@@ -160,7 +161,7 @@ jobs:
 
       - name: Sem chave de API
         if: steps.scope.outputs.touches == 'true' && env.HAS_KEY != 'true'
-        run: echo "::notice::Revisão consultiva pulada - secret ANTHROPIC_API_KEY ausente."
+        run: echo "::notice::Conferência por agente pulada - secret ANTHROPIC_API_KEY ausente."
 
       - uses: actions/setup-node@v4
         if: steps.scope.outputs.touches == 'true' && env.HAS_KEY == 'true'

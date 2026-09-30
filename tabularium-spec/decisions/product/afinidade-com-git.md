@@ -8,7 +8,7 @@ carregar-quando: mudança em plataforma, hub git, tracker, CI, provedor de model
   - Fluxo git convencional, sem branch ou fluxo próprio da spec (detalhes em `toda-mudanca-por-pr` e `concorrencia-entre-propostas`)
   - A história fica no git; o repositório guarda só o que vale agora (detalhes em `decisoes-so-vigentes` e `solicitacoes-no-tracker`)
   - Texto feito para o diff: um fato por linha, item redefinido na mesma linha
-  - Verificação no GitHub Actions; revisão consultiva em `ciclo-com-skills-e-ci`
+  - Verificação no GitHub Actions; conferência por agente em `ciclo-com-skills-e-ci`
   - O template assume o GitHub; transpor os conceitos para outra plataforma fica com quem adota
 - Contexto: é a plataforma que a equipe já usa; um processo de spec com estados, ferramentas ou fluxos próprios exigiria aprendizado e reinventaria revisão, aprovação e auditoria
 - Alternativas descartadas

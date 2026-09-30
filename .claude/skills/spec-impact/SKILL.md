@@ -1,6 +1,6 @@
 ---
 name: spec-impact
-description: Analisa o impacto de uma ideia ou mudança sobre a spec viva. Três modos - sobre uma issue ou texto (triagem sugerida e o que mudaria, sob demanda), sobre um PR de proposta (revisão consultiva do texto proposto - tipo, cascata, decisões, conflitos, consistência e forma) e classificação (tipo de mudança do caso ambíguo, usado pelo CI). No modo PR, publica ou atualiza um comentário no PR; roda no CI e localmente. Nunca aprova nem reprova.
+description: Analisa o impacto de uma ideia ou mudança sobre a spec viva. Três modos - sobre uma issue ou texto (triagem sugerida e o que mudaria, sob demanda), sobre um PR de proposta (conferência por agente do texto proposto - tipo, cascata, decisões, conflitos, consistência e forma) e classificação (tipo de mudança do caso ambíguo, usado pelo CI). No modo PR, publica ou atualiza um comentário no PR; roda no CI e localmente. Nunca aprova nem reprova.
 ---
 
 # spec-impact
@@ -29,7 +29,7 @@ Entrada: `#N` de uma issue (`gh issue view <N> --comments`) ou texto livre. Numa
 5. Aponte conflitos com `⇢` em aberto, com outras propostas abertas e inconsistências da spec que o tema toca.
 6. Responda no chat. É sugestão: quem decide é uma pessoa, e a label aplicada por ela vence. Não troque label. Comente na issue só se o usuário pedir.
 
-## Modo PR (revisão consultiva)
+## Modo PR (conferência por agente)
 Entrada: `#N` de um PR (`gh pr view <N> --comments`, `gh pr diff <N>`). PR com a label `tabularium` é mudança no próprio template, não proposta de produto: não revise. Examine o diff da spec contra a `main` atual:
 1. **Tipo**: a label de tipo aplicada pelo CI corresponde ao que o diff faz? Item `✓` com sentido alterado deveria ser `⇢`; acréscimo que contradiz algo é incompatível.
 2. **Cascata**: o que deveria mudar junto e não mudou (itens, glossário, modelo conceitual, transversais, decisões)?
@@ -40,14 +40,14 @@ Entrada: `#N` de um PR (`gh pr view <N> --comments`, `gh pr diff <N>`). PR com a
 Publique um único comentário, editando-o se já existir:
 ```markdown
 <!-- spec-impact -->
-## Revisão consultiva da spec
+## Conferência por agente da spec
 Tipo: <label de tipo e resumo>
 
 | # | Tipo | Local | Achado | Sugestão |
 |---|---|---|---|---|
 
 <Sem achados: "Nenhum achado.">
-_Consultivo: quem decide é a pessoa que integra._
+_Só comenta: quem decide é a pessoa que integra._
 ```
 Para editar, encontre o comentário com a marca (`gh api repos/{owner}/{repo}/issues/<N>/comments`) e use `gh api repos/{owner}/{repo}/issues/comments/<id> -X PATCH -F body=@<arquivo>` (caminho logo após `gh api`: o CI só libera `gh api repos/<repo>/issues/`). Se não existir, use `gh pr comment <N> --body-file`.
 

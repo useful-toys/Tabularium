@@ -31,12 +31,12 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 
 **Raiz: a triagem.** Todo o resto depende do tipo, então você começa por ela. Ela não é uma etapa: acompanha a conversa inteira. Se o entendimento amadurecer e mostrar que o tipo era outro (por exemplo, a requirement issue é na verdade um bug, ou já está coberta pela spec), sugira alterar a triagem já decidida, com a evidência; a alteração vale com a confirmação do usuário.
 - Issue com a label `requirement` já está triada: não pergunte de novo, mas reavalie se surgir evidência nova ou se o usuário discordar.
-- Issue com a label `plan`: não segue este ciclo. Recuse, diga que um processo dedicado, ainda por definir, tratará planos, e encerre, sem esmiuçar.
-- Issue com a label `bug`: recuse do mesmo modo, apontando o processo dedicado de bug, e encerre.
+- Issue com a label `plan`: não segue este ciclo. Hoje esta skill a recusa; diga que planos terão tratamento próprio, por skills dedicadas, ainda por especificar, e encerre, sem esmiuçar.
+- Issue com a label `bug`: recuse do mesmo modo, apontando que bugs terão skills dedicadas, e encerre.
 - Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare a issue ou ideia com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
 - A triagem termina em:
   - **requirement issue**: siga.
-  - **bug issue** (a issue ou ideia contradiz item `✓`): sugira ao usuário a bug issue, recuse-a e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. Diga que o tratamento de bug será definido em processo dedicado, ainda por especificar.
+  - **bug issue** (a issue ou ideia contradiz item `✓`): sugira ao usuário a bug issue, recuse-a e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. Diga que hoje esta skill a recusa, e que bugs terão tratamento próprio, por skills dedicadas, ainda por especificar.
   - **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado, ou não é problema): aponte o item e encerre. Origem issue: a issue é fechada como descartada. Origem ideia: nada a publicar.
   - **Mistura**: proponha separar em duas issues ligadas.
 - Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label, criar a bug issue ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.

@@ -54,7 +54,7 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa requirement issue.
 
 **Como uma mudança de requisito acontece**
-1. **Conversa**: a conversa é o centro. Entram nela uma ideia, uma issue genérica (sem triagem; por exemplo, aberta pelo formulário `issue`, cujo palpite de tipo não vale nada) ou uma requirement issue já triada. A **triagem** é um processo contínuo da conversa, contra a spec, sem etapa definida; a IA pode sugerir alterá-la quando o entendimento amadurece. Ela termina em requirement issue, bug issue (recusada; o tratamento será definido em processo dedicado) ou descarte (a spec já cobre a issue ou ideia, inclusive com item comprometido). Issue `plan` também é recusada. Para a requirement issue, a ideia é refinada: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. A pedido, o entendimento é guardado numa requirement issue, que volta à conversa quando preciso. Issue sem conversa fica sem triagem.
+1. **Conversa**: a conversa é o centro. Entram nela uma ideia, uma issue genérica (sem triagem; por exemplo, aberta pelo formulário `issue`, cujo palpite de tipo não vale nada) ou uma requirement issue já triada. A **triagem** é um processo contínuo da conversa, contra a spec, sem etapa definida; a IA pode sugerir alterá-la quando o entendimento amadurece. Ela termina em requirement issue, bug issue (hoje recusada; terá tratamento próprio, por skills dedicadas, ainda por especificar) ou descarte (a spec já cobre a issue ou ideia, inclusive com item comprometido). Issue `plan` também é recusada. Para a requirement issue, a ideia é refinada: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. A pedido, o entendimento é guardado numa requirement issue, que volta à conversa quando preciso. Issue sem conversa fica sem triagem.
 2. **Proposta**: o `/spec-propose` aplica o portão da proposta. Só passa com triagem requirement, nada necessário em aberto (com o porquê de cada decisão) e spec resultante, com os documentos técnicos fundamentais e as decisões, sem contradição; contrariar item ou decisão vigente só vale se a mudança for declarada (`⇢` com decisão). Se falhar, devolve à conversa com o que falta; se passar, abre um pull request em draft, que altera só a spec.
 3. **Revisão**:
    - o CI deduz o **tipo da mudança** (editorial, neutra, compatível ou incompatível) e aplica o rótulo; quando o diff não mostra se o sentido mudou, a IA julga; o rótulo aplicado por uma pessoa vence;
@@ -63,7 +63,7 @@ Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou
 4. **Aceite**: uma pessoa com permissão de merge decide integrar. Não há aprovação formal obrigatória. O merge transforma a proposta em compromisso: os itens entram sem `✓`, ou com `⇢`.
 5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens com `✓`. O CI impede resolver um `⇢` num PR sem código.
 
-Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`. Um **bug** (comportamento que contradiz item `✓`) não segue o ciclo de requisitos: seu tratamento será definido em processo dedicado.
+Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`. Um **bug** (comportamento que contradiz item `✓`) não segue o ciclo de requisitos: hoje o `/spec-grill` o recusa, e ele terá tratamento próprio, por skills dedicadas, ainda por especificar.
 
 **O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`, casados por prefixo. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
 
@@ -176,8 +176,8 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 - **Proposta** é o PR sem código que altera a spec, de qualquer tipo (`spec-editorial`, `spec-compatible` ou `spec-incompatible`). Todas seguem o mesmo fluxo: rascunho, portão, verificação e revisão consultiva.
 - Outros rótulos:
   - `requirement`: requirement issue, triada e a amadurecer;
-  - `bug`: issue triada como comportamento que contradiz a spec, recusada até o processo de bug ser especificado;
-  - `plan`: issue de plano, reconhecida só para ser recusada (processo de planos ainda por especificar);
+  - `bug`: issue triada como comportamento que contradiz a spec, hoje recusada pelo `/spec-grill`, pois terá skills dedicadas;
+  - `plan`: issue de plano, hoje recusada pelo `/spec-grill`, pois terá skills dedicadas, ainda por especificar;
   - `tabularium`: PR que muda a definição do próprio tabularium, só no repositório do tabularium.
 - Os rótulos de issue só são aplicados pela triagem; o formulário não aplica nenhum. Issue sem `requirement`, `bug` ou `plan` está sem triagem.
 - Todos os rótulos são em inglês. O `/spec-init` cria `requirement`, `bug`, `plan` e os rótulos de tipo.
@@ -237,7 +237,7 @@ flowchart LR
 
 1. **Triar e esmiuçar (`/spec-grill`)**: converge. Faz rodadas de perguntas sobre uma árvore de decisões; em cada rodada, pergunta tudo o que já pode ser decidido, com opções e uma recomendada.
    - **A raiz da árvore é a triagem**, processo contínuo da conversa, sem etapa definida: começa cedo, mas a IA pode sugerir alterá-la, com a confirmação de uma pessoa, quando o entendimento amadurece. Entram na conversa uma ideia, uma issue genérica ou uma requirement issue já triada. O palpite de quem abriu a issue não vale, e a issue sem `requirement`, `bug` ou `plan` está sem triagem. A issue ou ideia é comparada com a spec, e a triagem termina em:
-     - contradiz item `✓`: **bug issue** (rótulo `bug`): a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia; a conversa a recusa, e o tratamento será definido em processo dedicado;
+     - contradiz item `✓`: **bug issue** (rótulo `bug`): a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia; hoje a conversa a recusa, e ela terá tratamento próprio, por skills dedicadas, ainda por especificar;
      - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue** (rótulo `requirement`), segue o ciclo;
      - a spec já cobre a issue ou ideia, inclusive item comprometido sem `✓`: **descarte**, com a issue de origem fechada como descartada, com comentário que aponta o item; ideia descartada é só abandonada;
      - mistura de bug e requirement: duas issues ligadas.

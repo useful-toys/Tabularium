@@ -45,7 +45,7 @@
   - ✓ estados: sem triagem | requirement | bug | plan | descartada
   - ✓ sem triagem → requirement: a triagem a resolve como pedido de spec nova, diferente ou sem um item, ou omissa
   - ✓ sem triagem → bug: a triagem a resolve como contradição de item implementado
-  - ✓ sem triagem → plan: a triagem a reconhece só para ser recusada
+  - ✓ sem triagem → plan: a triagem a reconhece e, por ora, a recusa
   - ✓ sem triagem → descartada: a spec já a cobre; ela é fechada
   - ✓ requirement | bug | plan → outro estado: a triagem é alterada com evidência e confirmação de uma pessoa
   - ✓ requirement: corpo é o entendimento mais recente, escrito pela IA; comentários são o histórico resumido, com a solicitação original no primeiro comentário da IA

@@ -40,8 +40,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Ideia**: intenção de mudar o produto ou a spec, ainda em amadurecimento, que nasce numa pessoa, numa issue ou na conversa
 - **Conversa**: diálogo entre a pessoa e o agente de IA, centro do ciclo, onde uma ideia ou issue é triada, entendida e ampliada, sem publicar nada no tracker
 - **Requirement issue**: issue do tracker triada como requirement, que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta
-- **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue de plano é reconhecida só para ser recusada; a issue sem essa resolução está sem triagem
-- **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; seu tratamento será definido em processo dedicado
+- **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue de plano é reconhecida e, por ora, recusada; a issue sem essa resolução está sem triagem
+- **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; a conversa a recusa por ora, e ela terá tratamento próprio, por skills dedicadas, ainda por especificar
 - **Portão da proposta**: condição para uma conversa virar proposta: ideia triada como requirement issue, nada necessário em aberto e spec resultante consistente
 - **Proposta**: PR sem código com o texto final dos documentos com itens e das decisões, de qualquer tipo de mudança; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Revisão consultiva**: comentário de agente sobre uma proposta, que nunca aprova nem bloqueia
@@ -171,12 +171,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ A issue só está triada quando vira requirement issue, vira bug issue ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
   - ✓ A issue sem conversa continua sem triagem, sem automação
   - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement issue, que segue o ciclo
-  - ✓ Contradiz item implementado: bug; a conversa sugere a bug issue, aplicando o rótulo bug à issue de origem ou, se a origem é uma ideia, criando a issue; a conversa a recusa e aponta o processo dedicado, ainda por definir
+  - ✓ Contradiz item implementado: bug; a conversa sugere a bug issue, aplicando o rótulo bug à issue de origem ou, se a origem é uma ideia, criando a issue; a conversa a recusa por ora e aponta que ela terá tratamento próprio, por skills dedicadas, ainda por especificar
   - ✓ Já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: descartada; a issue de origem é fechada como descartada, com um comentário que aponta o item, e a ideia de origem é abandonada sem publicar nada
   - ✓ Mistura de bug e requirement: separa em duas issues ligadas
   - ✓ O que quem abre a issue acha que ela é vale só como palpite; o rótulo aplicado por uma pessoa vence a sugestão
   - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara, inclusive para a ideia nascida na conversa
-  - ✓ A issue de plano, com o rótulo plan, é reconhecida e recusada na conversa, que aponta o processo dedicado, ainda por definir
+  - ✓ A issue de plano, com o rótulo plan, é reconhecida e, por ora, recusada na conversa, que aponta que ela terá tratamento próprio, por skills dedicadas, ainda por especificar
 - ✓ Levar a pedido para uma requirement issue, nova ou existente, o que foi decidido e sugerido na conversa
   - ✓ Uma ideia nasce numa issue aberta por uma pessoa ou numa conversa com o agente
   - ✓ O corpo da issue é o entendimento mais recente: evidência da triagem, problema, decidido, descartado com motivo, cascata e o que está em aberto

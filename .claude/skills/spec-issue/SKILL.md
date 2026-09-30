@@ -43,7 +43,7 @@ Papéis na issue:
 Proposta: #<PR>
 ```
 - `Em aberto` sem itens pendentes significa pronta para `/spec-propose`.
-- Bug issue: no lugar de `Entendimento atual`, `Observado`, `Esperado` (com o item da spec) e `Como reproduzir`. Ela não segue este ciclo: o tratamento será definido em processo dedicado, ainda por especificar.
+- Bug issue: no lugar de `Entendimento atual`, `Observado`, `Esperado` (com o item da spec) e `Como reproduzir`. Ela não segue este ciclo: terá tratamento próprio, por skills dedicadas, ainda por especificar.
 - A linha `Proposta: #<PR>` só existe depois que o PR de proposta abre. A partir daí o PR é a fonte do texto final.
 - Na dúvida entre incluir detalhe e manter curto, mantenha curto: a issue guarda intenção e decisões, não o texto final da spec.
 
@@ -75,4 +75,4 @@ Sempre, a cada execução, um comentário novo com o delta da rodada, sem repeti
 Antes de publicar (corpo e comentários), mostre o texto ao usuário e peça confirmação.
 
 ## 5. Próximo passo
-Informe o link da issue. Para continuar a discussão: `/spec-grill #N`. Para registrar a proposta: `/spec-propose #N`. Uma bug issue não segue este ciclo: o processo dedicado ainda será definido.
+Informe o link da issue. Para continuar a discussão: `/spec-grill #N`. Para registrar a proposta: `/spec-propose #N`. Uma bug issue não segue este ciclo: terá skills dedicadas, ainda por especificar.

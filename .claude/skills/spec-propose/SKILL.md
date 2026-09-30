@@ -12,7 +12,7 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 Mudança no próprio template (`tabularium-spec/`, só no repositório do template): siga a seção "Mudança no próprio template" no lugar dos passos 3 a 5.
 
 ## 1. Fontes
-- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com issue triada como requirement (label `requirement`): com `bug` ou `plan`, pare e explique que esse tratamento será definido em processo dedicado, ainda por especificar; sem triagem, pare e sugira `/spec-grill #N`.
+- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com issue triada como requirement (label `requirement`): com `bug` ou `plan`, pare e explique que essas issues não seguem este ciclo e terão tratamento próprio, por skills dedicadas, ainda por especificar; sem triagem, pare e sugira `/spec-grill #N`.
 - Origem PR: `gh pr view <N> --comments` e `gh pr diff <N>`, com os mesmos resumos.
 - Origem texto livre: o que foi decidido nesta conversa, inclusive os resumos de spec-grill e spec-ideas apresentados nela.
 - Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.

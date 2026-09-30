@@ -105,7 +105,7 @@ Quando a ideia é retomada, a issue volta para a conversa. As pessoas contribuem
 - cada decisão precisa ter o seu porquê;
 - a spec resultante não pode ter contradição. Isso inclui os documentos técnicos fundamentais e as decisões.
 
-Uma mudança só pode contrariar a spec vigente se declarar isso, com `⇢` e uma decisão.
+Uma mudança só pode contrariar a spec vigente se declarar isso, com `⇢` e uma decisão. Os critérios completos estão em "Critérios do portão", abaixo.
 
 Se algo falhar, a rejeição volta ao passo 1. A conversa continua, com o `/spec-grill` em andamento, agora com o que o portão apontou como faltando. Se passar, o `/spec-propose` gera os arquivos atualizados da nova spec, no formato do tabularium, e abre um PR em rascunho (draft) para incorporá-los formalmente. O PR traz o texto final da spec e das decisões, sem código. O autor o libera depois de tratar os comentários do passo 5.
 
@@ -115,21 +115,7 @@ Se algo falhar, a rejeição volta ao passo 1. A conversa continua, com o `/spec
 - **Aplica regras objetivas e bloqueia o PR que as viola.** São regras que um script confere sem opinião. Por exemplo: uma mudança incompatível sem decisão, ou uma label de tipo menor do que a mudança.
 - **Pede a opinião de um agente de IA, que só comenta.** O agente procura os mesmos problemas do portão, como contradições, decisões contrariadas e cascata esquecida. Esse comentário nunca bloqueia, porque a IA pode errar e mudar de resposta entre execuções. Ele serve de alerta para quem vai aceitar a proposta.
 
-O PR continua em rascunho até o autor liberá-lo. O CI nunca faz isso por ele. Mesmo sem comentários do agente, é o autor que decide que o PR está pronto, depois de ler os comentários e tratar o que julgar necessário.
-
-Não há aprovação formal obrigatória. Quem tem permissão de merge aceita a proposta, e o merge a torna compromisso.
-
-**Os PRs de proposta formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge). Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda, e os PRs que sobraram ficam defasados (drift) em relação a ela. Um PR defasado pode deixar de passar nas regras do CI, por exemplo por contradizer o que acabou de ser aceito.
-
-Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
-- O usuário roda `/spec-grill` sobre o PR, na conversa, com o que mudou na spec vigente.
-- Se a ideia ainda vale, o `/spec-propose` atualiza o PR sobre a spec vigente e o portão é aplicado de novo.
-- Se não vale mais, o PR é fechado.
-**6. A entrega implementa o compromisso.** O código é escrito no mesmo PR que marca `✓` nos itens entregues e resolve os `⇢`. Esse PR fecha a issue. Uma mudança compatível pode vir direto junto com o código, sem proposta separada.
-
-### Tipos de mudança e labels
-
-Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maior. O CI deduz o tipo mínimo pelo diff e aplica a label. Quando o diff não mostra se o sentido mudou, a IA julga e vale o maior entre o mínimo e o julgado. Label aplicada por uma pessoa vence, e o CI nunca a troca; sem IA disponível, o caso ambíguo exige label de uma pessoa.
+As labels de PR que o CI aplica dizem o tipo da mudança. Todo PR tem um tipo, pelo que faz com a spec vigente. Com vários tipos, vale o maior. O CI deduz o tipo mínimo pelo diff. Quando o diff não mostra se o sentido mudou, a IA julga, e vale o maior entre o mínimo e o julgado. Uma label aplicada por uma pessoa vence, e o CI nunca a troca. Sem IA disponível, o caso ambíguo exige a label de uma pessoa.
 
 | Label | Uso |
 |---|---|
@@ -137,10 +123,44 @@ Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maio
 | `spec-neutral` | não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso |
 | `spec-compatible` | cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente |
 | `spec-incompatible` | altera o sentido de item `✓`, contradiz item ou vai contra decisão; exige `⇢` e decisão criada ou alterada no mesmo PR |
-| `requirement` | issue triada com ideia de requisito, que segue o ciclo de proposta; aplicada só pela triagem |
-| `bug` | issue triada como divergência do código em relação à spec, corrigida por hotfix; aplicada só pela triagem |
-| `plan` | reconhecida só para recusa: a issue não segue o ciclo até o tratamento de planos ser definido |
 | `tabularium` | só neste repositório: PR que muda a definição do próprio tabularium, sem label de tipo |
+
+O PR continua em rascunho até o autor liberá-lo. O CI nunca faz isso por ele. Mesmo sem comentários do agente, é o autor que decide que o PR está pronto, depois de ler os comentários e tratar o que julgar necessário.
+
+Não há aprovação formal obrigatória. Quem tem permissão de merge aceita a proposta, e o merge a torna compromisso.
+
+**Os PRs de proposta formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge). Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda, e os PRs que sobraram ficam defasados (drift) em relação a ela. Um PR defasado pode deixar de passar nas regras do CI, por exemplo por contradizer o que acabou de ser aceito num PR anterior.
+
+Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
+- O usuário roda `/spec-grill` sobre o PR, na conversa, com o que mudou na spec vigente.
+- Se a ideia ainda vale, o `/spec-propose` atualiza o PR sobre a spec vigente e o portão é aplicado de novo.
+- Se não vale mais, o PR é fechado.
+
+**6. A entrega implementa o compromisso.** O código é escrito no mesmo PR que marca `✓` nos itens entregues e resolve os `⇢`. Esse PR fecha a issue. Uma mudança compatível pode vir direto junto com o código, sem proposta separada.
+
+### Critérios do portão
+
+O portão é a condição para uma conversa virar proposta. O `/spec-propose` o aplica com o contexto da conversa. O CI reaplica só a parte que consegue conferir sobre o diff. Uma proposta passa quando cumpre todos estes critérios:
+
+- **Triagem:** a ideia foi triada como requirement issue. Bug e descarte não viram proposta.
+- **Nada em aberto:** não resta pergunta necessária sem resposta.
+- **Porquê registrado:** cada decisão tem o seu porquê e as alternativas descartadas.
+- **Sem contradição:** a spec resultante, com os documentos técnicos fundamentais e as decisões, não se contradiz. Isso vale entre itens, entre documentos, com decisões vigentes e entre um requisito e o fora de escopo.
+- **Uma casa por conceito:** nenhum conceito aparece repetido em dois lugares.
+- **Vocabulário do glossário:** nenhum termo é usado fora do sentido do glossário, e todo termo do domínio está definido.
+- **Cascata completa:** nenhum item depende de outro que não existe ou foi removido.
+- **Mudança declarada:** uma mudança só contraria item ou decisão vigente se declarar isso, com `⇢` e uma decisão criada ou alterada.
+
+Uma inconsistência que já existia na spec vigente também impede a proposta. Ela é corrigida antes, num PR próprio.
+### Labels das issues
+
+Aplicadas só pela triagem, e uma pessoa pode sempre trocá-las:
+
+| Label | Uso |
+|---|---|
+| `requirement` | issue triada com ideia de requisito, que segue o ciclo de proposta |
+| `bug` | issue triada como divergência do código em relação à spec, corrigida por hotfix |
+| `plan` | reconhecida só para recusa: a issue não segue o ciclo até o tratamento de planos ser definido |
 
 ## Skills
 
@@ -156,44 +176,6 @@ Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 - `/spec-sync`: no PR do código, marca `✓` no entregue, reescreve os `⇢` entregues e trata divergências entre entrega e compromisso.
 - `/spec-check`: roda o check e revisa o drift entre spec e código, com achados e evidências; só verifica.
 - `/spec-reconcile`: restaura a consistência da spec consigo mesma, uma camada por vez, e organiza as decisões; nada muda sem aprovação.
-
-## Estrutura
-
-O que o INSTALL leva ao projeto, listado em `tabularium.manifest`, mais o bloco do processo no `AGENTS.md`:
-
-```
-AGENTS.md (bloco)                  processo, entre <!-- tabularium:begin --> e <!-- tabularium:end -->
-spec/AGENTS.md                     regras de formato e de mudança da spec
-REVIEW.md                          instruções para agentes de revisão (ex.: Copilot code review)
-scripts/spec.mjs                   build-map, classify e check (Node, sem dependências)
-.github/workflows/spec-check.yml   tipo, check bloqueante e revisão consultiva por agente
-.github/ISSUE_TEMPLATE/issue.yml  formulário único de issue (palpite e descrição obrigatórios; não aplica rótulo)
-.claude/skills/                    as dez skills, com os esqueletos de product.md e model.md do /spec-init
-.tabularium                        gerado pelo INSTALL: origem, versão e arquivos instalados
-```
-
-O que é do projeto, criado pelo `/spec-init` e pelo trabalho na spec, e que o INSTALL nunca toca:
-
-```
-spec/product.md                    o que o produto é e como se comporta
-spec/model.md                      modelo conceitual (opcional): tipos e entidades do domínio
-spec/<camada>.md                   documento técnico de uma camada (opcional)
-spec/config.json                   preferências: camadas, idioma, caminhos de código (codePaths)
-spec/locales/<idioma>.json         textos da verificação para idioma não embutido no script (opcional)
-spec/decisions/<camada>/           uma decisão vigente por arquivo + mapa gerado (README.md)
-```
-
-O que fica só neste repositório e nunca chega aos projetos:
-
-```
-tabularium-spec/                   spec do próprio tabularium (requisitos e decisões que o moldaram)
-tabularium-docs/                   documentos derivados, como spec-flow.md (o fluxo com o porquê de cada etapa)
-README.md                          este arquivo
-scripts/spec.test.mjs, scripts/spec-fixtures/   testes do script
-.github/workflows/tabularium.yml   CI da definição do tabularium
-INSTALL.sh, INSTALL.ps1, tabularium.manifest    instalação
-.gitattributes                     finais de linha LF (cada projeto mantém o seu)
-```
 
 ## Instalar e atualizar
 
@@ -253,24 +235,6 @@ Revisão consultiva por agente, opcional e nunca bloqueante; um, os dois ou nenh
 - **Claude**: job `spec-review` do workflow, que roda o `/spec-impact` em modo PR nos PRs que tocam `spec/`, quando existe o secret `ANTHROPIC_API_KEY`.
 
 Com o secret, o check também usa o Claude para classificar o tipo no caso ambíguo. Sem ele, ou em PR de fork, o caso ambíguo exige que uma pessoa aplique a label de tipo.
-
-## Comandos
-
-```bash
-node scripts/spec.mjs build-map                      # regera os mapas de decisões
-node scripts/spec.mjs check                          # formato, mapas, ⇢ e compromissos em aberto
-node scripts/spec.mjs check --base origin/main       # + tipo da mudança e regras de PR
-node scripts/spec.mjs classify --base origin/main    # tipo mínimo e pontos ambíguos, em JSON
-node --test scripts/spec.test.mjs                    # testes do script (só neste repositório)
-```
-
-Todos os comandos do script aceitam `--spec <pasta>` (padrão: `spec`), como `--spec tabularium-spec`. No CI, o `check` roda também com `--labels <label>` e `--require-type`.
-
-O `check` valida o formato do `product.md`, do `model.md` (inclusive se todo nome em destaque é termo do glossário ou tipo declarado), dos documentos técnicos e das decisões; verifica se os mapas estão atualizados; avisa sobre possíveis referências temporais, termos de implementação no modelo e `CLAUDE.md` presente; e lista os `⇢` e os itens comprometidos em aberto. Com `--base`, deduz o tipo da mudança e aplica as regras de PR:
-- label de tipo abaixo do mínimo do diff, ou mais de uma, é erro; com `--require-type`, o caso ambíguo sem label também;
-- resolver `⇢` exige código;
-- alterar ou marcar `✓` sem código só em PR `spec-editorial`;
-- criar, alterar ou desfazer `⇢`, e toda mudança incompatível, exigem decisão criada ou alterada.
 
 ## Mudar o próprio tabularium
 

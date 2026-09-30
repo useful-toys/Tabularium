@@ -1,0 +1,61 @@
+name: tabularium
+
+# Só no repositório do tabularium: não está em tabularium.manifest e não vai para os projetos.
+# Verifica a definição do tabularium; o spec-check.yml distribuído se abstém em PR com a label tabularium.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  tabularium:
+    runs-on: ubuntu-latest
+    env:
+      BASE_REF: origin/${{ github.base_ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Inclui a verificação do tabularium.manifest.
+      - name: Testes do script
+        run: node --test scripts/spec.test.mjs
+
+      # O exemplo acompanha a mudança de regra e é verificado só na forma, sem tipo.
+      - name: Check do exemplo (PR tabularium)
+        if: contains(github.event.pull_request.labels.*.name, 'tabularium')
+        run: node scripts/spec.mjs check
+
+      - name: Check da spec do tabularium
+        run: node scripts/spec.mjs check --spec tabularium-spec
+
+      - name: Label do PR tabularium
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          has() { case ",$LABELS," in *",$1,"*) return 0;; *) return 1;; esac; }
+          fail=0
+          # Arquivos da definição: os do manifesto e os que só existem neste repositório.
+          definition=$( { sed -e 's/\r$//' -e '/^#/d' -e '/^[[:space:]]*$/d' tabularium.manifest
+            printf '%s\n' AGENTS.md README.md .gitattributes tabularium.manifest INSTALL.sh INSTALL.ps1 \
+              scripts/spec.test.mjs .github/workflows/tabularium.yml; } )
+          touched=$(git diff --name-only "$BASE_REF...HEAD" | while read -r f; do
+            case "$f" in tabularium-spec/* | tabularium-docs/* | scripts/spec-fixtures/*) echo "$f"; continue;; esac
+            if printf '%s\n' "$definition" | grep -qxF "$f"; then echo "$f"; fi
+          done)
+          if [ -n "$touched" ] && ! has tabularium; then
+            echo "::error::PR que altera a definição do tabularium exige a label tabularium: $(echo $touched)"; fail=1
+          fi
+          if has tabularium; then
+            for l in requirement spec-editorial spec-neutral spec-compatible spec-incompatible; do
+              if has "$l"; then echo "::error::PR com a label tabularium não leva a label $l"; fail=1; fi
+            done
+          fi
+          exit $fail

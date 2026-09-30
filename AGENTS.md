@@ -1,3 +1,4 @@
+<!-- tabularium:begin -->
 # Processo
 
 Este repositório mantém uma spec viva em `spec/`. As regras de formato e de mudança estão em `spec/AGENTS.md`.
@@ -15,9 +16,11 @@ Este repositório mantém uma spec viva em `spec/`. As regras de formato e de mu
 - Não aplique label de tipo: o CI a aplica. Aplique uma só quando o CI pedir a classificação de uma pessoa, e só com o aval do humano.
 - Só faça o merge de um PR quando o humano pedir explicitamente, PR a PR.
 - Toda mudança entra por PR. Antes de abrir um PR, rode `node scripts/spec.mjs check --base origin/main`.
+- Os arquivos do tabularium (listados em `.tabularium`) e este bloco são sobrescritos pelo INSTALL a cada atualização: não os edite no projeto.
 - Documentos em formatos convencionais são exportados da spec a pedido, conforme `spec/AGENTS.md`, e nunca são fonte.
 - Outras skills:
-  - `/spec-init`: estrutura e preferências;
+  - `/spec-init`: estrutura, preferências e migração da spec depois de atualizar o tabularium;
   - `/spec-extract`: spec a partir de código existente;
   - `/spec-check`: drift entre spec e código;
   - `/spec-reconcile`: consistência da spec consigo mesma e organização das decisões.
+<!-- tabularium:end -->

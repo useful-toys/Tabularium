@@ -1,0 +1,22 @@
+# Arquivos que o INSTALL copia para o projeto, um caminho por linha, a partir da raiz.
+# Na atualização, são sobrescritos, e os que saíram desta lista são apagados.
+# O AGENTS.md da raiz não entra aqui: o INSTALL troca só o bloco entre os marcadores.
+# Ficam de fora o exemplo (spec/ menos spec/AGENTS.md), tabularium-spec/, tabularium-docs/, README.md,
+# testes do script, .github/workflows/tabularium.yml, INSTALL.*, este arquivo e o .gitattributes (do projeto).
+spec/AGENTS.md
+REVIEW.md
+scripts/spec.mjs
+.github/workflows/spec-check.yml
+.github/ISSUE_TEMPLATE/requirement.yml
+.claude/skills/spec-check/SKILL.md
+.claude/skills/spec-extract/SKILL.md
+.claude/skills/spec-grill/SKILL.md
+.claude/skills/spec-ideas/SKILL.md
+.claude/skills/spec-impact/SKILL.md
+.claude/skills/spec-init/SKILL.md
+.claude/skills/spec-init/assets/model.md
+.claude/skills/spec-init/assets/product.md
+.claude/skills/spec-issue/SKILL.md
+.claude/skills/spec-propose/SKILL.md
+.claude/skills/spec-reconcile/SKILL.md
+.claude/skills/spec-sync/SKILL.md

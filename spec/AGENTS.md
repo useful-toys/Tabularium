@@ -9,6 +9,7 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - `decisions/<camada>/*.md`: uma decisão vigente por arquivo. Camadas em `config.json`. Nenhuma camada se chama `model`, nome reservado ao modelo conceitual; o modelo de dados usa a camada `data`.
 - `decisions/<camada>/README.md`: mapa gerado por `node scripts/spec.mjs build-map`. Nunca editar à mão.
 - `config.json`: preferências do projeto (camadas, idioma, caminhos de código). Só o que está nos caminhos de código conta como código nas regras de PR. Alterado só pela skill `spec-init`.
+- `locales/<idioma>.json` (opcional): textos da verificação para um idioma fora dos embutidos em `scripts/spec.mjs`. Criado pela skill `spec-init`.
 
 `product.md`, `model.md` e os documentos técnicos são os **documentos com itens**. As regras de Status e de Mudanças valem para os três.
 
@@ -150,7 +151,7 @@ carregar-quando: <situações em que vale abrir este arquivo>
 ```
 - O histórico é a última seção, com a entrada mais recente no topo.
 - Quando a decisão muda, a escolha anterior entra em "Alternativas descartadas" com o motivo do abandono, e o histórico ganha uma entrada.
-- Reorganizações usam `AAAA-MM-DD organização: <fundida com X | dividida de X | movida de <camada> | migrada de <documento de origem>>`.
+- Reorganizações usam `AAAA-MM-DD organização: <fundida com X | dividida de X | movida de <camada> | renomeada de X | migrada de <documento de origem>>`.
 - Depois de criar, editar, mover ou apagar decisões, rode `node scripts/spec.mjs build-map`.
 
 ### Leitura

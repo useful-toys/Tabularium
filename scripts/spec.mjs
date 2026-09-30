@@ -17,6 +17,8 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Textos que dependem do idioma do conteúdo (spec/config.json → language).
+// Outro idioma vem de <spec>/locales/<idioma>.json, com as mesmas chaves; em mapTitle, {layer}
+// marca o nome da camada. Assim o script nunca é editado no projeto e pode ser sobrescrito.
 export const LOCALES = {
   'pt-BR': {
     productSections: [
@@ -72,10 +74,26 @@ const FRONTMATTER_KEYS = ['tema', 'decisao', 'carregar-quando'];
 
 // ---------- leitura ----------
 
+export function parseLocale(text, file) {
+  const data = JSON.parse(text);
+  const missing = Object.keys(LOCALES['pt-BR']).filter((k) => !(k in data));
+  if (missing.length) throw new Error(`${file}: faltam as chaves ${missing.join(', ')}`);
+  const title = String(data.mapTitle);
+  return { ...data, mapTitle: (layer) => title.replaceAll('{layer}', layer) };
+}
+
+export function loadLocale(root, spec, language) {
+  if (LOCALES[language]) return LOCALES[language];
+  const file = join(root, spec, 'locales', `${language}.json`);
+  if (!existsSync(file)) {
+    throw new Error(`Idioma sem textos: ${language}. Crie ${spec}/locales/${language}.json com as chaves de LOCALES['pt-BR'] em scripts/spec.mjs`);
+  }
+  return parseLocale(readFileSync(file, 'utf8'), `${spec}/locales/${language}.json`);
+}
+
 export function loadConfig(root, spec = 'spec') {
   const config = JSON.parse(readFileSync(join(root, spec, 'config.json'), 'utf8'));
-  const locale = LOCALES[config.language];
-  if (!locale) throw new Error(`Idioma sem textos definidos em scripts/spec.mjs (LOCALES): ${config.language}`);
+  const locale = loadLocale(root, spec, config.language);
   if (!Array.isArray(config.codePaths)) throw new Error(`${spec}/config.json sem \`codePaths\` (lista de caminhos de código; vazia se o projeto não tem código)`);
   return { ...config, locale };
 }

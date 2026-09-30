@@ -11,11 +11,12 @@ carregar-quando: dúvida sobre o que vai no glossário, no modelo conceitual ou 
   - Condição definidora no modelo, glossário só nomeando: o glossário deixa de definir
   - Invariantes mantidas nas transversais: estrutura continua espalhada
   - Lista exaustiva de atributos: aproxima o modelo conceitual do modelo de dados
-  - Camada de decisão própria para o modelo: produto e modelo seguem um fluxo só
+  - Camada própria para o modelo: produto e modelo seguem um fluxo só
 - Consequências
   - Ganha: uma casa por conceito e um modelo que sobrevive a trocas de tecnologia
   - Aceita: casos de fronteira entre atributo relevante e detalhe exigem julgamento
 
 ## Histórico
+- 2026-09-28 #19: camada com documento e decisões, não só de decisões
 - 2026-09-26 #13: sem citar o nome da camada do modelo de dados
 - 2026-09-24 #1: decisão criada

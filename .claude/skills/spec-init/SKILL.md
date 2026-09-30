@@ -43,7 +43,8 @@ Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o form
 ## 6. Fechamento
 - Rode `node scripts/spec.mjs check` e corrija o que for estrutural.
 - Crie as labels, se não existirem (`gh label create`):
-  - `requirement`: issues de requisito;
+  - `requirement`: requirement issues;
+  - `bug`: issues de comportamento que contradiz a spec;
   - `spec-editorial`: PR que muda só o texto da spec, sem mudar sentido;
   - `spec-neutral`: PR que não altera o sentido de nenhum requisito (código sem spec, ou entrega de compromisso);
   - `spec-compatible`: PR que cria requisito, altera item não implementado ou cria decisão, sem contradizer nada;

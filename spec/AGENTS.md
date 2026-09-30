@@ -90,7 +90,9 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 
 ## Mudanças
 - Toda mudança entra por PR. A `main` é protegida: exige branch atualizada antes do merge. Se a equipe exigir aprovação, as aprovações são descartadas quando há commits novos.
-- Uma ideia amadurece na conversa, com `/spec-grill` e `/spec-ideas`. Quando precisa de memória entre sessões, vai a pedido para uma issue (label `requirement`) com `/spec-issue`. O PR de proposta traz o **texto final** dos documentos com itens e das decisões, nunca ideias soltas. PR sem issue vale se a ideia já estiver madura.
+- Uma ideia nasce numa issue aberta por uma pessoa ou numa conversa com o agente. O tipo que quem abre a issue escolhe (requirement ou bug) é palpite: a triagem compara o relato com a spec. Contradizer item `✓` é bug (PR de código sem mudança na spec, com `Closes #N`); contradizer item sem `✓` é entrega pendente; pedir spec nova, alterada, removida ou omissa é requirement. A análise de impacto sugere, o `/spec-grill` resolve o que ficou incerto e uma pessoa decide; label de uma pessoa vence.
+- A requirement issue (label `requirement`) amadurece com `/spec-grill` e `/spec-ideas`, na conversa. Quando precisa de memória entre sessões, vai a pedido para a issue com `/spec-issue`: o **corpo** é o entendimento mais recente, reescrito só pelo agente; os **comentários** são o histórico resumido, com a `Solicitação original` como primeiro comentário da IA. Pessoas contribuem por comentário. Ideia solta mora na issue; a spec só recebe texto final.
+- O PR de proposta traz o **texto final** dos documentos com itens e das decisões, nunca ideias soltas, e cita a issue com `Refs #N`. PR sem issue vale se a ideia já estiver madura.
 - PR de proposta: sem código, em draft até o autor tratar a revisão consultiva. PR aberto é proposta; o merge, decidido por um humano, é a aceitação e torna o conteúdo compromisso; não há aprovação formal obrigatória. O agente só integra a pedido explícito do humano, PR a PR. PR fechado sem merge é proposta recusada.
 - A proposta só é publicada sobre uma spec consistente: `/spec-propose` valida a spec resultante e não publica se houver contradição, conceito repetido, termo inconsistente ou lacuna de cascata, mesmo preexistente.
 
@@ -116,7 +118,7 @@ Todo PR tem um tipo, pelo que faz com a spec vigente. PR com mais de um tipo rec
 - Criar, alterar ou desfazer um `⇢` exige decisão criada ou alterada no mesmo PR.
 - Alterar ou marcar item `✓` sem código só em PR editorial.
 - Requisito abandonado: apagar, ou transformar em item de Fora de escopo com motivo.
-- PR de código cita a issue com `Closes #N`: a issue fecha na entrega.
+- PR de código cita a issue com `Closes #N`: a issue fecha na entrega. O PR que corrige um bug é neutro e também cita a issue.
 
 ## Decisões
 

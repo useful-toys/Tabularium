@@ -10,7 +10,7 @@ carregar-quando: mudança na spec do próprio template, na separação entre ela
   - A spec padrão descrever o template: quem adota receberia a spec do template no lugar da própria
   - Um arquivo corrido de decisões: fora do formato que o template prega
   - Proposta e entrega separadas, como num produto: regras e skills divergem entre a aceitação e a entrega
-  - Issue de requisito para amadurecer mudanças do template: a conversa basta; o tracker fica para o produto
+  - Requirement issue para amadurecer mudanças do template: a conversa basta; o tracker fica para o produto
   - Sem verificação da spec do template: ela deixaria de seguir as próprias regras de formato
   - Instruções escritas por subagente: skills, script e fluxo de CI dependem das decisões e dos porquês da conversa, que um resumo não carrega
   - Documentos derivados escritos pelo agente da conversa: tendem a refletir a conversa, e não a spec
@@ -22,6 +22,7 @@ carregar-quando: mudança na spec do próprio template, na separação entre ela
   - Aceita: tokens de três leituras a mais a cada mudança da definição; um fluxo de CI próprio do repositório do template, fora do manifesto; nenhuma verificação automática de que todo item está implementado; o caso especial vive só neste repositório e não tem item no documento de produto
 
 ## Histórico
+- 2026-09-29 #21: termo requirement issue
 - 2026-09-29 #20: sem exemplo em spec/; a spec padrão só traz o que o INSTALL copia
 - 2026-09-28 #19: spec do template, documentos derivados e fluxo de CI próprio fora do manifesto
 - 2026-09-26 #17: lista de caminhos de código da spec do template vazia e sem uso

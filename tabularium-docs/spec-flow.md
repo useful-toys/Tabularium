@@ -1,6 +1,6 @@
 # Fluxo de documentação do produto
 
-> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na branch `tabularium/instalacao-por-manifesto`, de onde foi gerado. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
+> **Documento derivado.** Descreve o fluxo definido em `tabularium-spec/` na branch `claude/ciclo-requirement-issue-format-4bacb7`, de onde foi gerado. Não é fonte para agentes: em caso de conflito, vale a spec (`AGENTS.md`, `spec/AGENTS.md` e `tabularium-spec/`). É regerado a cada PR `tabularium` pelo `/spec-propose`.
 
 ## O problema e o contexto
 
@@ -37,7 +37,7 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 
 **A ideia central.** A especificação do produto é versionada no próprio repositório, junto com o código. Ela evolui pelo mesmo mecanismo: pull requests verificados pelo CI e integrados por uma pessoa. É escrita em listas curtas, para que um agente de IA consiga lê-la inteira antes de mexer em qualquer coisa. O processo usa só o que o GitHub já oferece: issue, PR, label, draft e merge.
 
-**Como o tabularium chega ao projeto.** Um comando de instalação (`INSTALL.sh` via `curl`, ou `INSTALL.ps1` via `irm`), rodado na raiz do repositório, baixa uma versão publicada do tabularium e copia só os arquivos listados no manifesto dela: regras, instruções, script, workflow, formulário de issue e skills. A spec do próprio tabularium e os documentos derivados nunca chegam ao projeto. O mesmo comando atualiza. Ele nunca faz commit: o resultado entra por PR, depois do `/spec-init`, que configura o projeto e, numa atualização, adapta a spec ao formato novo.
+**Como o tabularium chega ao projeto.** Um comando de instalação (`INSTALL.sh` via `curl`, ou `INSTALL.ps1` via `irm`), rodado na raiz do repositório, baixa uma versão publicada do tabularium e copia só os arquivos listados no manifesto dela: regras, instruções, script, workflow, formulários de issue e skills. A spec do próprio tabularium e os documentos derivados nunca chegam ao projeto. O mesmo comando atualiza. Ele nunca faz commit: o resultado entra por PR, depois do `/spec-init`, que configura o projeto e, numa atualização, adapta a spec ao formato novo.
 
 **O que fica versionado em `spec/`**
 - **Descrição do produto** (`product.md`): o que é, diferenciais, glossário, requisitos e regras, regras transversais, não funcionais e fora de escopo. Só comportamento observável, sem detalhes de implementação. Cada item carrega um estado:
@@ -50,10 +50,10 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
 - **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, interface, arquitetura…) tem seu documento de referência e suas decisões; a de produto sempre existe.
 - **Textos de idioma** (`locales/<idioma>.json`, opcional): textos da verificação para um idioma que o script não traz embutido.
 
-Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa issue.
+Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa requirement issue.
 
 **Como uma mudança de requisito acontece**
-1. **Discussão**: numa conversa com o agente, a ideia é refinada. O agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. Se for preciso continuar depois, a discussão é guardada numa issue, a pedido.
+1. **Discussão**: a ideia nasce numa issue aberta por uma pessoa (formulário `requirement` ou `bug`, cujo tipo é só palpite) ou numa conversa com o agente. Primeiro vem a **triagem** contra a spec: requirement, bug, entrega pendente ou indefinido. Para o requirement, a ideia é refinada na conversa: o agente pergunta, confronta a ideia com o que já está especificado e sugere alternativas e casos de borda. Se for preciso continuar depois, o entendimento é guardado numa requirement issue, a pedido.
 2. **Proposta**: com a ideia madura, o agente escreve o texto final e confere se a spec resultante continua consistente. Só então abre um pull request em draft, que altera só a spec.
 3. **Revisão**:
    - o CI deduz o **tipo da mudança** (editorial, neutra, compatível ou incompatível) e aplica a label; quando o diff não mostra se o sentido mudou, a IA julga; a label aplicada por uma pessoa vence;
@@ -62,7 +62,7 @@ Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou
 4. **Aceite**: uma pessoa com permissão de merge decide integrar. Não há aprovação formal obrigatória. O merge transforma a proposta em compromisso: os itens entram sem `✓`, ou com `⇢`.
 5. **Entrega**: o código é implementado num PR próprio, e esse mesmo PR marca os itens com `✓`. O CI impede resolver um `⇢` num PR sem código.
 
-Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`.
+Mudança compatível pode pular a proposta e vir direto no PR de código, já com `✓`. Um **bug** (comportamento que contradiz item `✓`) é hotfix: PR de código neutro, sem proposta e sem mudar a spec, com `Closes #N`.
 
 **O que conta como código.** A configuração lista os caminhos de código do produto, como `src/` ou `app/`, casados por prefixo. Só o que está neles conta como código nas regras de PR. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia é projeto sem código.
 
@@ -97,7 +97,8 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 | `.claude/skills/spec-*` | Dez skills, uma por etapa do ciclo | O processo também está descrito nos `AGENTS.md`, para qualquer agente |
 | `scripts/spec.mjs` | Gera mapas, deduz o tipo mínimo (`classify`) e verifica a spec (`check`) | Só Node, sem dependências; roda em Windows e Linux |
 | `.github/workflows/spec-check.yml` | Job `spec-check` (tipo, label e check, bloqueante) e job `spec-review` (revisão consultiva pelo Claude) | O `spec-review` nunca bloqueia; os dois se abstêm em PR com a label `tabularium` no repositório do tabularium |
-| `.github/ISSUE_TEMPLATE/requirement.yml` | Formulário de issue de requisito: problema, proposta, alternativas, dúvidas | Aplica a label `requirement` |
+| `.github/ISSUE_TEMPLATE/requirement.yml` | Formulário da requirement issue: só o relato do problema ou da necessidade | Aplica a label `requirement`; só o relato é obrigatório, o resto amadurece em `/spec-grill` |
+| `.github/ISSUE_TEMPLATE/bug.yml` | Formulário de bug: comportamento observado, esperado e como reproduzir | Aplica a label `bug`; só o observado é obrigatório; o tipo é palpite, a triagem confirma |
 | `.tabularium` | Registro da instalação: origem, versão e arquivos instalados | Gerado pelo INSTALL, nunca editado à mão; os arquivos listados são sobrescritos a cada atualização e não se editam no projeto |
 
 Só no repositório do tabularium, fora do que o INSTALL copia:
@@ -174,9 +175,10 @@ Todo PR tem um tipo, pelo que faz com a spec vigente.
 - "Código" é o que está nos caminhos de código da configuração.
 - **Proposta** é o PR sem código com `spec-compatible` ou `spec-incompatible`.
 - Outras labels:
-  - `requirement`: issue de requisito;
+  - `requirement`: requirement issue;
+  - `bug`: issue de comportamento que contradiz a spec, corrigida por hotfix;
   - `tabularium`: PR que muda a definição do próprio tabularium, só no repositório do tabularium.
-- Todas as labels são em inglês. O `/spec-init` cria `requirement` e as labels de tipo.
+- Todas as labels são em inglês. O `/spec-init` cria `requirement`, `bug` e as labels de tipo.
 
 ### Classificação pelo CI
 
@@ -201,16 +203,19 @@ O job `spec-check` roda quando o PR é aberto, reaberto, atualizado, marcado com
 
 O agente não aplica label de tipo por conta própria. Só aplica quando o CI pede a classificação de uma pessoa, e com o aval do humano.
 
-PR só de código, sem mudança na spec, é neutro. Por ora, o CI não julga se ele muda comportamento: isso fica para a revisão e para o `/spec-check`.
+PR só de código, sem mudança na spec, é neutro, inclusive o hotfix de um bug. Por ora, o CI não julga se ele muda comportamento: isso fica para a revisão e para o `/spec-check`.
 
 ### Ciclo de evolução
 
 ```mermaid
 flowchart LR
-  I[Ideia] --> G["/spec-grill<br/>esmiuçar"]
+  I["Ideia ou relato<br/>(issue de uma pessoa ou conversa)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>/spec-grill resolve<br/>pessoa decide"]
+  T -- bug --> H["Hotfix: PR de código neutro<br/>Closes #issue, sem proposta"]
+  T -- entrega pendente --> Q["Aponta o item e encerra"]
+  T -- requirement --> G["/spec-grill<br/>esmiuçar"]
   G --> D["/spec-ideas<br/>sugerir"]
   D -- sugestão aceita --> G
-  G -. a pedido .-> S["/spec-issue<br/>issue requirement"]
+  G -. a pedido .-> S["/spec-issue<br/>requirement issue"]
   D -. a pedido .-> S
   D --> P["/spec-propose<br/>valida a consistência<br/>PR draft"]
   P --> R["CI: tipo + label + check (bloqueia)<br/>revisão consultiva (/spec-impact, Copilot)"]
@@ -218,8 +223,15 @@ flowchart LR
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]
 ```
 
-1. **Esmiuçar (`/spec-grill`)**: converge. Faz rodadas de perguntas sobre uma árvore de decisões; em cada rodada, pergunta tudo o que já pode ser decidido, com opções e uma recomendada.
-   - Aceita texto livre, issue ou PR de proposta. Com PR, compara com a `main` atual e transforma a defasagem em pergunta.
+1. **Triar e esmiuçar (`/spec-grill`)**: converge. Faz rodadas de perguntas sobre uma árvore de decisões; em cada rodada, pergunta tudo o que já pode ser decidido, com opções e uma recomendada.
+   - **A raiz da árvore é a triagem**, resolvida antes do resto. O tipo escolhido por quem abriu a issue é palpite; o relato é comparado com a spec:
+     - contradiz item `✓`: **bug**, hotfix;
+     - contradiz item comprometido sem `✓`: **entrega pendente**, aponta o item e encerra;
+     - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement**, segue o ciclo;
+     - mistura de bug e requirement: duas issues ligadas;
+     - sem evidência: **indefinido**, e o `/spec-grill` pergunta o que falta.
+   - O `/spec-impact` em modo issue sugere o veredito, com a evidência (item, decisão ou código); o `/spec-grill` resolve o que ficou incerto, inclusive para a ideia nascida na conversa; uma pessoa decide. A label de uma pessoa vence a sugestão, e o tipo pode mudar durante a conversa, com a evidência em comentário. Triagem já confirmada no corpo da issue não é perguntada de novo.
+   - Aceita texto livre, issue ou PR de proposta. Com issue, lê o corpo (entendimento mais recente) e os comentários (histórico), inclusive a `Solicitação original`. Com PR, compara com a `main` atual e transforma a defasagem em pergunta.
    - Lê sempre o `product.md` e o `model.md` inteiros e os mapas de decisões. Abre documentos técnicos e decisões à medida que a ideia os alcança.
    - Olha os `⇢` e compromissos em aberto e outras propostas abertas na mesma área.
    - Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código.
@@ -231,13 +243,18 @@ flowchart LR
    - Sugestão aceita volta ao `/spec-grill`.
    - Descartes com motivo viram "Alternativas descartadas" das decisões.
    - Também só na conversa, com um resumo `<!-- spec-ideas -->`.
-3. **Guardar (`/spec-issue`, a pedido)**: leva os resumos para uma issue `requirement`, nova ou existente, como memória entre sessões. Issue nova segue o formulário; os resumos entram como comentário. Mostra o texto e pede confirmação antes de publicar.
+3. **Guardar (`/spec-issue`, a pedido)**: leva o entendimento para uma requirement issue, nova ou existente, como memória entre sessões.
+   - **Corpo** = entendimento mais recente, reescrito só por esta skill (e, na linha da proposta, pelo `/spec-propose`). Marcador `<!-- tabularium:issue -->` e seções Triagem, Problema, Entendimento atual, Em aberto e a linha `Proposta: #PR`. Pessoas contribuem por comentário.
+   - **Comentários** = histórico resumido: um `<!-- spec-issue -->` novo por rodada, com o delta.
+   - **Primeiro toque** numa issue existente: o corpo original vira, sem alteração, o primeiro comentário da IA, com o título `Solicitação original`. É reconhecido pela falta de comentário com esse título, mesmo que pessoas já tenham comentado. Issue nascida na conversa não tem original.
+   - Antes de reescrever o corpo, confere `updatedAt` para não sobrescrever edição nova. Mostra o texto e pede confirmação antes de publicar.
+   - A label é a do tipo da triagem (`requirement` ou `bug`); trocá-la exige o aval do usuário. Entrega pendente não gera issue.
 4. **Registrar (`/spec-propose`)**: sintetiza o texto final, sem nova entrevista. Só pergunta o que impede o registro, como um porquê ausente.
    - Escreve os documentos com itens e opera nas decisões: criar, alterar, fundir, dividir, mover ou remover.
    - Roda `build-map` e `check --base origin/main`.
    - Valida a consistência da spec resultante sobre a `main` atual. Qualquer inconsistência, mesmo antiga, impede a publicação.
    - PR novo nasce em draft, sem label de tipo. PR existente é rebaseado na `main` e publicado com `--force-with-lease`; a descrição guia o reencaixe do diff, e a validação confere o resultado.
-   - A descrição explica cada alteração, as decisões e a cascata. O PR cita a issue com `Refs #N`, e a issue recebe as decisões adicionais e o link do PR.
+   - A descrição explica cada alteração, as decisões e a cascata. O PR cita a issue com `Refs #N`. Na issue, só segue com triagem requirement: atualiza no corpo apenas a linha `Proposta: #PR`, sem reescrever o resto, e comenta as decisões adicionais.
 5. **Validar (CI)**:
    - tipo e label, conforme a seção anterior;
    - check bloqueante;
@@ -250,8 +267,9 @@ flowchart LR
    - Divergência grande: para, e vira nova proposta, aceita antes da entrega.
    - Mudança compatível pode entrar junto, já com `✓`, inclusive com decisão nova que não viole decisão vigente.
    - Cita a issue com `Closes #N`: a issue fecha na entrega.
+   - **Hotfix de bug**: sem proposta nem `/spec-sync`; o PR de código é neutro, não muda a spec e também cita a issue com `Closes #N`.
 
-`/spec-impact` também roda sob demanda, sobre uma issue ou um texto, para dizer o que mudaria na spec. Responde na conversa.
+`/spec-impact` também roda sob demanda, em modo issue, sobre uma issue ou um texto: sugere a triagem (tipo com evidência) e diz o que mudaria na spec. Responde na conversa; é sugestão, não troca label e só comenta na issue se pedido.
 
 ### Regras verificadas pelo CI (`scripts/spec.mjs check --base`)
 

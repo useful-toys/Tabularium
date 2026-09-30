@@ -37,13 +37,15 @@
 - ✓ **Mapa de decisões**
   - ✓ pertence a 1 **Camada**
   - ✓ derivado das decisões da camada; nunca escrito à mão
-- ✓ **Issue de requisito**
+- ✓ **Requirement issue**
   - ✓ vive em 1 **Tracker**
+  - ✓ nasce da descrição de uma pessoa ou de uma conversa; a triagem a confirma como requirement ou a devolve como bug ou entrega pendente
+  - ✓ corpo: o entendimento mais recente, escrito pela IA; comentários: o histórico resumido, com a solicitação original no primeiro comentário da IA
   - ✓ estados: aberta | fechada
   - ✓ aberta → fechada: a entrega que a implementa é aceita
 - ✓ **Proposta**
   - ✓ altera 1 **Spec**
-  - ✓ refere 0..1 **Issue de requisito**
+  - ✓ refere 0..1 **Requirement issue**
   - ✓ nunca contém código
   - ✓ tipo: **Tipo de mudança**; compatível ou incompatível
   - ✓ estados: rascunho | pronta | aceita | recusada
@@ -52,7 +54,7 @@
   - ✓ pronta → aceita: um humano integra, ou o agente a pedido dele
   - ✓ pronta → recusada: fechada sem integrar
 - ✓ **Entrega**
-  - ✓ fecha 0..1 **Issue de requisito**
+  - ✓ fecha 0..1 **Requirement issue**
   - ✓ implementa N **Item**
   - ✓ sempre contém código
   - ✓ tipo: **Tipo de mudança**; neutra, ou compatível ou incompatível quando traz mudança junto com o código

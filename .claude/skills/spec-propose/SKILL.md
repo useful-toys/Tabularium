@@ -12,7 +12,7 @@ Regras de formato: `spec/AGENTS.md`. O PR traz o **texto final**, pronto para vi
 Mudança no próprio template (`tabularium-spec/`, só no repositório do template): siga a seção "Mudança no próprio template" no lugar dos passos 3 a 5.
 
 ## 1. Fontes
-- Origem issue: `gh issue view <N> --comments`, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`.
+- Origem issue: `gh issue view <N> --comments`. O corpo é o entendimento mais recente; os comentários, com os resumos `<!-- spec-grill -->` e `<!-- spec-ideas -->`, são o histórico. Só segue com triagem `requirement`: com `bug` ou `entrega pendente`, pare e explique; com `indefinido`, pare e sugira `/spec-grill #N`.
 - Origem PR: `gh pr view <N> --comments` e `gh pr diff <N>`, com os mesmos resumos.
 - Origem texto livre: o que foi decidido nesta conversa, inclusive os resumos de spec-grill e spec-ideas apresentados nela.
 - Com origem issue ou PR, some às fontes o que foi decidido nesta conversa e ainda não foi publicado.
@@ -67,7 +67,7 @@ Proposta de requisito. Refs #<issue>
 ```
   Sem issue, o resumo da conversa (esmiuçado e sugestões) vai também na descrição.
 - **Origem PR**: atualize o título e a descrição (`gh pr edit`) e comente o que mudou nesta revisão, inclusive a defasagem resolvida.
-- **Origem issue**: comente na issue as decisões adicionais tomadas desde o último resumo e o link do PR. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
+- **Origem issue**: atualize o corpo da issue (`gh issue edit <N> --body-file`) só na linha `Proposta: #<PR>`, sem reescrever o resto, e comente as decisões adicionais tomadas desde o último resumo, no formato de comentário do `/spec-issue`. Se a issue ainda não teve o primeiro toque, use antes o `/spec-issue` para guardar a `Solicitação original`. O PR cita a issue com `Refs #N`, não `Closes`: a issue só fecha na entrega.
 
 ## 5. Fechamento
 Informe o link do PR. A validação consultiva (`spec-impact` em modo PR) roda no CI e comenta no PR. Quem decide é a pessoa que integra.

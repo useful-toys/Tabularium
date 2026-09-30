@@ -36,7 +36,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Decisão**: registro de uma escolha não óbvia vigente, com contexto, alternativas descartadas, consequências e histórico
 - **Camada**: parte da spec de mesma natureza (produto, interface, arquitetura…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
-- **Issue de requisito**: issue do tracker que guarda uma ideia em amadurecimento até estar pronta para proposta
+- **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
+- **Triagem**: comparação do relato de uma issue com a spec para decidir o que ela é: requirement, bug ou entrega pendente
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -145,7 +146,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ### Amadurecimento de ideias
 - ✓ Esmiuçar uma ideia contra a spec em rodadas de perguntas interativas, até cada ponto estar decidido
-  - ✓ Aceita como entrada texto livre, issue de requisito ou proposta aberta
+  - ✓ Aceita como entrada texto livre, issue ou proposta aberta; da issue lê o corpo, como entendimento atual, e os comentários, como histórico
+  - ✓ Começa pela triagem da ideia, salvo se a issue já a trouxer confirmada
   - ✓ Confronta a ideia com glossário, modelo conceitual, regras transversais, não funcionais, decisões vigentes e código
   - ✓ Lê sempre o documento de produto e o modelo conceitual inteiros; documentos técnicos e decisões, à medida que a ideia os alcança
   - ✓ Classifica a ideia pelo tipo de mudança e levanta a cascata
@@ -155,8 +157,22 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Sugerir alternativas, cenários de borda, cascata esquecida e recortes para o humano aceitar ou descartar com motivo
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
-- ✓ Levar a pedido o resumo do que foi decidido e sugerido para uma issue de requisito nova ou existente, como memória entre sessões
-- ✓ Oferecer formulário de issue de requisito: problema, proposta, alternativas e dúvidas
+- ✓ Fazer a triagem de um relato contra a spec, como sugestão que uma pessoa confirma
+  - ✓ Contradiz item implementado: bug, tratado por um PR de código sem mudança na spec
+  - ✓ Contradiz item comprometido e não implementado: entrega pendente, que só espera a implementação
+  - ✓ Pede spec nova, diferente ou sem um item, ou a spec é omissa ou ambígua: requirement, que segue o ciclo
+  - ✓ Mistura de bug e requirement: separa em duas issues ligadas
+  - ✓ O tipo pode mudar durante a conversa; a mudança vem com a evidência em comentário
+  - ✓ O tipo escolhido por quem abre a issue é só um palpite; o rótulo aplicado por uma pessoa vence a sugestão
+  - ✓ A sugestão vem da análise de impacto; o esmiuçar a resolve com o usuário quando não está clara
+- ✓ Levar a pedido para uma requirement issue, nova ou existente, o que foi decidido e sugerido na conversa
+  - ✓ Uma ideia nasce numa issue aberta por uma pessoa ou numa conversa com o agente
+  - ✓ O corpo da issue é o entendimento mais recente: triagem, problema, decidido, descartado com motivo, cascata e o que está em aberto
+  - ✓ Cada vez que o resumo é levado, o corpo é reescrito e um comentário novo registra o resumo da rodada
+  - ✓ No primeiro toque numa issue existente, o texto original é guardado, sem alteração, como primeiro comentário da IA, com o título Solicitação original; o primeiro toque é reconhecido pela falta desse comentário
+  - ✓ Pessoas contribuem por comentários; o corpo é mantido pelo agente
+  - ✓ O corpo é conferido com o estado publicado antes de ser reescrito, para não sobrescrever edição concorrente
+- ✓ Oferecer formulários de issue de requirement e de bug, com só o relato obrigatório
 
 ### Proposta
 - ✓ Registrar uma ideia madura como proposta com texto final, sem nova entrevista
@@ -170,7 +186,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Proposta de origem existente é atualizada sobre a branch principal atual, com comentário do que mudou
   - ✓ Descrição da proposta menciona e explica cada alteração do documento de produto e das decisões
   - ✓ No rebase sobre a branch principal, a descrição guia o reencaixe do diff na nova base; o diff é reescrito para cumprir a intenção descrita, não só para resolver conflito de texto
-  - ✓ Proposta e issue de requisito mencionam uma à outra; a issue recebe as decisões adicionais
+  - ✓ Proposta e requirement issue mencionam uma à outra; a issue recebe o link da proposta e as decisões adicionais
 - ✓ Revisar uma proposta de forma consultiva, comentando tipo, cascata, decisões, consistência e forma
   - ✓ Roda automaticamente a cada atualização de proposta, pela revisão de código do Copilot, por um agente no CI com chave própria, ou pelos dois
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
@@ -183,7 +199,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Pequena divergência entre compromisso e entrega é ajustada no próprio PR como mudança incompatível, com aval da pessoa que integra
   - ✓ Divergência grande vira nova proposta antes da entrega
   - ✓ Mudança compatível pode entrar junto com o código, inclusive com decisão nova
-  - ✓ A entrega fecha a issue de requisito
+  - ✓ A entrega fecha a requirement issue
 - ✓ Verificar o drift entre spec e código sob demanda, com achados e evidências
 
 ### Verificação automática

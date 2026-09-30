@@ -1,6 +1,6 @@
 # tabularium3: template de spec viva
 
-Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma **especificação viva** do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga. Cada ideia é esmiuçada e proposta até encaixar na spec vigente, é reencaixada se a `main` mudar antes do aceite, é aceita no merge e é entregue junto com o código. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
+Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma **especificação viva** do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga. Cada relato é triado contra a spec; a ideia de requisito é esmiuçada e proposta até encaixar na spec vigente, é reencaixada se a `main` mudar antes do aceite, é aceita no merge e é entregue junto com o código. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
 
 ## Diferenciais
 
@@ -15,15 +15,20 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ```mermaid
 flowchart LR
-  G["Conversa<br/>/spec-grill · /spec-ideas"] --> P["/spec-propose<br/>valida a consistência<br/>PR draft com texto final"]
-  G -.->|a pedido| I["/spec-issue<br/>issue requirement"]
-  I -.-> G
+  E["Issue (requirement ou bug)<br/>ou conversa"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>/spec-grill resolve<br/>pessoa decide"]
+  T -->|bug| H["Hotfix: PR de código<br/>spec-neutral, Closes #issue"]
+  T -->|entrega pendente| C
+  T -->|requirement| G["Conversa<br/>/spec-grill · /spec-ideas"]
+  G <-.->|a pedido| I["/spec-issue<br/>requirement issue"]
+  G --> P["/spec-propose<br/>valida a consistência<br/>PR draft com texto final"]
   P --> R["CI: tipo + check bloqueante<br/>revisão consultiva<br/>(Copilot e/ou Claude)"]
   R --> A["Merge decidido por humano<br/>= compromisso"]
   A --> C["Código + /spec-sync<br/>Closes #issue"]
 ```
 
-- A ideia amadurece só na conversa; vai para uma issue `requirement` apenas a pedido, como memória entre sessões.
+- A ideia nasce numa issue aberta por uma pessoa (formulário `requirement` ou `bug`; o tipo escolhido é só um palpite) ou numa conversa com o agente.
+- A triagem compara o relato com a spec: contradiz item `✓` é bug, corrigido por hotfix (PR de código `spec-neutral`, sem proposta); contradiz item comprometido é entrega pendente; pede spec nova ou alterada, ou a spec é omissa, é requirement e segue o ciclo. O `/spec-impact` sugere, o `/spec-grill` resolve o que ficou incerto como primeira coisa, e uma pessoa decide: label aplicada por pessoa vence.
+- A ideia amadurece na conversa; vai para uma requirement issue apenas a pedido, como memória entre sessões: o corpo é o entendimento mais recente, os comentários são o histórico resumido e o primeiro deles, `Solicitação original`, guarda o texto de quem abriu a issue.
 - A proposta traz o texto final da spec e das decisões, sem código, e só é publicada se a spec resultante for consistente. Nasce em draft; o autor a libera depois de tratar a revisão consultiva.
 - O CI deduz o tipo, aplica a label e bloqueia PR inválido; a revisão por agente só comenta. Não há aprovação formal obrigatória: qualquer pessoa com permissão de merge aceita.
 - A entrega implementa, marca `✓` e resolve `⇢` no mesmo PR do código, que fecha a issue. Mudança compatível pode vir direto com o código.
@@ -48,7 +53,8 @@ Todo PR tem um tipo, pelo que faz com a spec vigente; com vários, recebe o maio
 | `spec-neutral` | não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso |
 | `spec-compatible` | cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente |
 | `spec-incompatible` | altera o sentido de item `✓`, contradiz item ou vai contra decisão; exige `⇢` e decisão criada ou alterada no mesmo PR |
-| `requirement` | issue de requisito |
+| `requirement` | issue com ideia de requisito, que segue o ciclo de proposta |
+| `bug` | issue de divergência do código em relação à spec, corrigida por hotfix |
 | `tabularium` | só neste repositório: PR que muda a definição do próprio tabularium, sem label de tipo |
 
 ## Skills
@@ -57,11 +63,11 @@ Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
 - `/spec-init`: depois do INSTALL, cria a estrutura, grava camadas, idioma e caminhos de código em `spec/config.json`, adapta a spec ao formato de uma versão nova e cria as labels; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
-- `/spec-grill`: esmiúça uma ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
+- `/spec-grill`: faz a triagem (requirement, bug ou entrega pendente) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.
-- `/spec-issue`: a pedido, leva os resumos da conversa para uma issue `requirement`, nova ou existente.
+- `/spec-issue`: a pedido, leva o entendimento da conversa para uma requirement issue, nova ou existente: reescreve o corpo, comenta o resumo da rodada e, no primeiro toque, guarda o original como comentário.
 - `/spec-propose`: escreve o texto final e as operações nas decisões, valida a consistência da spec resultante e abre ou atualiza o PR de proposta em draft, reencaixando uma proposta defasada.
-- `/spec-impact`: impacto de uma issue ou texto; revisão consultiva de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
+- `/spec-impact`: triagem sugerida e impacto de uma issue ou texto; revisão consultiva de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
 - `/spec-sync`: no PR do código, marca `✓` no entregue, reescreve os `⇢` entregues e trata divergências entre entrega e compromisso.
 - `/spec-check`: roda o check e revisa o drift entre spec e código, com achados e evidências; só verifica.
 - `/spec-reconcile`: restaura a consistência da spec consigo mesma, uma camada por vez, e organiza as decisões; nada muda sem aprovação.
@@ -76,7 +82,8 @@ spec/AGENTS.md                     regras de formato e de mudança da spec
 REVIEW.md                          instruções para agentes de revisão (ex.: Copilot code review)
 scripts/spec.mjs                   build-map, classify e check (Node, sem dependências)
 .github/workflows/spec-check.yml   tipo, check bloqueante e revisão consultiva por agente
-.github/ISSUE_TEMPLATE/requirement.yml   formulário de issue de requisito
+.github/ISSUE_TEMPLATE/requirement.yml   formulário de requirement issue (só o relato é obrigatório)
+.github/ISSUE_TEMPLATE/bug.yml           formulário de bug (só o relato é obrigatório)
 .claude/skills/                    as dez skills, com os esqueletos de product.md e model.md do /spec-init
 .tabularium                        gerado pelo INSTALL: origem, versão e arquivos instalados
 ```
@@ -151,7 +158,7 @@ Em `spec/config.json`, alterado só pelo `/spec-init`, que pode ser refeito a qu
 
 ## Proteção da `main` e revisão consultiva
 
-O `/spec-init` cria as labels `requirement`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
+O `/spec-init` cria as labels `requirement`, `bug`, `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible`, e orienta a proteção da `main` (Settings → Rules), que você configura:
 - exigir PR;
 - exigir o check `spec-check`, que deduz o tipo, aplica a label (o workflow tem escrita nos PRs só para isso) e bloqueia quando o tipo torna o PR inválido;
 - exigir branch atualizada com a `main` antes do merge;

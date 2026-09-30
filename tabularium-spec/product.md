@@ -5,10 +5,10 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ## Diferenciais
 - A spec cabe no contexto de um agente: arquivos densos, lidos de uma vez ou sob demanda
-- A spec nunca mente sobre o que está implementado: cada item diz se é realidade ou compromisso
-- A spec não se contradiz: nenhuma proposta é publicada sobre uma spec inconsistente
+- A spec nunca mente sobre o que está implementado ou será implantado: cada item diz se é realidade ou compromisso
+- A spec não se contradiz: nenhuma proposta inconsistente é incorporada na spec vigente
+- Só a spec vigente fica no repositório: as ideias amadurecem fora dele, até virarem propostas consistentes com a spec vigente
 - Funciona com qualquer agente que leia `AGENTS.md`, sem ferramenta proprietária de agente
-- Verificação automática no PR, sem instalar nada além do Node
 - O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, rótulo e merge
 
 ## Glossário
@@ -37,7 +37,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Camada**: parte da spec de mesma natureza (produto, interface, arquitetura…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
 - **Mapa de decisões**: índice gerado de uma camada, com o tema, a decisão e quando vale abrir cada registro
 - **Requirement issue**: issue do tracker que guarda o entendimento mais recente de uma ideia em amadurecimento, até estar pronta para proposta ou ser descartada
-- **Triagem**: comparação do relato de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue sem essa resolução está sem triagem
+- **Triagem**: comparação de uma issue ou ideia com a spec, feita na conversa, que a resolve de três formas: vira requirement issue, vira bug issue ou é descartada; a issue sem essa resolução está sem triagem
 - **Bug issue**: issue triada como comportamento que contradiz item implementado, a corrigir por hotfix, um PR de código sem mudança na spec
 - **Proposta**: PR com o texto final do documento de produto e das decisões; aberto é proposta, aceito no merge, recusado se fechado sem merge
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
@@ -158,7 +158,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Sugerir alternativas, cenários de borda, cascata esquecida e recortes para o humano aceitar ou descartar com motivo
   - ✓ Descartes com motivo alimentam as alternativas descartadas das decisões
   - ✓ Trabalha só na conversa; nada é publicado no tracker sem pedido do usuário
-- ✓ Fazer a triagem de um relato contra a spec, na conversa, como sugestão que uma pessoa confirma
+- ✓ Fazer a triagem de uma issue ou ideia contra a spec, na conversa, como sugestão que uma pessoa confirma
   - ✓ A conversa aceita como origem uma ideia, uma issue sem triagem ou uma requirement issue já triada; a triagem é o primeiro passo dela, e a requirement issue já triada a pula
   - ✓ A issue só está triada quando vira requirement issue, vira bug issue ou é descartada; sem nenhum dos rótulos requirement, bug ou plan, está sem triagem
   - ✓ A issue sem conversa continua sem triagem, sem automação
@@ -176,7 +176,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ No primeiro toque numa issue existente, o texto original é guardado, sem alteração, como primeiro comentário da IA, com o título Solicitação original; o primeiro toque é reconhecido pela falta desse comentário
   - ✓ Pessoas contribuem por comentários; o corpo é mantido pelo agente
   - ✓ O corpo é conferido com o estado publicado antes de ser reescrito, para não sobrescrever edição concorrente
-- ✓ Oferecer um formulário de issue com o relato e o palpite de quem abre (bug, requisito ou não sei), sem aplicar rótulo, para a issue chegar sem triagem
+- ✓ Oferecer um formulário de issue com a descrição e o palpite de quem abre (bug, requisito ou não sei), sem aplicar rótulo, para a issue chegar sem triagem
 
 ### Proposta
 - ✓ Registrar uma ideia madura como proposta com texto final, sem nova entrevista

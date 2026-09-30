@@ -1,14 +1,14 @@
 # tabularium3: template de spec viva
 
-Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma **especificação viva** do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga. Cada relato é triado contra a spec; a ideia de requisito é esmiuçada e proposta até casar com a spec vigente, é casada de novo se a `main` mudar antes do aceite, é aceita no merge e é entregue junto com o código. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
+Conjunto instalável de regras, instruções, verificação e skills que mantém, junto do código de um repositório, uma **especificação viva** do produto, e um processo apoiado por IA para evoluí-la sem que ela se contradiga. Cada ideia ou issue é triada contra a spec e esmiuçada até virar uma proposta que casa com a spec vigente. Se a spec vigente mudar antes do aceite, a proposta é casada de novo, e no merge a spec continua alinhada com o código. Serve a equipes que desenvolvem com agentes de IA e querem que spec e código nunca divirjam, nem a spec de si mesma.
 
 ## Diferenciais
 
 - A spec cabe no contexto de um agente: arquivos densos, lidos de uma vez ou sob demanda.
-- A spec nunca mente sobre o que está implementado: cada item diz se é realidade ou compromisso.
-- A spec não se contradiz: nenhuma proposta é publicada sobre uma spec inconsistente.
+- A spec nunca mente sobre o que está implementado ou será implantado: cada item diz se é realidade ou compromisso.
+- A spec não se contradiz: nenhuma proposta inconsistente é incorporada na spec vigente.
+- Só a spec vigente fica no repositório: as ideias amadurecem fora dele, até virarem propostas consistentes com a spec vigente.
 - Funciona com qualquer agente que leia `AGENTS.md`, sem ferramenta proprietária de agente.
-- Verificação automática no PR, sem instalar nada além do Node.
 - O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, label e merge.
 
 ## O fluxo
@@ -26,15 +26,16 @@ flowchart LR
   G -->|"não: o que falta"| C
   G -->|sim| P["PR draft"]
   P --> R["CI: tipo + check bloqueante<br/>revisão consultiva"] --> A["Merge decidido por humano<br/>= compromisso"] --> E["Código + /spec-sync<br/>Closes #issue"]
-```
 
-```mermaid
-flowchart LR
   PL["Plan issue (rótulo plan)"] --> Z["Recusada: planos ainda não são tratados"]
 ```
 
-- A conversa é o centro do ciclo. Entram nela uma ideia, uma issue genérica (aberta por uma pessoa no formulário único `relato`; o tipo escolhido é só um palpite e nenhum rótulo é aplicado) ou uma requirement issue já triada (`/spec-grill #issue`). Sem os rótulos `requirement`, `bug` ou `plan`, a issue está sem triagem, e sem conversa continua assim, sem automação.
-- A triagem é o primeiro passo da conversa, sem etapa própria, e termina em uma de três saídas. Pede spec nova, alterada ou removida, ou a spec é omissa: requirement issue (rótulo `requirement`), que segue o ciclo. Contradiz item `✓`: bug issue (rótulo `bug`); a conversa a sugere, aplicando o rótulo à issue de origem ou criando a issue se a origem é uma ideia, e o hotfix, PR de código `spec-neutral` com `Closes #N`, parte dela, fora do ciclo. Já coberta por item da spec, inclusive comprometido e ainda não implementado: descartada, com a issue de origem fechada por comentário que aponta o item, ou só abandonada se a origem é uma ideia. O `/spec-impact` sugere, o `/spec-grill` resolve o que ficou incerto, e uma pessoa decide: rótulo aplicado por pessoa vence. Issue com rótulo `plan` é recusada, até o tratamento de planos ser definido.
+- A conversa é o centro do ciclo. Nela entram uma ideia, uma issue sem rótulo ou uma requirement issue. Issue sem os rótulos `requirement`, `bug` e `plan` ainda não foi triada; a conversa a tria, e a pessoa confirma o rótulo (o rótulo aplicado por uma pessoa vence).
+- A triagem faz parte da conversa, sem etapa própria, e compara a issue ou ideia com a spec. Ela termina em uma de três saídas:
+  - **Requirement issue** (rótulo `requirement`): pede spec nova, alterada ou removida, ou a spec é omissa. Segue o ciclo.
+  - **Bug issue** (rótulo `bug`): contradiz item `✓`. O rótulo vai para a issue de origem, ou a issue é criada se a origem é uma ideia. O hotfix, PR de código `spec-neutral` com `Closes #N`, parte dela, fora do ciclo.
+  - **Descarte**: a spec já cobre o pedido, inclusive com item comprometido e ainda não implementado. A issue de origem é fechada com comentário que aponta o item; uma ideia é só abandonada.
+  - O `/spec-impact` sugere, o `/spec-grill` resolve o que ficou incerto, e a pessoa decide. Issue `plan` é recusada até o tratamento de planos ser definido.
 - A ideia amadurece na conversa; vira requirement issue apenas a pedido (`/spec-issue`), como memória entre sessões, e a issue volta à conversa quando a ideia é retomada: o corpo é o entendimento mais recente, os comentários são o histórico resumido e o primeiro deles, `Solicitação original`, guarda o texto de quem abriu a issue.
 - O `/spec-propose` é um portão: só abre a proposta se a ideia estiver madura o bastante para casar com a spec vigente e a spec resultante for consistente; senão devolve à conversa com o que falta. A proposta traz o texto final da spec e das decisões, sem código. Nasce em draft; o autor a libera depois de tratar a revisão consultiva.
 - O CI deduz o tipo, aplica a label e bloqueia PR inválido; a revisão por agente só comenta. Não há aprovação formal obrigatória: qualquer pessoa com permissão de merge aceita.
@@ -90,7 +91,7 @@ spec/AGENTS.md                     regras de formato e de mudança da spec
 REVIEW.md                          instruções para agentes de revisão (ex.: Copilot code review)
 scripts/spec.mjs                   build-map, classify e check (Node, sem dependências)
 .github/workflows/spec-check.yml   tipo, check bloqueante e revisão consultiva por agente
-.github/ISSUE_TEMPLATE/relato.yml  formulário único de issue (palpite e relato obrigatórios; não aplica rótulo)
+.github/ISSUE_TEMPLATE/issue.yml  formulário único de issue (palpite e descrição obrigatórios; não aplica rótulo)
 .claude/skills/                    as dez skills, com os esqueletos de product.md e model.md do /spec-init
 .tabularium                        gerado pelo INSTALL: origem, versão e arquivos instalados
 ```

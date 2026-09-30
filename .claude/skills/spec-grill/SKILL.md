@@ -1,6 +1,6 @@
 ---
 name: spec-grill
-description: Faz a triagem de uma ideia ou relato (requirement issue, bug issue ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
+description: Faz a triagem de uma ideia ou issue (requirement issue, bug issue ou descarte) e esmiúça a ideia de requisito ou de mudança de requisito contra a spec viva (glossário, modelo conceitual, regras transversais, decisões e código), em rodadas de perguntas, até cada ponto estar decidido. Trabalha só na conversa, sem publicar nada. Entrada - texto livre, referência a uma issue ou a um PR de proposta (para rediscuti-lo, especialmente se estiver defasado). Use para amadurecer uma ideia antes de /spec-propose.
 ---
 
 # spec-grill
@@ -13,7 +13,7 @@ Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-
 
 ## 1. Origem
 - **Texto livre**: a ideia descrita pelo usuário.
-- **Issue** (`#N` ou link): `gh issue view <N> --comments`. O corpo é o entendimento mais recente e os comentários são o histórico: importe os dois, inclusive a `Solicitação original` e o que pessoas escreveram. O que já está decidido no corpo não é perguntado de novo. Issue sem o formato de `/spec-issue` é relato bruto: trate o texto todo como o que se quer entender.
+- **Issue** (`#N` ou link): `gh issue view <N> --comments`. O corpo é o entendimento mais recente e os comentários são o histórico: importe os dois, inclusive a `Solicitação original` e o que pessoas escreveram. O que já está decidido no corpo não é perguntado de novo. Issue sem o formato de `/spec-issue` é texto bruto: trate o texto todo como o que se quer entender.
 - **PR de proposta** (`#N` ou link): `gh pr view <N> --comments` e `gh pr diff <N>`. Compare também com a `main` atual (`git fetch` e `git diff <base-do-PR>..origin/main -- spec/`): o que mudou na `main` desde que o PR foi aberto e que colide com a proposta é a **defasagem**, e entra como pergunta.
 
 ## 2. Contexto
@@ -32,10 +32,10 @@ Mapeie a ideia como uma árvore: cada decisão abre as que dependem dela. A **fr
 **Raiz: a triagem.** Todo o resto depende do tipo, então ela é resolvida antes:
 - Issue com a label `requirement` já está triada: não pergunte de novo; só reabra se o usuário discordar ou surgir evidência nova.
 - Issue com a label `plan`: não segue este ciclo. Recuse, diga que planos ainda não são tratados e encerre, sem esmiuçar.
-- Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare o relato com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
+- Issue sem `requirement`, `bug` nem `plan`, ou ideia nascida na conversa: está sem triagem. Compare a issue ou ideia com a spec (use a sugestão do `/spec-impact`, se houver; senão faça a análise) e pergunte o que falta para fechar, com a evidência (item da spec, decisão, código). O que quem abriu a issue acha que ela é vale só como palpite.
 - A triagem termina em:
   - **requirement issue**: siga.
-  - **bug issue** (o relato contradiz item `✓`): sugira ao usuário a bug issue e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. O hotfix parte dela, como PR de código sem mudança na spec com `Closes #N`, fora deste ciclo.
+  - **bug issue** (a issue ou ideia contradiz item `✓`): sugira ao usuário a bug issue e encerre. Origem issue: aplicar o rótulo `bug` à própria issue. Origem ideia: criar a bug issue. O hotfix parte dela, como PR de código sem mudança na spec com `Closes #N`, fora deste ciclo.
   - **descarte** (a spec já cobre, inclusive por item comprometido e ainda não implementado, ou não é problema): aponte o item e encerre. Origem issue: a issue é fechada como descartada. Origem ideia: nada a publicar.
   - **Mistura**: proponha separar em duas issues ligadas.
 - Registre a evidência e o palpite do autor, se diferiu, no campo `Triagem` do resumo. Aplicar a label, criar a bug issue ou fechar a issue é do `/spec-issue`, com a confirmação do usuário.

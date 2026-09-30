@@ -1,4 +1,4 @@
-name: Relato
+name: Issue
 description: Um comportamento indesejado, uma necessidade ou uma ideia. A triagem decide o que é; nada é decidido aqui.
 body:
   - type: dropdown
@@ -13,9 +13,9 @@ body:
     validations:
       required: true
   - type: textarea
-    id: relato
+    id: descricao
     attributes:
-      label: Relato
+      label: Descrição
       description: O que acontece ou o que falta, e por que isso é um problema. Não precisa estar completo; o /spec-grill ajuda a amadurecer.
     validations:
       required: true

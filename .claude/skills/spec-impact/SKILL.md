@@ -17,7 +17,7 @@ Regras de formato: `spec/AGENTS.md`. Esta skill só analisa: não edita arquivos
 ## Modo issue ou texto
 Entrada: `#N` de uma issue (`gh issue view <N> --comments`) ou texto livre. Numa issue, o corpo é o entendimento mais recente e os comentários são o histórico.
 1. Resuma a necessidade em 2–3 linhas.
-2. **Triagem**: só para issue sem triagem (sem os rótulos `requirement`, `bug` ou `plan`). O que quem abriu acha que ela é vale só como palpite. Compare o relato com a spec e sugira o resultado, com a evidência (item da spec, decisão ou código):
+2. **Triagem**: só para issue sem triagem (sem os rótulos `requirement`, `bug` ou `plan`). O que quem abriu acha que ela é vale só como palpite. Compare a issue ou ideia com a spec e sugira o resultado, com a evidência (item da spec, decisão ou código):
    - pede spec nova, alterada, removida ou substituída, ou a spec é omissa ou ambígua: **requirement issue**;
    - contradiz item `✓`: **bug issue**, com o hotfix (PR de código sem mudança na spec) partindo dela;
    - já é coberta pela spec, inclusive por item comprometido e ainda não implementado, ou não é problema: **descarte**, com o item apontado;

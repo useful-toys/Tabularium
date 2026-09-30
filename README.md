@@ -15,11 +15,14 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ```mermaid
 flowchart LR
-  E["Issue (requirement ou bug)<br/>ou conversa"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>/spec-grill resolve<br/>pessoa decide"]
+  ID["Ideia"] --> G["Conversa<br/>/spec-grill · /spec-ideas<br/>(a triagem se resolve aqui)"]
+  N["Issue nova<br/>(de uma pessoa)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>pessoa decide"]
+  T -->|requirement| I["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"]
   T -->|bug| H["Hotfix: PR de código<br/>spec-neutral, Closes #issue"]
   T -->|entrega pendente| C
-  T -->|requirement| G["Conversa<br/>/spec-grill · /spec-ideas"]
-  G <-.->|a pedido| I["/spec-issue<br/>requirement issue"]
+  G -.->|"/spec-issue, a pedido"| I
+  I -->|"/spec-grill #issue"| G
+  G -->|bug| H
   G --> P["/spec-propose<br/>valida a consistência<br/>PR draft com texto final"]
   P --> R["CI: tipo + check bloqueante<br/>revisão consultiva<br/>(Copilot e/ou Claude)"]
   R --> A["Merge decidido por humano<br/>= compromisso"]

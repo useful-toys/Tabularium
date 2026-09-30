@@ -209,15 +209,19 @@ PR só de código, sem mudança na spec, é neutro, inclusive o hotfix de um bug
 
 ```mermaid
 flowchart LR
-  I["Ideia ou relato<br/>(issue de uma pessoa ou conversa)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>/spec-grill resolve<br/>pessoa decide"]
+  ID["Ideia"] --> G
+  N["Issue nova<br/>(de uma pessoa: requirement ou bug)"] --> T["Triagem contra a spec<br/>/spec-impact sugere<br/>pessoa decide"]
+  T -- requirement --> I["Requirement issue<br/>corpo: entendimento atual<br/>comentários: histórico"]
   T -- bug --> H["Hotfix: PR de código neutro<br/>Closes #issue, sem proposta"]
   T -- entrega pendente --> Q["Aponta o item e encerra"]
-  T -- requirement --> G["/spec-grill<br/>esmiuçar"]
-  G --> D["/spec-ideas<br/>sugerir"]
-  D -- sugestão aceita --> G
-  G -. a pedido .-> S["/spec-issue<br/>requirement issue"]
-  D -. a pedido .-> S
-  D --> P["/spec-propose<br/>valida a consistência<br/>PR draft"]
+  subgraph CV["Conversa"]
+    G["/spec-grill<br/>triar e esmiuçar"] --> D["/spec-ideas<br/>sugerir"]
+    D -- sugestão aceita --> G
+  end
+  CV -. "/spec-issue, a pedido" .-> I
+  I -- "/spec-grill #issue" --> CV
+  CV -- "triagem: bug" --> H
+  CV --> P["/spec-propose<br/>valida a consistência<br/>PR draft"]
   P --> R["CI: tipo + label + check (bloqueia)<br/>revisão consultiva (/spec-impact, Copilot)"]
   R --> A["Humano decide o merge<br/>merge = compromisso"]
   A --> E["Entrega: código + /spec-sync<br/>Closes #issue"]

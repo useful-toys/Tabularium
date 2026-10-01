@@ -37,7 +37,7 @@ Regras de formato: `spec/AGENTS.md`. Leia antes de escrever.
 8. **Valide**: `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`. O check também valida o `model.md`.
 
 ## Entrega
-PR só com a spec; o CI deduz o tipo e aplica a label. A descrição do PR traz o relatório:
+PR só com a spec; nenhuma label de tipo é aplicada. A descrição do PR traz o relatório:
 - domínios e quantidade de requisitos extraídos; entidades do modelo conceitual, se houver;
 - itens `✓` duvidosos, com a evidência (arquivo) de cada um;
 - decisões migradas, por camada; técnicas deixadas de fora por falta de camada; obsoletas descartadas;

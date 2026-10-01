@@ -31,7 +31,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - **Neutra**: não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso
   - **Compatível**: cria requisito, altera item não implementado ou cria decisão, sem contradizer item nem decisão vigente
   - **Incompatível**: altera o sentido de item implementado, contradiz item existente ou vai contra uma decisão
-- **Rótulo de tipo**: rótulo do PR com o seu tipo de mudança
+- **Rótulo de tipo**: rótulo do PR com o seu tipo de mudança; existe no repositório, mas por ora nada o aplica nem o exige
 - **Consistência**: estado da spec sem contradição entre itens, entre documentos ou com decisões, sem conceito repetido, termo fora do sentido do glossário ou lacuna de cascata
 - **Decisão**: registro de uma escolha não óbvia vigente, com contexto, alternativas descartadas, consequências e histórico
 - **Camada**: parte da spec de mesma natureza (produto, arquitetura, integração…), com seu documento de referência e suas decisões; as camadas de um projeto são configuradas
@@ -44,7 +44,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **Bug issue**: issue triada como comportamento que contradiz item implementado, que não segue o ciclo de requisitos; a conversa a recusa por ora, e ela terá tratamento próprio, por skills dedicadas, ainda por especificar
 - **Portão da proposta**: condição para uma conversa virar proposta: ideia triada como requirement issue, nada necessário em aberto e spec resultante consistente
 - **Proposta**: PR sem código com o texto final dos documentos com itens e das decisões, de qualquer tipo de mudança; aberto é proposta, aceito no merge, recusado se fechado sem merge
-- **Conferência por agente**: comentário de um agente de IA que confronta o texto final de uma proposta com a spec vigente, sem ver a conversa; nunca aprova nem bloqueia
+- **Conferência por agente**: comentário de um agente de IA que confronta o texto final de uma proposta com a spec vigente, julga o tipo da mudança e confere as regras de PR, sem ver a conversa; nunca aprova nem bloqueia
 - **Fila de aceite**: conjunto das propostas abertas, cada uma à espera de ser aceita ou recusada
 - **Defasagem**: mudança na branch principal, posterior à base de uma proposta aberta, que colide com ela
 - **Entrega**: PR de código que implementa compromissos e sincroniza a spec
@@ -72,12 +72,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Recusa instalar quando não há versão publicada, quando a versão está fora do padrão numerado ou quando a versão não traz a lista de arquivos a copiar
   - ✓ Nunca faz commit; o resultado entra por PR
 - ✓ Preparar o repositório remoto no GitHub
-  - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem
+  - ✓ Cria os rótulos de issue (`requirement`, `bug`, `plan`) e os de PR (`spec-editorial`, `spec-neutral`, `spec-compatible`, `spec-incompatible`) que ainda não existem, sem que nada os aplique ou exija por ora
   - ✓ Sugere a proteção da branch principal e a conferência por agente, configurações do repositório remoto que se ligam e desligam: para cada uma, verifica a situação atual no repositório remoto e pergunta ao usuário o que deseja, mostrando a atual
   - ✓ Se a situação atual já é a desejada, não faz nada; senão, liga ou desliga, depois de dizer ao usuário o que vai alterar e de ele confirmar
   - ✓ Ligar ou desligar é configurar o repositório remoto, ou apresentar como fazê-lo manualmente se o usuário preferir
-  - ✓ A proteção da branch principal faz o merge exigir PR, o check `spec-check` e a branch atualizada; se o usuário a desliga, a skill avisa o risco: o merge deixa de exigir PR, o check e a branch atualizada, e uma proposta pode ser integrada sem revalidação depois de outra aceita antes dela
-  - ✓ A conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente, é a do GitHub ou a do Claude, e só uma fica ligada: ligar a escolhida desliga a outra; se o usuário não quer nenhuma, a skill avisa o risco: a proposta é validada só quanto ao formato, às regras de PR e à integração com a base, e pode integrar sem conflito e ainda assim contradizer a spec vigente
+  - ✓ A proteção da branch principal faz o merge exigir PR, o check `spec-check-format` e a branch atualizada; se o usuário a desliga, a skill avisa o risco: o merge deixa de exigir PR, o check e a branch atualizada, e uma proposta pode ser integrada sem revalidação depois de outra aceita antes dela
+  - ✓ A conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente, é a do GitHub ou a do Claude, e só uma fica ligada: ligar a escolhida desliga a outra; se o usuário não quer nenhuma, a skill avisa o risco: a proposta é validada só quanto ao formato e à integração com a base, sem quem confira as regras de PR, e pode integrar sem conflito e ainda assim contradizer a spec vigente
   - ✓ A chave de acesso que a conferência pelo Claude exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
 - ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
@@ -233,7 +233,12 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Toda proposta tem um tipo de mudança, inclusive a editorial, e segue o mesmo fluxo: rascunho, portão, verificação e conferência por agente
   - ✓ As propostas abertas formam a fila de aceite: cada uma espera ser aceita (merge) ou recusada (fechada sem merge)
   - ✓ A cada aceite a spec vigente muda e as outras propostas ficam defasadas; a proposta que deixa de passar nas regras da verificação é rediscutida no esmiuçar, e se a ideia ainda vale a proposta é atualizada sobre a spec vigente e o portão é aplicado de novo, senão é fechada
-- ✓ Conferir uma proposta por agente contra a spec vigente, comentando tipo, cascata, decisões, consistência e forma
+- ✓ Conferir uma proposta por agente contra a spec vigente, comentando tipo, regras de PR, cascata, decisões, consistência e forma
+  - ✓ Julga o tipo da mudança sem ler nem aplicar rótulo, e vale o maior se houver mais de um
+  - ✓ Aponta o PR que resolve item redefinido sem alterar código
+  - ✓ Aponta o PR que altera ou marca item implementado sem alterar código, salvo mudança editorial, dizendo se a mudança é de redação ou de sentido
+  - ✓ Aponta redefinição criada, alterada ou desfeita sem decisão criada ou alterada no mesmo PR
+  - ✓ Aponta mudança incompatível sem decisão criada ou alterada no mesmo PR
   - ✓ Roda automaticamente a cada atualização de proposta, por um agente de IA
   - ✓ Nunca aprova nem bloqueia; quem decide é a pessoa que integra
   - ✓ Confronta só o texto final da spec com a spec vigente, lendo os arquivos ou o diff e sem a conversa, como segunda visão independente das mesmas regras do portão da proposta
@@ -252,18 +257,10 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ### Verificação automática
 - ✓ Validar o formato do documento de produto e das decisões
+- ✓ O check do CI confere só a estrutura de pastas e arquivos e o formato dos documentos: não usa IA, não escreve no PR e não aplica rótulo, e bloqueia o merge quando falha
 - ✓ Recusar configuração sem a lista de caminhos de código
 - ✓ Detectar mapa de decisões desatualizado
 - ✓ Listar os itens redefinidos em aberto
-- ✓ Deduzir do diff o tipo mínimo de cada PR e aplicar o rótulo de tipo
-  - ✓ Caso ambíguo, em que o diff não mostra se o sentido mudou: a IA julga, e vale o maior entre o mínimo e o julgado
-  - ✓ Rótulo de tipo aplicado por uma pessoa vence a dedução e a IA e nunca é trocado pelo CI
-  - ✓ Sem IA disponível, o caso ambíguo exige rótulo aplicado por uma pessoa
-- ✓ Barrar PR com rótulo de tipo abaixo do mínimo deduzido do diff, ou com mais de um rótulo de tipo
-- ✓ Barrar PR que resolve item redefinido sem alterar código
-- ✓ Barrar PR que altera ou marca item implementado sem alterar código, salvo mudança editorial
-- ✓ Barrar redefinição criada, alterada ou desfeita sem decisão criada ou alterada no mesmo PR
-- ✓ Barrar mudança incompatível sem decisão criada ou alterada no mesmo PR
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
 - ✓ Validar o modelo conceitual, quando existe, e o documento técnico de cada camada declarada, com as mesmas regras do documento de produto
@@ -294,7 +291,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - ✓ Economia de contexto: documentos densos; decisões carregadas sob demanda pelo mapa
 - ✓ Portabilidade: verificação roda em Windows e Linux só com Node, sem dependências; instalação e atualização rodam em Windows e Linux só com git e o shell nativo
 - ✓ Compatibilidade: instruções lidas por qualquer agente que siga a convenção de `AGENTS.md`
-- ✓ Determinismo: mapas e verificações gerados por script, sem gastar tokens do agente; só a classificação do caso ambíguo usa IA
+- ✓ Determinismo: mapas e verificações gerados por script, sem gastar tokens do agente; nenhuma verificação que bloqueia usa IA
 - ✓ Plataforma: GitHub — issues, PRs, proteção de branch e Actions
 
 ## Fora de escopo
@@ -303,8 +300,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - **IDs ou âncoras nos itens do documento de produto** — permanente: cada referência vira manutenção
 - **Solicitações, backlog e ideias adiadas na spec** — permanente: pertencem ao tracker; ocupariam o contexto do agente sem informar suas decisões
 - **Documentação em formatos convencionais mantida na spec** — permanente: visão, casos de uso, diagramas, histórias e BDD consomem muitos tokens e divergem; são exportados a pedido
-- **Confirmação do tipo restrita a quem tem permissão de escrita** — permanente: o merge já é o portão
+- **Deduzir ou aplicar o tipo da mudança por script ou CI** — nesta versão: o tipo é julgado pela conferência por agente e por quem integra, e os rótulos de tipo não são aplicados
 - **Reconhecimento dos rótulos de PR anteriores aos tipos de mudança** — nesta versão: ainda não há adotantes
-- **Julgar se PR só de código muda comportamento** — nesta versão: a classificação cobre só o que o PR faz com a spec
+- **Julgar se PR só de código muda comportamento** — nesta versão: a conferência cobre só o que o PR faz com a spec
 - **Mesclar customizações do projeto nos arquivos do tabularium ao atualizar** — nesta versão: a atualização é determinística; o que é do projeto fica fora dos arquivos do tabularium
 - **Outros hubs git, trackers, plataformas de CI e provedores de modelo além do Copilot e do Claude** — nesta versão: complexidade que não queremos agora

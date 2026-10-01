@@ -97,23 +97,21 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - A proposta só é publicada sobre uma spec consistente: `/spec-propose` valida a spec resultante e não publica se houver contradição, conceito repetido, termo inconsistente ou lacuna de cascata, mesmo preexistente.
 
 ### Tipos
-Todo PR tem um tipo, pelo que faz com a spec vigente. PR com mais de um tipo recebe o maior, nesta ordem:
+Todo PR tem um tipo, pelo que faz com a spec vigente. PR com mais de um tipo recebe o maior, nesta ordem. Nada deduz o tipo por script nem o aplica como label: ele é julgado pela conferência por agente e por quem integra.
 - **editorial**: só texto da spec, sem mudar sentido (redação, organização, `✓` de item que o código já implementa). Sem código.
 - **neutra**: não altera o sentido de nenhum requisito: código sem mudança na spec, ou entrega de compromisso (marca `✓`, resolve `⇢`).
 - **compatível**: cria requisito, altera item sem `✓` ou o lado direito de um `⇢`, ou cria decisão, sem contradizer item nem decisão vigente. Pode vir numa proposta ou junto com o código, já com `✓`.
 - **incompatível**: altera o sentido de um item `✓`, contradiz um item existente (inclusive transversal ou NF) ou vai contra uma decisão. Mudar a redação sem mudar o sentido não conta.
   - Entra antes do código, como `⇢` na linha mais baixa afetada: na regra, se só a regra muda; no requisito, se ele muda inteiro. Se algo novo contradiz um item `✓`, o `⇢` vai no item contradito.
-  - Sempre cria ou altera uma decisão no mesmo PR. O CI verifica.
+  - Sempre cria ou altera uma decisão no mesmo PR. A conferência por agente verifica.
   - Entrega: o item é reescrito conforme a nova realidade, mantém o `✓` e o `⇢` some, no mesmo PR do código.
   - Desistência: remove-se o `⇢` e o lado direito, e a decisão volta à escolha anterior.
   - Pequena divergência entre entrega e compromisso: ajustada no PR de código, como mudança incompatível, com o aval da pessoa que integra. Divergência grande vira nova proposta, aceita antes da entrega.
 
 ### Label de tipo
-- O CI deduz o tipo mínimo que o diff prova e aplica a label: `spec-editorial`, `spec-neutral`, `spec-compatible` ou `spec-incompatible`.
-- Quando o diff é ambíguo (texto de item `✓` ou fora dos itens alterado, item sem `✓` reescrito ou removido, decisão existente alterada, `✓` marcado sem código), a IA julga se o sentido mudou e o CI aplica o maior entre o mínimo e o julgado. Se o tipo julgado torna o PR inválido, o check bloqueia.
-- Label de tipo aplicada por uma pessoa vence a dedução e a IA, e o bot nunca a troca. Abaixo do tipo mínimo do diff, é erro. Sem IA disponível (PR de fork ou sem chave), o caso ambíguo exige label aplicada por uma pessoa.
-
+- As labels `spec-editorial`, `spec-neutral`, `spec-compatible` e `spec-incompatible` existem no repositório, mas por ora ninguém as aplica nem as exige: nem o CI, nem o agente. O tipo não é lido de label.
 ### Regras de PR
+O check do CI não as verifica: ele só confere estrutura de pastas e arquivos e formato. Quem as confere é a conferência por agente, que comenta, e a pessoa que integra decide.
 - Resolver um `⇢` exige código no mesmo PR.
 - Criar, alterar ou desfazer um `⇢` exige decisão criada ou alterada no mesmo PR.
 - Alterar ou marcar item `✓` sem código só em PR editorial.

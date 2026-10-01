@@ -10,12 +10,13 @@ carregar-quando: mudança em regras de PR de código, mudança compatível junto
   - Sempre separados: burocracia para acréscimos triviais
   - Julgamento livre de quem integra: critério não verificável
   - Toda divergência vira nova proposta: trava entregas por detalhes
-  - Rótulo próprio para a divergência: o tipo incompatível, deduzido pelo CI, já a identifica
+  - Rótulo próprio para a divergência: o tipo incompatível, julgado pela conferência, já a identifica
 - Consequências
   - Ganha: viradas sempre revistas como proposta; entregas com requisito novo sem atrito
   - Aceita: a decisão nova de uma mudança compatível só é conferida contra as vigentes pela revisão
 
 ## Histórico
+- 2026-09-30 #24: o tipo incompatível é julgado pela conferência, não deduzido pelo CI
 - 2026-09-26 #14: mudança compatível com decisão nova junto com o código; divergência como mudança incompatível, sem rótulo próprio
 - 2026-09-24 #10: sem o termo revisor
 - 2026-09-24 plano-inicial: decisão criada

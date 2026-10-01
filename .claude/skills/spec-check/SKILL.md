@@ -8,7 +8,7 @@ description: Verifica a saúde da spec viva - roda o check determinístico (scri
 Regras de formato: `spec/AGENTS.md`. Esta skill só verifica. Correções acontecem depois de o usuário aprovar.
 
 ## 1. Check determinístico
-Rode `node scripts/spec.mjs check`, ou `--base <ref>` num PR. Relate erros, avisos e os `⇢` em aberto.
+Rode `node scripts/spec.mjs check`. Relate erros, avisos e os `⇢` em aberto.
 
 ## 2. Revisão semântica
 Escolha o escopo com o usuário: a spec inteira, um domínio, ou os itens tocados pelo PR atual. Para cada item do escopo:

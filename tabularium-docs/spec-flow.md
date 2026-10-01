@@ -46,9 +46,9 @@ Este é o terceiro desenho dessa ideia; os anteriores não se sustentaram com o 
   - `✓ atual ⇢ desejado`: redefinido; o texto atual vale até a entrega, e o desejado, depois dela.
 - **Modelo conceitual** (`model.md`, opcional): tipos e entidades do domínio, com relações, estados e invariantes. É um modelo de conceitos, não de banco de dados. Quando existe, é lido sempre junto com o `product.md`.
 - **Documentos técnicos fundamentais** (`<camada>.md`, obrigatórios): estado atual de cada camada fundamental que o projeto declara, como arquitetura, integração ou dados. Camada fundamental é aquela cuja alteração depois da adoção causa grande impacto.
-- **Documentos técnicos auxiliares** (opcionais): questões complementares e de menor impacto, como telas, fluxos ou guia de estilo. Não são camadas.
+- **Documentos técnicos auxiliares** (`<nome>.md`, opcionais, declarados em `auxiliaryDocuments`): questões complementares e de menor impacto, como telas, fluxos ou guia de estilo. Não são camadas.
 - **Registros de decisão** (`decisions/<camada>/`): um arquivo curto por escolha não óbvia, com o que foi decidido, o porquê, as alternativas descartadas e um histórico. Parecem ADRs, mas só as decisões em vigor ficam na pasta.
-- **Configuração** (`config.json`): camadas, idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, arquitetura, integração…) tem seu documento de referência e suas decisões, ambos obrigatórios, e o check falha se faltar um deles; a de produto sempre existe.
+- **Configuração** (`config.json`): camadas (`layers`), documentos técnicos auxiliares (`auxiliaryDocuments`), idioma do conteúdo e caminhos de código, onde está o código do produto. Cada camada (produto, arquitetura, integração…) tem seu documento de referência e suas decisões, ambos obrigatórios, e o check falha se faltar um deles; a de produto sempre existe.
 - **Textos de idioma** (`locales/<idioma>.json`, opcional): textos da verificação para um idioma que o script não traz embutido.
 
 Ideias ainda não aceitas não entram na spec. Vivem na conversa com o agente ou, a pedido, numa requirement issue.
@@ -87,9 +87,10 @@ Mudança compatível pode pular a proposta e vir direto no PR de código, já co
 | `spec/product.md` | O que é, diferenciais, glossário, requisitos por domínio (requisito → regras), regras transversais, não funcionais, fora de escopo | Seções nessa ordem; autocontido (sem links nem referências), atemporal, só comportamento observável, sem IDs, uma casa por conceito |
 | `spec/model.md` | Modelo conceitual, opcional: `## Tipos` e `## Entidades` (relações com cardinalidade, estados, transições, invariantes) | Vem do comportamento, nunca do schema; sem implementação; tipos com natureza de lista fechada; todo nome em negrito é termo do glossário ou tipo declarado |
 | `spec/<camada>.md` | Documento técnico fundamental, obrigatório, de cada camada declarada além de `product`, com seções livres | Autocontido e atemporal; mesmos estados e regras de mudança dos itens; o check falha se faltar |
+| `spec/<nome>.md` | Documento técnico auxiliar, opcional, declarado em `auxiliaryDocuments`, com seções livres | Mesmas regras de formato dos itens; não é camada e não tem pasta de decisões (as decisões sobre ele ficam na camada `product`); o check falha se o declarado não existe, e se há `.md` na raiz de `spec/` que a configuração não declara |
 | `spec/decisions/<camada>/*.md` | Uma decisão vigente por arquivo, nomeado pelo slug: frontmatter `tema`, `decisao`, `carregar-quando`; depois Decisão, Contexto, Alternativas descartadas, Consequências e Histórico | Só decisões vigentes; decisão que muda leva a escolha antiga para "Alternativas descartadas"; o porquê vem do humano |
 | `spec/decisions/<camada>/README.md` | Mapa de decisões, gerado por `node scripts/spec.mjs build-map` | Nunca editado à mão; o agente lê o mapa e abre só as decisões cujo `carregar-quando` corresponde à tarefa |
-| `spec/config.json` | Camadas, idioma, caminhos de código (`codePaths`) | Alterado só pelo `/spec-init`; nenhuma camada se chama `model`; caminhos casados por prefixo; lista vazia é projeto sem código; config sem a lista é recusada pelo script |
+| `spec/config.json` | Camadas (`layers`), documentos técnicos auxiliares (`auxiliaryDocuments`, opcional), idioma (`language`), caminhos de código (`codePaths`) | Alterado só pelo `/spec-init`; `layers` inclui `product` e nenhuma camada se chama `model`; nomes em minúsculas, dígitos e hífens, sem repetição; auxiliar não repete camada nem usa nome reservado (`product`, `model`, `config`, `decisions`, `locales`); caminhos de código casados por prefixo; lista vazia é projeto sem código; config sem `layers` ou `codePaths`, ou com `auxiliaryDocuments` que não é lista, é recusada pelo script |
 | `spec/locales/<idioma>.json` | Textos da verificação para um idioma fora dos embutidos no script, opcional | Criado pelo `/spec-init`; mesmas chaves dos textos embutidos; fica na spec, e não no script, para sobreviver às atualizações |
 | `AGENTS.md` | Processo, num bloco entre `<!-- tabularium:begin -->` e `<!-- tabularium:end -->` | O INSTALL troca só o bloco; o resto do arquivo é do projeto. Sem `CLAUDE.md`: a presença dele faz o Claude Code ignorar os `AGENTS.md` |
 | `spec/AGENTS.md` | Regras de formato e de mudança | Fonte única; carregado quando o agente trabalha na spec |
@@ -274,7 +275,11 @@ Valem para o `product.md`, o `model.md` e os documentos técnicos. Os testes do 
 
 | Situação | Resultado |
 |---|---|
-| Configuração sem a lista `codePaths` | recusada: o script para |
+| Configuração sem a lista `layers` ou `codePaths`, ou com `auxiliaryDocuments` que não é lista | recusada: o script para |
+| `layers` sem `product`, com `model`, com nome repetido ou fora do padrão; `auxiliaryDocuments` com nome repetido, fora do padrão ou reservado, ou igual ao de uma camada | erro |
+| Camada declarada sem `<camada>.md` ou sem a pasta de decisões | erro |
+| Documento auxiliar declarado em `auxiliaryDocuments` sem o arquivo `<nome>.md` | erro |
+| Arquivo `.md` na raiz de `spec/` que `config.json` não declara (fora `AGENTS.md`, `product.md` e `model.md`) | erro |
 | Mapa de decisões desatualizado | erro |
 | Decisão sem frontmatter completo, sem as seções na ordem, com Histórico fora do fim ou entrada de histórico fora do padrão | erro |
 | Seções do `product.md` ou do `model.md` fora da ordem | erro |
@@ -323,7 +328,7 @@ Qualquer agente que note uma inconsistência em outra atividade sugere o `/spec-
   - Camadas: cada uma tem documento de referência e decisões. Camada nova ganha pasta de decisões e documento técnico fundamental; camada removida com decisões: o usuário escolhe mover ou apagar as decisões.
   - Idioma: vale para conteúdo novo; o existente só é traduzido a pedido. Idioma sem textos embutidos no script recebe `spec/locales/<idioma>.json`, criado por ele.
   - Sugere os caminhos de código a partir das pastas do repositório e confirma. Pergunta sempre por eles quando a lista está vazia. Quando o código muda de lugar, a lista é atualizada por ele.
-  - Cria só o que falta, sem sobrescrever: `product.md` a partir do esqueleto, uma pasta de decisões e um documento técnico fundamental, só com o título, para cada camada; o `model.md` e os documentos técnicos auxiliares, só a pedido.
+  - Cria só o que falta, sem sobrescrever: `product.md` a partir do esqueleto, uma pasta de decisões e um documento técnico fundamental, só com o título, para cada camada; o `model.md` só a pedido, e os documentos técnicos auxiliares só os que o usuário pede e que ficam declarados em `auxiliaryDocuments`.
   - **Adaptação ao formato**, sobretudo numa versão maior: roda o check, lê as regras novas e propõe adaptar o conteúdo sem mudar o sentido de nenhum item, com confirmação em lote ou item a item. O que exigir mudar sentido vira proposta. A adaptação vai no mesmo PR da atualização.
   - Nunca altera os arquivos do tabularium nem o bloco do `AGENTS.md`.
   - Cria os rótulos que faltam.

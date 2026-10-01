@@ -12,10 +12,10 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 - O processo se apoia no fluxo git e GitHub que a equipe já usa: issue, PR, rótulo e merge
 
 ## Glossário
-- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas fundamentais, como arquitetura ou integração, dependem da aplicação
+- **Spec**: pasta com as camadas configuradas de um projeto, cada uma com seu documento de referência e suas decisões, os documentos técnicos auxiliares declarados e a configuração, com os textos de idioma quando o idioma não é embutido; a camada de produto sempre existe; as técnicas fundamentais, como arquitetura ou integração, dependem da aplicação
 - **Documento de produto**: arquivo que descreve o que o produto é e seu comportamento observável
 - **Modelo conceitual**: arquivo opcional, lido junto com o documento de produto, que descreve a estrutura do domínio: entidades, relações, estados e invariantes
-- **Documento técnico**: arquivo que descreve o estado atual de uma camada técnica, como arquitetura ou integração; o fundamental, de uma camada declarada, é obrigatório, e o auxiliar, sobre questões complementares como telas, fluxos ou guia de estilo, é opcional e não é camada
+- **Documento técnico**: arquivo que descreve o estado atual de uma camada técnica, como arquitetura ou integração; o fundamental, de uma camada declarada, é obrigatório, e o auxiliar, sobre questões complementares como telas, fluxos ou guia de estilo, é opcional, só existe se declarado na configuração e não é camada
 - **Documento de referência**: documento com itens de uma camada: na de produto, o documento de produto e o modelo conceitual; numa técnica, o documento técnico fundamental
 - **Entidade**: conceito do domínio com identidade, relações ou ciclo de vida próprios
 - **Estado derivado**: estado calculado a partir de um atributo, nunca registrado à parte
@@ -79,9 +79,11 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ A proteção da branch principal faz o merge exigir PR, o check `spec-check-format` e a branch atualizada; se o usuário a desliga, a skill avisa o risco: o merge deixa de exigir PR, o check e a branch atualizada, e uma proposta pode ser integrada sem revalidação depois de outra aceita antes dela
   - ✓ A conferência por agente, em que um agente de IA confere cada proposta contra a spec vigente, é a do GitHub ou a do Claude, e só uma fica ligada: ligar a escolhida desliga a outra; se o usuário não quer nenhuma, a skill avisa o risco: a proposta é validada só quanto ao formato e à integração com a base, sem quem confira as regras de PR, e pode integrar sem conflito e ainda assim contradizer a spec vigente
   - ✓ A chave de acesso que a conferência pelo Claude exige é criada pela pessoa: a skill só orienta como criá-la e nunca a recebe
-- ✓ Configurar o projeto: camadas, idioma do conteúdo e caminhos de código
+- ✓ Configurar o projeto: camadas, documentos técnicos auxiliares, idioma do conteúdo e caminhos de código
   - ✓ Pode ser refeita a qualquer momento: mantém os valores existentes e confirma cada mudança
   - ✓ Camada excluída da configuração que tem decisões: o usuário escolhe entre mover as decisões para outra camada e apagá-las
+  - ✓ Documento técnico auxiliar é declarado pelo nome, só a pedido do usuário; excluído da configuração, o usuário escolhe entre apagar o arquivo e transformá-lo em camada fundamental
+  - ✓ Arquivo de documento na spec que a configuração não declara, como numa atualização, é apresentado ao usuário, que escolhe entre declará-lo como documento auxiliar, declará-lo como camada ou apagá-lo
   - ✓ Idioma novo vale para o conteúdo novo; o existente só é traduzido a pedido
   - ✓ Idioma cujas mensagens de verificação o tabularium não traz recebe as mensagens num arquivo da spec do projeto
   - ✓ Lista de caminhos de código vazia significa projeto sem código, e a pergunta se repete a cada configuração
@@ -89,7 +91,7 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
   - ✓ Cria o documento de produto, sem requisitos, e uma pasta de decisões para cada camada
   - ✓ Cria o documento técnico fundamental, só com o título, de cada camada técnica
   - ✓ Cria o modelo conceitual só a pedido
-  - ✓ Cria um documento técnico auxiliar só a pedido
+  - ✓ Cria um documento técnico auxiliar só a pedido, e o declara na configuração
   - ✓ Cria só o que falta; nada existente é sobrescrito
 - ✓ Atualizar o tabularium de um projeto com o mesmo comando
   - ✓ Vale na atualização o que vale na instalação, além do que segue
@@ -149,7 +151,8 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 
 ### Documentos técnicos
 - ✓ Descrever cada camada técnica fundamental, como arquitetura ou integração, num documento técnico próprio, obrigatório para a camada declarada
-  - ✓ Documento técnico auxiliar, sobre questões complementares e de menor impacto, como telas ou guia de estilo, é opcional e independente das camadas fundamentais
+  - ✓ Documento técnico auxiliar, sobre questões complementares e de menor impacto, como telas ou guia de estilo, é opcional, declarado na configuração e independente das camadas fundamentais
+    - ✓ Não tem pasta de decisões: as decisões sobre ele ficam na camada de produto
   - ✓ Seções livres; autocontido e atemporal, como o documento de produto
   - ✓ Formato exato e parâmetros que o documento de produto deixa de fora ficam no documento técnico
   - ✓ Valem os mesmos estados de item e as mesmas regras de mudança do documento de produto
@@ -258,13 +261,16 @@ Conjunto instalável de regras, instruções, verificação e skills que mantém
 ### Verificação automática
 - ✓ Validar o formato do documento de produto e das decisões
 - ✓ O check do CI confere só a estrutura de pastas e arquivos e o formato dos documentos: não usa IA, não escreve no PR e não aplica rótulo, e bloqueia o merge quando falha
-- ✓ Recusar configuração sem a lista de caminhos de código
+- ✓ Recusar configuração sem a lista de camadas ou de caminhos de código, ou com documentos técnicos auxiliares que não são uma lista
+- ✓ Barrar configuração sem a camada de produto, com a camada do modelo conceitual, ou com nome de camada ou de documento auxiliar repetido, fora do padrão ou reservado, ou igual a nome de camada
 - ✓ Detectar mapa de decisões desatualizado
 - ✓ Listar os itens redefinidos em aberto
 - ✓ Listar os itens comprometidos ainda não implementados
 - ✓ Avisar sobre possíveis referências temporais no documento de produto
-- ✓ Validar o modelo conceitual, quando existe, e o documento técnico de cada camada declarada, com as mesmas regras do documento de produto
+- ✓ Validar o modelo conceitual, quando existe, o documento técnico de cada camada declarada e os documentos técnicos auxiliares declarados, com as mesmas regras do documento de produto
 - ✓ Barrar camada declarada sem documento técnico fundamental ou sem pasta de decisões
+- ✓ Barrar documento técnico auxiliar declarado sem o arquivo
+- ✓ Barrar arquivo de documento na raiz da spec que a configuração não declara como camada nem como documento auxiliar
 - ✓ Barrar nome em destaque no modelo conceitual que não seja termo do glossário nem tipo declarado; termo do glossário fora do modelo é permitido
 - ✓ Avisar sobre termos de implementação no modelo conceitual
 - ✓ Avisar quando existe `CLAUDE.md` na raiz ou em `spec/`, que anularia o `AGENTS.md`

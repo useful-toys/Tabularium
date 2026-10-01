@@ -5,8 +5,10 @@
 //   node scripts/spec.mjs check                      estrutura de pastas e arquivos e formato dos documentos
 //   --spec <pasta>  pasta da spec (padrão: spec)
 //
-// Documentos com itens: product.md, model.md (modelo conceitual, opcional) e
-// <camada>.md (documento técnico obrigatório de cada camada declarada além de product).
+// Documentos com itens: product.md, model.md (modelo conceitual, opcional),
+// <camada>.md (documento técnico fundamental, obrigatório de cada camada declarada em
+// `layers` além de product) e <nome>.md (documento técnico auxiliar, declarado em
+// `auxiliaryDocuments`). Arquivo .md na raiz da spec que a configuração não declara é erro.
 //
 // Regras de formato: spec/AGENTS.md.
 
@@ -85,8 +87,39 @@ export function loadLocale(root, spec, language) {
 export function loadConfig(root, spec = 'spec') {
   const config = JSON.parse(readFileSync(join(root, spec, 'config.json'), 'utf8'));
   const locale = loadLocale(root, spec, config.language);
+  if (!Array.isArray(config.layers)) throw new Error(`${spec}/config.json sem \`layers\` (lista de camadas, com product)`);
   if (!Array.isArray(config.codePaths)) throw new Error(`${spec}/config.json sem \`codePaths\` (lista de caminhos de código; vazia se o projeto não tem código)`);
-  return { ...config, locale };
+  if ('auxiliaryDocuments' in config && !Array.isArray(config.auxiliaryDocuments)) {
+    throw new Error(`${spec}/config.json: \`auxiliaryDocuments\` deve ser uma lista de nomes de documentos técnicos auxiliares`);
+  }
+  return { ...config, auxiliaryDocuments: config.auxiliaryDocuments ?? [], locale };
+}
+
+const NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+// Nomes de arquivos e pastas fixos da spec que a regra de minúsculas não já recusa (AGENTS.md):
+// nenhum documento técnico auxiliar os usa.
+const RESERVED_DOCS = ['product', 'model', 'config', 'decisions', 'locales'];
+
+// Consistência da própria configuração: camadas e documentos técnicos auxiliares.
+export function checkConfig(config, spec = 'spec') {
+  const errors = [];
+  const at = `${spec}/config.json`;
+  const names = (key, list, reserved) => {
+    const seen = new Set();
+    for (const n of list) {
+      if (typeof n !== 'string' || !NAME.test(n)) errors.push(`${at}: \`${key}\` aceita só nomes com minúsculas, dígitos e hífens: ${JSON.stringify(n)}`);
+      else if (reserved.includes(n)) errors.push(`${at}: \`${key}\` não aceita o nome reservado ${n}`);
+      if (seen.has(n)) errors.push(`${at}: \`${key}\` repete ${n}`);
+      seen.add(n);
+    }
+  };
+  if (!config.layers.includes('product')) errors.push(`${at}: \`layers\` deve incluir product`);
+  names('layers', config.layers, ['model']);
+  names('auxiliaryDocuments', config.auxiliaryDocuments, RESERVED_DOCS);
+  for (const d of config.auxiliaryDocuments) {
+    if (config.layers.includes(d)) errors.push(`${at}: ${d} está em \`layers\` e em \`auxiliaryDocuments\`: é camada ou documento auxiliar, não os dois`);
+  }
+  return errors;
 }
 
 export function parseFrontmatter(text) {
@@ -276,8 +309,9 @@ export function commitments(text, locale, name = 'product.md', unmarked = locale
 
 // ---------- check ----------
 
-// Arquivo e pasta de decisões obrigatórios de cada camada declarada.
-function missingLayerFiles(root, spec, config) {
+// Arquivo e pasta de decisões obrigatórios de cada camada declarada, e arquivo de cada documento
+// técnico auxiliar declarado.
+function missingFiles(root, spec, config) {
   const errors = [];
   for (const layer of config.layers) {
     if (layer !== 'product' && !existsSync(join(root, spec, `${layer}.md`))) {
@@ -287,23 +321,43 @@ function missingLayerFiles(root, spec, config) {
       errors.push(`${spec}/decisions/${layer}/ ausente: a pasta de decisões da camada declarada é obrigatória`);
     }
   }
+  for (const doc of config.auxiliaryDocuments) {
+    if (!existsSync(join(root, spec, `${doc}.md`))) {
+      errors.push(`${spec}/${doc}.md ausente: o documento técnico auxiliar declarado em \`auxiliaryDocuments\` precisa existir`);
+    }
+  }
   return errors;
 }
 
+// Arquivo .md na raiz da spec que a configuração não declara: nem o AGENTS.md, o produto, o modelo,
+// uma camada nem um documento técnico auxiliar. Sem isso, o arquivo ficaria fora de toda verificação.
+function undeclaredDocs(root, spec, config) {
+  const known = new Set([
+    'AGENTS.md', 'product.md', 'model.md',
+    ...config.layers.map((l) => `${l}.md`),
+    ...config.auxiliaryDocuments.map((d) => `${d}.md`),
+  ]);
+  return readdirSync(join(root, spec), { withFileTypes: true })
+    .filter((e) => e.isFile() && e.name.endsWith('.md') && !known.has(e.name))
+    .map((e) => `${spec}/${e.name} não está declarado em config.json: declare o nome em \`layers\` (camada técnica fundamental, com decisões) ou em \`auxiliaryDocuments\` (documento técnico auxiliar), ou apague o arquivo`);
+}
+
 // Documentos com itens da spec que existem: product.md sempre; model.md, se existir; <camada>.md das
-// camadas declaradas (a falta de um deles é erro, reportado por missingLayerFiles).
+// camadas declaradas e <nome>.md dos documentos técnicos auxiliares declarados (a falta de um deles é
+// erro, reportado por missingFiles).
 export function specDocs(root, spec, config) {
   const docs = [{ file: 'product.md', kind: 'product' }, { file: 'model.md', kind: 'model' }];
   for (const layer of config.layers) {
     if (layer !== 'product') docs.push({ file: `${layer}.md`, kind: 'technical' });
   }
+  for (const doc of config.auxiliaryDocuments) docs.push({ file: `${doc}.md`, kind: 'auxiliary' });
   return docs.filter((d) => d.kind === 'product' || existsSync(join(root, spec, d.file)));
 }
 
 export function check(root, { spec = 'spec' } = {}) {
   const config = loadConfig(root, spec);
   const { locale } = config;
-  const errors = missingLayerFiles(root, spec, config);
+  const errors = [...checkConfig(config, spec), ...missingFiles(root, spec, config), ...undeclaredDocs(root, spec, config)];
   const warnings = [];
   const info = [];
 

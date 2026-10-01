@@ -9,7 +9,7 @@
 - ✓ **Tabularium**
   - ✓ versão: **Versão do tabularium**
 - ✓ **Spec**
-  - ✓ preferências: camadas, idioma do conteúdo e caminhos de código
+  - ✓ preferências: camadas, documentos técnicos auxiliares, idioma do conteúdo e caminhos de código
   - ✓ segue 1 **Tabularium**, o instalado no projeto
 - ✓ **Documento de produto**
   - ✓ pertence a 1 **Spec**
@@ -19,7 +19,7 @@
 - ✓ **Documento técnico**
   - ✓ tipos: fundamental | auxiliar
   - ✓ fundamental: pertence a 1 **Camada**, e toda Camada declarada além de produto tem um
-  - ✓ auxiliar: pertence a 1 **Spec**, opcional, e não é uma Camada
+  - ✓ auxiliar: pertence a 1 **Spec**, opcional, declarado nas preferências da Spec, e não é uma Camada
   - ✓ suas linhas seguem os mesmos estados de **Item**
 - ✓ **Item**
   - ✓ pertence a 1 **Documento de produto** ou a 1 **Documento técnico**

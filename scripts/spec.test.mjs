@@ -8,8 +8,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  LOCALES, buildMaps, check, checkDecision, checkItems, checkModel, checkProduct, definedTerms, loadLocale,
-  openChanges, parseFrontmatter, parseLocale, renderMap,
+  LOCALES, buildMaps, check, checkConfig, checkDecision, checkItems, checkModel, checkProduct, definedTerms,
+  loadConfig, loadLocale, openChanges, parseFrontmatter, parseLocale, renderMap,
 } from './spec.mjs';
 
 const locale = LOCALES['pt-BR'];
@@ -234,22 +234,102 @@ test('check lista itens comprometidos', () => {
   }
 });
 
-test('check: documento técnico de camada é validado', () => {
+// Grava campos em spec/config.json do repositório temporário.
+function setConfig(r, patch) {
+  const cfg = join(r.dir, 'spec', 'config.json');
+  writeFileSync(cfg, JSON.stringify({ ...JSON.parse(readFileSync(cfg, 'utf8')), ...patch }, null, 2));
+}
+
+test('check: documento técnico fundamental de camada é validado', () => {
   const r = repo();
   try {
-    const cfg = join(r.dir, 'spec', 'config.json');
-    writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('"product"', '"product",\n    "interface"'));
-    mkdirSync(join(r.dir, 'spec', 'decisions', 'interface'));
+    setConfig(r, { layers: ['product', 'architecture'] });
+    mkdirSync(join(r.dir, 'spec', 'decisions', 'architecture'));
     buildMaps(r.dir);
-    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- Tela única\n');
-    r.commit('camada interface');
+    writeFileSync(join(r.dir, 'spec', 'architecture.md'), '# Exemplo — Architecture\n\n## Módulos\n- Módulo único\n');
     assert.deepEqual(check(r.dir).errors, []);
-    assert.ok(check(r.dir).info.some((i) => i.includes('interface.md:4: - Tela única')));
-    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- ✓ Tela única\n- ver decisions/x.md\n');
-    assert.ok(check(r.dir).errors.some((e) => e.includes('interface.md:5') && e.includes('referência a decisão')));
+    assert.ok(check(r.dir).info.some((i) => i.includes('architecture.md:4: - Módulo único')));
+    writeFileSync(join(r.dir, 'spec', 'architecture.md'), '# Exemplo — Architecture\n\n## Módulos\n- ✓ Módulo único\n- ver decisions/x.md\n');
+    assert.ok(check(r.dir).errors.some((e) => e.includes('architecture.md:5') && e.includes('referência a decisão')));
   } finally {
     r.cleanup();
   }
+});
+
+test('check: documento técnico auxiliar declarado é validado, sem camada nem pasta de decisões', () => {
+  const r = repo();
+  try {
+    setConfig(r, { auxiliaryDocuments: ['interface'] });
+    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- Tela única\n');
+    assert.deepEqual(check(r.dir).errors, []);
+    assert.ok(check(r.dir).info.some((i) => i.includes('interface.md:4: - Tela única')));
+    assert.ok(!existsSync(join(r.dir, 'spec', 'decisions', 'interface')));
+    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n\n## Telas\n- ✓ Tela única\n- ver decisions/x.md\n- ✓ Botão ⇢ A ⇢ B\n');
+    const errors = check(r.dir).errors;
+    assert.ok(errors.some((e) => e.includes('interface.md:5') && e.includes('referência a decisão')));
+    assert.ok(errors.some((e) => e.includes('interface.md:6') && e.includes('mais de um')));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: documento técnico auxiliar declarado precisa existir', () => {
+  const r = repo();
+  try {
+    setConfig(r, { auxiliaryDocuments: ['interface'] });
+    assert.ok(check(r.dir).errors.some((e) => e.includes('interface.md ausente') && e.includes('auxiliaryDocuments')));
+    writeFileSync(join(r.dir, 'spec', 'interface.md'), '# Exemplo — Interface\n');
+    assert.deepEqual(check(r.dir).errors, []);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('check: arquivo .md da spec que a configuração não declara é erro', () => {
+  const r = repo();
+  try {
+    writeFileSync(join(r.dir, 'spec', 'flows.md'), '# Exemplo — Flows\n\n## Fluxos\n- ver [x](http://x.com)\n');
+    const errors = check(r.dir).errors;
+    assert.ok(errors.some((e) => e.includes('spec/flows.md não está declarado') && e.includes('auxiliaryDocuments') && e.includes('layers')));
+    setConfig(r, { auxiliaryDocuments: ['flows'] });
+    assert.ok(!check(r.dir).errors.some((e) => e.includes('não está declarado')));
+    assert.ok(check(r.dir).errors.some((e) => e.includes('flows.md:4') && e.includes('link não é permitido')));
+    // Pastas, o config e os arquivos conhecidos nunca contam como não declarados.
+    assert.ok(!check(r.dir).errors.some((e) => e.includes('AGENTS.md') || e.includes('product.md') || e.includes('model.md')));
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('config.json: auxiliaryDocuments é opcional, mas tem de ser uma lista', () => {
+  const r = repo();
+  try {
+    assert.deepEqual(loadConfig(r.dir).auxiliaryDocuments, []);
+    setConfig(r, { auxiliaryDocuments: 'interface' });
+    assert.throws(() => check(r.dir), /`auxiliaryDocuments` deve ser uma lista/);
+    setConfig(r, { auxiliaryDocuments: [], layers: 'product' });
+    assert.throws(() => check(r.dir), /sem `layers`/);
+  } finally {
+    r.cleanup();
+  }
+});
+
+test('checkConfig recusa camada e documento auxiliar mal declarados', () => {
+  const ok = { layers: ['product', 'architecture'], auxiliaryDocuments: ['interface', 'style-guide'] };
+  assert.deepEqual(checkConfig(ok), []);
+  const has = (config, texto) => checkConfig({ layers: ['product'], auxiliaryDocuments: [], ...config }).some((e) => e.includes(texto));
+  assert.ok(has({ layers: ['architecture'] }, '`layers` deve incluir product'));
+  assert.ok(has({ layers: ['product', 'model'] }, 'nome reservado model'));
+  assert.ok(has({ layers: ['product', 'architecture', 'architecture'] }, 'repete architecture'));
+  assert.ok(has({ layers: ['product', 'Architecture'] }, 'minúsculas, dígitos e hífens'));
+  assert.ok(has({ auxiliaryDocuments: ['interface', 'interface'] }, 'repete interface'));
+  for (const reservado of ['product', 'model', 'config', 'decisions', 'locales']) {
+    assert.ok(has({ auxiliaryDocuments: [reservado] }, `\`auxiliaryDocuments\` não aceita o nome reservado ${reservado}`), reservado);
+  }
+  assert.ok(has({ auxiliaryDocuments: ['Telas'] }, 'minúsculas, dígitos e hífens'));
+  assert.ok(has({ auxiliaryDocuments: ['AGENTS'] }, 'minúsculas, dígitos e hífens'));
+  assert.ok(has({ auxiliaryDocuments: [''] }, 'minúsculas, dígitos e hífens'));
+  assert.ok(has({ layers: ['product', 'interface'], auxiliaryDocuments: ['interface'] }, 'é camada ou documento auxiliar, não os dois'));
 });
 
 test('check: camada declarada exige o documento técnico e a pasta de decisões', () => {

@@ -1,6 +1,6 @@
 ---
 name: spec-init
-description: Cria a estrutura da spec viva, grava as preferências do projeto (camadas, idioma, caminhos de código) em spec/config.json e adapta a spec ao formato de uma versão nova do tabularium. Use depois do INSTALL, para adotar ou atualizar o tabularium num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
+description: Cria a estrutura da spec viva, grava as preferências do projeto (camadas, documentos técnicos auxiliares, idioma, caminhos de código) em spec/config.json e adapta a spec ao formato de uma versão nova do tabularium. Use depois do INSTALL, para adotar ou atualizar o tabularium num repositório, novo ou existente, ou para mudar essas preferências depois. Não escreve requisitos; para extrair a spec de código existente, use spec-extract.
 ---
 
 # spec-init
@@ -14,7 +14,8 @@ Regras de formato: `spec/AGENTS.md`. Toda alteração vai para um PR. Nunca edit
 
 ## 2. Preferências
 Se `spec/config.json` existir, mostre os valores atuais, pergunte só o que o usuário quer mudar e confirme cada mudança antes de gravar; se `codePaths` estiver vazio, pergunte-o sempre. Senão, pergunte tudo:
-- **Camadas fundamentais** além de `product`: aquelas cuja alteração depois da adoção causa grande impacto, como `architecture`, `integration`, `data` (modelo de dados) ou outras. Cada camada tem seu documento técnico e suas decisões, ambos obrigatórios. Documento técnico auxiliar (`interface`, `flows`, `style`) não é camada. Nenhuma se chama `model`, nome reservado ao modelo conceitual.
+- **Camadas fundamentais** além de `product`: aquelas cuja alteração depois da adoção causa grande impacto, como `architecture`, `integration`, `data` (modelo de dados) ou outras. Cada camada tem seu documento técnico e suas decisões, ambos obrigatórios. Documento técnico auxiliar (`interface`, `flows`, `style`) não é camada. Nenhuma se chama `model`, nome reservado ao modelo conceitual. Grave em `layers`, sempre com `product`.
+- **Documentos técnicos auxiliares** (opcional): questões complementares e de menor impacto, como `interface`, `flows` ou `style`. Cada um é um nome em minúsculas, dígitos e hífens, vira o arquivo `spec/<nome>.md`, não tem pasta de decisões e não repete nome de camada nem usa nome reservado (`product`, `model`, `config`, `decisions`, `locales`). Grave em `auxiliaryDocuments`; sem nenhum, a lista é vazia ou o campo é omitido.
 - **Idioma do conteúdo** (ex.: `pt-BR`). A estrutura fica sempre em inglês. Idioma fora de `LOCALES`, em `scripts/spec.mjs`, precisa de `spec/locales/<idioma>.json`, com as mesmas chaves de `LOCALES['pt-BR']`, traduzidas (em `mapTitle`, `{layer}` marca o nome da camada). Se o arquivo não existir, avise e crie-o.
 - **Caminhos de código** (`codePaths`): as pastas ou arquivos onde está o código do produto (ex.: `src/`, `app/`, `lib/`), casados por prefixo. Sugira a lista a partir das pastas do repositório e confirme. Configuração, build, instruções de IA, infra e a própria spec ficam de fora. Lista vazia: projeto sem código. Quando o código mudar de lugar, a lista é atualizada por aqui.
 
@@ -25,19 +26,22 @@ Crie o que faltar, sem sobrescrever nada:
 - `spec/product.md` a partir de `assets/product.md`.
 - `spec/model.md` a partir de `assets/model.md`, só se o usuário quiser: pergunte se o domínio tem estrutura relevante (entidades com relações, estados ou invariantes). Produto sem estrutura relevante dispensa o modelo.
 - Para cada camada além de `product`, crie `spec/<camada>.md` só com o título `# <Produto> — <Camada>`: o documento é obrigatório.
-- Documento técnico auxiliar, só se o usuário pedir: `spec/<nome>.md` com o mesmo título.
+- Para cada nome em `auxiliaryDocuments`, crie `spec/<nome>.md` só com o título `# <Produto> — <Nome>`. Quem pede um documento auxiliar é o usuário: não crie nem declare nenhum por conta própria.
 - `spec/decisions/<camada>/` para cada camada.
 - Rode `node scripts/spec.mjs build-map`.
 
 ## 4. Mudanças numa reexecução
 - **Camada nova**: crie a pasta e o documento técnico e regere os mapas.
 - **Camada removida com decisões**: pergunte se as decisões vão para outra camada (histórico: `AAAA-MM-DD organização: movida de <camada>`) ou se são apagadas.
+- **Documento auxiliar novo**: declare-o em `auxiliaryDocuments` e crie `spec/<nome>.md`.
+- **Documento auxiliar removido da configuração**: pergunte se o arquivo é apagado ou se vira camada fundamental (com pasta de decisões e mapa). Nunca apague sem a resposta.
 - **Idioma novo**: vale para conteúdo novo. Só traduza o existente se o usuário pedir.
 
 ## 5. Migração depois de uma atualização
 Depois que o INSTALL atualiza o tabularium, sobretudo numa versão major, o formato da spec pode ter mudado.
 - Rode `node scripts/spec.mjs check` e leia as regras novas em `spec/AGENTS.md`.
 - Para cada erro de formato, proponha a adaptação do conteúdo sem mudar o sentido de nenhum item, e aplique com a confirmação do usuário, em lote ou item a item.
+- Arquivo `.md` na raiz de `spec/` que a configuração não declara: pergunte, para cada um, se é um documento técnico auxiliar (declare em `auxiliaryDocuments`), uma camada fundamental (declare em `layers` e crie a pasta de decisões e o mapa) ou se deve ser apagado. Nunca escolha por conta própria.
 - O que exigir mudar sentido não é migração: vira proposta (`/spec-grill`, `/spec-propose`).
 - A migração vai no mesmo PR da atualização.
 

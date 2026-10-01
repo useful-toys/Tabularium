@@ -47,7 +47,7 @@ Cada item dos requisitos e dos documentos técnicos diz se é realidade ou compr
 
 Descrevem questões fundamentais, cuja alteração depois da adoção causa grande impacto. Seus itens seguem a mesma classificação.
 
-O tabularium não lista quais são: cada projeto define as suas camadas fundamentais, e cada uma tem o seu documento, `spec/<camada>.md`, obrigatório. Por exemplo `spec/architecture.md` (arquitetura), `spec/integration.md` (interfaces com outros sistemas) e `spec/data.md` (modelo de dados).
+O tabularium não lista quais são: cada projeto declara as suas camadas fundamentais em `layers`, no `spec/config.json`, e cada uma tem o seu documento, `spec/<camada>.md`, obrigatório. Por exemplo `spec/architecture.md` (arquitetura), `spec/integration.md` (interfaces com outros sistemas) e `spec/data.md` (modelo de dados).
 
 ### Documentos técnicos auxiliares
 
@@ -56,6 +56,8 @@ São independentes das camadas fundamentais e dos requisitos, e podem ser criado
 Tipicamente descrevem como são realizados os requisitos na prática, detalhando padrões, casos específicos.
 
 São opcionais, e cada um trata de um assunto: por exemplo `spec/interface.md` (telas), `spec/flows.md` (fluxos) e `spec/style.md` (guia de estilo).
+
+Cada um é declarado em `auxiliaryDocuments`, no `spec/config.json`, e o check falha se o arquivo declarado não existe ou se há um `.md` na raiz de `spec/` que a configuração não declara. Não são camadas e não têm pasta de decisões: as decisões sobre eles ficam na camada `product`.
 
 ### Decisões
 
@@ -188,7 +190,7 @@ Se um PR não passa na verificação do CI, ou o agente aponta que ele contradiz
 
 Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 
-- `/spec-init`: depois do INSTALL, prepara o repositório (rótulos e proteção da `main`), grava camadas, idioma e caminhos de código em `spec/config.json`, cria a estrutura da spec e adapta a spec ao formato de uma versão nova; reexecutável.
+- `/spec-init`: depois do INSTALL, prepara o repositório (rótulos e proteção da `main`), grava camadas, documentos técnicos auxiliares, idioma e caminhos de código em `spec/config.json`, cria a estrutura da spec e adapta a spec ao formato de uma versão nova; reexecutável.
 - `/spec-extract`: preenche `product.md`, `model.md` e decisões de produto a partir de código, testes e documentação existente; `✓` só com evidência, perguntas durante a extração.
 - `/spec-grill`: faz a triagem (requirement issue, bug issue ou descarte) e esmiúça a ideia (texto, issue ou proposta) contra glossário, modelo, transversais, decisões e código, em rodadas de perguntas; só na conversa.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.

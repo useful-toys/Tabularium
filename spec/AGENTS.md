@@ -5,10 +5,11 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 ## Arquivos
 - `product.md`: o que o produto é e como se comporta. Fonte da verdade do comportamento.
 - `model.md` (opcional): modelo conceitual, a estrutura do domínio. Quando existe, é lido sempre junto com o `product.md`. Produto sem estrutura relevante dispensa o modelo.
-- `<camada>.md`: documento técnico fundamental de cada camada além de `product` declarada em `config.json`, obrigatório (ex.: `architecture.md`, `integration.md`). Documento técnico auxiliar (ex.: `interface.md`, `flows.md`, `style.md`) é opcional e não é uma camada.
-- `decisions/<camada>/*.md`: uma decisão vigente por arquivo. Camadas em `config.json`. Nenhuma camada se chama `model`, nome reservado ao modelo conceitual; o modelo de dados usa a camada `data`.
+- `<camada>.md`: documento técnico fundamental de cada camada além de `product` declarada em `layers`, em `config.json`, obrigatório (ex.: `architecture.md`, `integration.md`).
+- `<nome>.md`: documento técnico auxiliar (ex.: `interface.md`, `flows.md`, `style.md`), declarado em `auxiliaryDocuments`, em `config.json`. É opcional, não é uma camada e não tem pasta de decisões. Arquivo `.md` na raiz da spec que `config.json` não declara é erro.
+- `decisions/<camada>/*.md`: uma decisão vigente por arquivo. Camadas em `layers`, em `config.json`. Nenhuma camada se chama `model`, nome reservado ao modelo conceitual; o modelo de dados usa a camada `data`.
 - `decisions/<camada>/README.md`: mapa gerado por `node scripts/spec.mjs build-map`. Nunca editar à mão.
-- `config.json`: preferências do projeto (camadas, idioma, caminhos de código). Só o que está nos caminhos de código conta como código nas regras de PR. Alterado só pela skill `spec-init`.
+- `config.json`: preferências do projeto: `layers` (`product` e as camadas técnicas fundamentais), `auxiliaryDocuments` (documentos técnicos auxiliares, opcional), `language` (idioma do conteúdo) e `codePaths` (caminhos de código). Só o que está nos caminhos de código conta como código nas regras de PR. Alterado só pela skill `spec-init`.
 - `locales/<idioma>.json` (opcional): textos da verificação para um idioma fora dos embutidos em `scripts/spec.mjs`. Criado pela skill `spec-init`.
 
 `product.md`, `model.md` e os documentos técnicos são os **documentos com itens**. As regras de Status e de Mudanças valem para os três.
@@ -77,8 +78,9 @@ Regras para ler e escrever em `spec/`. Valem para humanos e agentes.
 - Nome em negrito é sempre termo do glossário ou tipo declarado. O CI verifica. Termo do glossário que não aparece no modelo é permitido.
 
 ## Documentos técnicos
-- `<camada>.md` descreve o estado atual de uma camada técnica, como interface ou arquitetura. O documento de cada camada declarada é obrigatório, e a verificação falha se ele ou a pasta de decisões da camada não existe. O auxiliar, sobre questões complementares e de menor impacto, é opcional.
-- `# <Produto> — <Camada>`, com seções livres.
+- `<camada>.md` descreve o estado atual de uma camada técnica, como arquitetura ou integração. O documento de cada camada declarada é obrigatório, e a verificação falha se ele ou a pasta de decisões da camada não existe.
+- `<nome>.md`, o auxiliar, trata de questões complementares e de menor impacto, como telas, fluxos ou guia de estilo. É opcional e só existe se declarado em `auxiliaryDocuments`: a verificação falha se o arquivo declarado não existe ou se há `.md` na raiz da spec que a configuração não declara. Tem as mesmas regras de formato, e as decisões sobre ele ficam na camada `product`.
+- `# <Produto> — <Camada ou documento>`, com seções livres.
 - Autocontido e atemporal, como o `product.md`: sem links nem referências a decisões.
 - Formato exato, layout e parâmetros que o `product.md` deixa de fora vêm para cá (ex.: o formato do texto exportado vai para `interface.md`).
 

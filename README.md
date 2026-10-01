@@ -86,8 +86,8 @@ Depois que o PR é aberto:
 
 ```mermaid
 flowchart LR
-  PR["PR draft com novos arquivos da spec"] --> CI(("CI: classifica o tipo (rótulo)<br/>regras objetivas<br/>agente só comenta"))
-  CI --> GG{"Regras objetivas passam?"}
+  PR["PR draft com novos arquivos da spec"] --> CI(("CI: estrutura e formato<br/>agente confere e só comenta"))
+  CI --> GG{"Verificação passa?"}
   GG -->|sim| A["Merge decidido por humano<br/>= compromisso"]
   GG -->|"não: /spec-grill sobre o PR"| C(("Conversa"))
   A --> E["Código + /spec-sync<br/>Closes #issue"]
@@ -154,17 +154,12 @@ Se o portão aprovar, o `/spec-propose` abre o PR:
 - Abre um PR em rascunho (draft), com o texto final da spec e das decisões, sem código.
 - O autor o libera depois de tratar os comentários do passo 5.
 
-**5. O CI confere o PR de forma independente.** O `/spec-propose` conhece a conversa. O CI não a conhece. Ele só vê o novo texto da spec, nos arquivos ou no diff. É uma segunda conferência, feita apenas sobre a alteração. Ela tem três partes:
+**5. O CI e um agente conferem o PR de forma independente.** O `/spec-propose` conhece a conversa. O CI e o agente não a conhecem. Eles só veem o novo texto da spec, nos arquivos ou no diff. É uma segunda conferência, feita apenas sobre a alteração. Ela tem duas partes:
 
-- **Classifica a mudança.** Mede o tamanho do impacto, deduz o tipo (editorial, neutra, compatível ou incompatível) e aplica o rótulo correspondente.
-- **Aplica regras objetivas e bloqueia o PR que as viola.** São regras que um script confere sem opinião. Por exemplo: uma mudança incompatível sem decisão, ou um rótulo de tipo menor do que a mudança.
-- **Pede a opinião de um agente de IA, que só comenta.** O agente procura os mesmos problemas do portão, como contradições, decisões contrariadas e cascata esquecida. Esse comentário nunca bloqueia, porque a IA pode errar e mudar de resposta entre execuções. Ele serve de alerta para quem vai aceitar a proposta.
+- **A verificação do CI confere a estrutura e o formato e bloqueia o PR que os viola.** São regras que um script confere sem opinião: pastas e arquivos de cada camada, mapa das decisões atualizado, notação (`✓` e `⇢`), seções, ausência de links. Não depende de IA e dá sempre o mesmo resultado.
+- **A conferência por agente pede a opinião de uma IA, que só comenta.** O agente procura os mesmos problemas do portão, como contradições, decisões contrariadas e cascata esquecida. Julga o tipo da mudança e confere as regras de PR: uma mudança incompatível sem decisão, um `⇢` resolvido sem código, um `✓` alterado ou marcado sem código fora de um PR editorial. Esse comentário nunca bloqueia, porque a IA pode errar e mudar de resposta entre execuções. Ele serve de alerta para quem vai aceitar a proposta.
 
-Os rótulos de PR que o CI aplica dizem o tipo da mudança. Todo PR tem um tipo, pelo que faz com a spec vigente:
-- Com vários tipos, vale o maior.
-- O CI deduz o tipo mínimo pelo diff. Quando o diff não mostra se o sentido mudou, a IA julga, e vale o maior entre o mínimo e o julgado.
-- um rótulo aplicado por uma pessoa vence, e o CI nunca o troca.
-- Sem IA disponível, o caso ambíguo exige o rótulo de uma pessoa.
+Todo PR tem um tipo, pelo que faz com a spec vigente, e com vários tipos vale o maior. Nenhum script deduz o tipo e nenhum rótulo o declara: quem o julga é o agente, e quem integra decide. Os rótulos de tipo existem no repositório, mas por ora ninguém os aplica nem os exige:
 
 | Rótulo | Uso |
 |---|---|
@@ -180,9 +175,9 @@ Não há aprovação formal obrigatória. Quem tem permissão de merge aceita a 
 
 **Os PRs de proposta, de qualquer tipo, formam uma fila de aceite.** Cada PR aberto espera uma decisão: aceitar (merge) ou recusar (fechar sem merge).
 
-Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda. Os PRs que sobraram ficam defasados (drift). Um PR defasado pode deixar de passar nas regras do CI, por exemplo por contradizer o que acabou de ser aceito.
+Podem existir vários PRs de requisitos ao mesmo tempo. A cada merge, a spec vigente muda. Os PRs que sobraram ficam defasados (drift). Um PR defasado pode deixar de passar na verificação do CI ou passar a contradizer o que acabou de ser aceito, o que a conferência por agente aponta.
 
-Se um PR não passa nas regras do CI, ele precisa ser rediscutido:
+Se um PR não passa na verificação do CI, ou o agente aponta que ele contradiz a spec vigente, ele precisa ser rediscutido:
 - O usuário roda `/spec-grill` sobre o PR, na conversa, com o que mudou na spec vigente.
 - Se a ideia ainda vale, o `/spec-propose` atualiza o PR sobre a spec vigente e o portão é aplicado de novo.
 - Se não vale mais, o PR é fechado.
@@ -199,7 +194,7 @@ Em `.claude/skills/`. Todas seguem `spec/AGENTS.md`.
 - `/spec-ideas`: sugere alternativas, cenários de borda, cascata esquecida e recortes, para aceitar ou descartar com motivo; só na conversa.
 - `/spec-issue`: a pedido, leva o entendimento da conversa para uma requirement issue, nova ou existente: reescreve o corpo, comenta o resumo da rodada e, no primeiro toque, guarda o original como comentário.
 - `/spec-propose`: aplica o portão da proposta: só se a ideia estiver madura e consistente com a spec vigente escreve o texto final e as operações nas decisões, valida a consistência da spec resultante e abre ou atualiza o PR de proposta em draft, casando de novo uma proposta defasada.
-- `/spec-impact`: triagem sugerida (requirement issue, bug issue ou descarte) e impacto de uma issue ou texto; conferência por agente de um PR de proposta; classificação do tipo no caso ambíguo, para o CI. Nunca aprova nem reprova.
+- `/spec-impact`: triagem sugerida (requirement issue, bug issue ou descarte) e impacto de uma issue ou texto; conferência por agente de um PR de proposta, que julga o tipo e confere as regras de PR. Nunca aprova nem reprova.
 - `/spec-sync`: no PR do código, marca `✓` no entregue, reescreve os `⇢` entregues e trata divergências entre entrega e compromisso.
 - `/spec-check`: roda o check e revisa o drift entre spec e código, com achados e evidências; só verifica.
 - `/spec-reconcile`: restaura a consistência da spec consigo mesma, uma camada por vez, e organiza as decisões; nada muda sem aprovação.

@@ -1,25 +1,22 @@
 ---
-tema: Tipos de mudança e como o PR é classificado
-decisao: Quatro tipos pela compatibilidade com o que vale hoje - editorial, neutra, compatível, incompatível -, deduzidos do diff pelo CI, que aplica a label; no caso ambíguo, a IA julga e a label aplicada por uma pessoa vence
-carregar-quando: mudança nos tipos de mudança, na classificação de PRs, nas labels de tipo ou no papel da IA e das pessoas na classificação
+tema: Tipos de mudança e quem os julga
+decisao: Quatro tipos pela compatibilidade com o que vale hoje - editorial, neutra, compatível, incompatível -, julgados pela conferência por agente e por quem integra; nenhum script os deduz e nenhum rótulo os declara, e os rótulos de tipo existem mas por ora ninguém os aplica nem os exige
+carregar-quando: mudança nos tipos de mudança, nas regras de PR que dependem do tipo, nas labels de tipo ou no papel da IA e das pessoas ao julgar o tipo
 ---
-- Decisão: todo PR tem um tipo, pelo que faz com a spec vigente, e o PR com vários recebe o maior, nesta ordem: editorial (só texto da spec, sem mudar sentido), neutra (não altera o sentido de nenhum requisito: código sem spec ou entrega de compromisso), compatível (cria requisito, altera item não implementado ou cria decisão, sem contradizer item nem decisão) e incompatível (altera o sentido de item implementado, contradiz item ou vai contra decisão); o CI deduz do diff o tipo mínimo que ele prova e aplica a label do tipo; quando o diff é ambíguo, porque o script não sabe se o sentido mudou, a IA julga e vale o maior entre o mínimo e o julgado; se o tipo torna o PR inválido, o check bloqueia; a label aplicada por uma pessoa vence a dedução e a IA, o bot nunca a troca, e abaixo do mínimo é erro; sem IA disponível, o caso ambíguo exige label aplicada por uma pessoa; por ora, o PR sem mudança na spec é neutro sem julgamento de comportamento
-- Contexto: o tipo decide o que o check exige (decisão, seta, código); com o tipo declarado só pelo autor, um tipo errado burla as regras, e o merge sozinho não o pega
+- Decisão: todo PR tem um tipo, pelo que faz com a spec vigente, e o PR com vários recebe o maior, nesta ordem: editorial (só texto da spec, sem mudar sentido), neutra (não altera o sentido de nenhum requisito: código sem spec ou entrega de compromisso), compatível (cria requisito, altera item não implementado ou cria decisão, sem contradizer item nem decisão) e incompatível (altera o sentido de item implementado, contradiz item ou vai contra decisão); o tipo é julgado pela conferência por agente, que o diz no comentário, e por quem integra; o CI não o deduz, não o verifica e não aplica rótulo; as regras de PR que dependem do tipo (código para resolver `⇢` ou marcar `✓`, decisão para `⇢` e para mudança incompatível) são conferidas pela conferência por agente, que só comenta; os rótulos spec-editorial, spec-neutral, spec-compatible e spec-incompatible continuam sendo criados pela preparação do repositório, mas por ora ninguém os aplica nem os exige; PR sem mudança na spec é neutro, sem julgamento de comportamento por ora
+- Contexto: o script só prova o tipo em poucos casos, e na maior parte das mudanças de texto o diff não mostra se o sentido mudou; reordenar itens ou mover um item para outro pai passa sem ser visto; com um modelo de IA dentro de um check obrigatório, o mesmo PR podia ser bloqueado numa execução e liberado em outra
 - Alternativas descartadas
   - Nomes significativa, simples e trivial: sugerem tamanho, e uma refatoração grande que não muda requisito não é trivial
   - Acréscimo e ajuste de compromisso como tipos distintos: o tratamento é o mesmo, item sem marca e sem seta
-  - Uma label única para PRs de spec: sem a intenção declarada, o check não distingue redação de mudança de sentido
-  - Tipo só declarado pelo autor: autor, humano ou agente, tende a declarar o tipo mais barato
-  - Label só no caso ambíguo, sem o CI aplicar a deduzida: o tipo fica invisível em boa parte dos PRs
-  - Label sempre declarada e só validada: trabalho manual em todo PR
-  - Revisão por IA só consultiva também na classificação: o tipo governa as regras, e o tipo errado as burla
-  - Aprovação de review como confirmação humana: contradiz a aceitação sem aprovação formal, é inviável com autor único e é descartada a cada commit
-  - Comando em comentário como confirmação: mais um mecanismo, e a label já expressa o tipo
-  - Sem IA, aplicar o tipo mínimo e seguir: o caso ambíguo passaria sem ninguém julgar o sentido
+  - Uma label única para PRs de spec: sem a intenção declarada, a conferência não distingue redação de mudança de sentido
+  - Tipo deduzido do diff pelo CI, com a IA julgando o caso ambíguo e o bot aplicando o rótulo: o script só prova o tipo em poucos casos, o resto é ambíguo, e uma IA dentro de um check obrigatório torna o bloqueio não reproduzível; era a escolha anterior, abandonada por isso
+  - Rótulo de tipo aplicado por uma pessoa e conferido contra o mínimo do diff: um clique em quase todo PR de spec, e o rótulo editorial ainda libera a troca de sentido sem código
+  - Aprovação de review ou comando em comentário como confirmação humana do tipo: contradiz a aceitação sem aprovação formal, é inviável com autor único e é mais um mecanismo
   - IA julgando também se PR só de código muda comportamento: custo e falso positivo em quase todo PR de código; fica para outra discussão
 - Consequências
-  - Ganha: o tipo de todo PR é visível e conferido contra o diff; redação e mudança de sentido deixam de se confundir
-  - Aceita: um check obrigatório depende de IA no caso ambíguo; permissão de escrita nos PRs para o CI; em PR de fork, a label não é aplicada; mudança editorial em item implementado vai em PR próprio, porque o PR misto recebe o maior tipo; PR de código sem spec passa sem que ninguém afirme que o comportamento não muda
+  - Ganha: o check bloqueante é determinístico, não usa IA, não escreve no PR e dá o mesmo resultado em PR de fork; não há mais rótulo trocado pelo bot nem caso ambíguo a resolver
+  - Aceita: as regras de PR deixam de ser barradas e viram achado de um agente, que pode errar ou não rodar; um tipo errado não é pego por script; quem recusa a conferência fica sem quem confira essas regras; mudança editorial em item implementado vai em PR próprio, porque o PR misto recebe o maior tipo; PR de código sem spec passa sem que ninguém afirme que o comportamento não muda
 
 ## Histórico
+- 2026-09-30 #24: o tipo deixa de ser deduzido pelo CI e aplicado como rótulo; passa a ser julgado pela conferência por agente e por quem integra, e os rótulos de tipo ficam sem uso
 - 2026-09-26 #14: decisão criada

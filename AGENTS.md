@@ -9,13 +9,13 @@ Este repositório mantém uma spec viva em `spec/`. As regras de formato e de mu
 - Evolução de requisitos:
   1. **Amadurecer** na conversa: `/spec-grill` esmiúça, começando pela triagem (requirement issue, bug issue ou descarte), e `/spec-ideas` sugere alternativas, a partir de texto, issue ou PR. As duas só trabalham na conversa. Para guardar o entendimento numa requirement issue (label `requirement`), nova ou existente, use `/spec-issue`, a pedido: o corpo da issue passa a ser o entendimento mais recente, e os comentários, o histórico. Bug (comportamento que contradiz item `✓`) não segue o ciclo: a conversa sugere uma bug issue, e hoje o `/spec-grill` a recusa, pois ela terá tratamento próprio, por skills dedicadas, ainda por especificar. Issue com label `plan` também é recusada hoje, pelo mesmo motivo.
   2. **Propor**: `/spec-propose` valida a consistência da spec resultante e abre ou atualiza o PR de proposta (draft) com o texto final da spec e das decisões.
-  3. **Validar**: no CI, o check deduz o tipo da mudança e aplica a label (`spec-editorial`, `spec-neutral`, `spec-compatible` ou `spec-incompatible`); no caso ambíguo, a IA classifica, e a label aplicada por uma pessoa vence. O agente roda `/spec-impact` em modo PR e comenta, sem bloquear. Quem decide é a pessoa que integra.
+  3. **Validar**: o check do CI confere só a estrutura de pastas e arquivos e o formato, e bloqueia se falhar. O agente roda `/spec-impact` em modo PR e comenta, sem bloquear: julga o tipo da mudança e confere as regras de PR. Quem decide é a pessoa que integra.
   4. **Aceitar**: o merge, decidido por um humano, torna a proposta compromisso. Não há aprovação formal obrigatória.
   5. **Entregar**: implemente, rode `/spec-sync` no mesmo PR do código e cite a issue com `Closes #N`.
 - Não implemente comportamento que não esteja comprometido na spec, salvo mudança compatível registrada na spec no mesmo PR do código.
-- Não aplique label de tipo: o CI a aplica. Aplique uma só quando o CI pedir a classificação de uma pessoa, e só com o aval do humano.
+- Não aplique label de tipo: por ora nada as usa, nem o CI nem o agente.
 - Só faça o merge de um PR quando o humano pedir explicitamente, PR a PR.
-- Toda mudança entra por PR. Antes de abrir um PR, rode `node scripts/spec.mjs check --base origin/main`.
+- Toda mudança entra por PR. Antes de abrir um PR, rode `node scripts/spec.mjs check`.
 - Os arquivos do tabularium (listados em `.tabularium`) e este bloco são sobrescritos pelo INSTALL a cada atualização: não os edite no projeto.
 - Documentos em formatos convencionais são exportados da spec a pedido, conforme `spec/AGENTS.md`, e nunca são fonte.
 - Outras skills:

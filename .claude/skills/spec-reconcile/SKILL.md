@@ -52,5 +52,5 @@ Mostre os achados numerados no chat, cada um com tipo, arquivos e ação propost
 
 ## 6. Aplicação
 - Crie uma branch própria e aplique só o que foi aprovado.
-- Rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check --base origin/main`.
-- Abra um PR. O CI deduz o tipo e aplica a label; organização sem mudança de sentido é `spec-editorial`. O relatório vai na descrição do PR e não é commitado.
+- Rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`.
+- Abra um PR. Organização sem mudança de sentido é editorial; nenhuma label de tipo é aplicada. O relatório vai na descrição do PR e não é commitado.

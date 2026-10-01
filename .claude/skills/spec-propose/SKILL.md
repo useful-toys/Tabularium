@@ -45,7 +45,7 @@ Nas decisões:
 - **Fundir, dividir, mover, remover**: como em `spec/AGENTS.md`, com a entrada de organização no histórico.
 - Mudança incompatível **sempre** cria ou altera uma decisão. Decisão nova de mudança compatível não pode violar decisão vigente.
 
-Depois rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check --base origin/main`, e corrija o que falhar. O `check` informa o tipo que o diff prova.
+Depois rode `node scripts/spec.mjs build-map` e `node scripts/spec.mjs check`, e corrija o que falhar. O `check` confere só a estrutura e o formato; as regras de PR (decisão para `⇢`, código para `✓`) são suas e da conferência por agente.
 
 ## 3a. Consistência
 Antes de criar ou atualizar o PR, valide a spec resultante: o diff aplicado sobre a `main` atual. Confronte os itens tocados e a cascata deles com o `product.md`, o `model.md`, os documentos técnicos e as decisões relevantes pelo mapa, procurando:
@@ -57,7 +57,7 @@ Antes de criar ou atualizar o PR, valide a spec resultante: o diff aplicado sobr
 Achou qualquer inconsistência, inclusive uma que já existia na `main`: não publique. Relate os achados e sugira voltar ao `/spec-grill`; inconsistência preexistente fora da proposta é corrigida antes, num PR editorial ou pelo `/spec-reconcile`. Numa proposta defasada, esta validação também confere o novo casamento.
 
 ## 4. PR
-- Commit e push. O PR nunca inclui código e não leva label de tipo: o CI deduz o tipo (`spec-compatible` ou `spec-incompatible`) e aplica a label. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.
+- Commit e push. O PR nunca inclui código e não leva label de tipo: por ora nada as aplica. Mudança compatível pode ir direto no PR de implementação, sem proposta separada.
 - **Draft**: PR novo abre em draft (`gh pr create --draft`). O agente da conferência, no CI, comenta. O autor trata os achados e marca como pronto (`gh pr ready`). PR existente mantém o estado em que está.
 - Descrição do PR:
 ```markdown
@@ -90,6 +90,6 @@ A definição do template é `tabularium-spec/` junto com tudo o que o template 
      - `tabularium-docs/install.md`, `config.md` e `maintenance.md`: o detalhe operacional (instalação, variáveis e versões; configuração; proteção da `main`, conferência por agente e mudança do próprio tabularium), regerado dos arquivos finais, com o cabeçalho de documento derivado;
      - `tabularium-docs/spec-flow.md`: o fluxo completo, regerado a partir de `tabularium-spec/` e do comportamento das skills, com o cabeçalho de documento derivado.
   - Sem subagentes disponíveis, faça os passos 2 e 3 em sequência, relendo só os arquivos finais.
-- Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check`, sem `--base`, nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
+- Valide a consistência (passo 3a) sobre `tabularium-spec/`, e rode `node scripts/spec.mjs build-map` e `check` nas duas specs (`--spec tabularium-spec` e a padrão), e `node --test scripts/spec.test.mjs` se o script mudou.
 - PR pronto (sem draft), só com a label `tabularium`: sem label de tipo. A descrição lista o que muda na spec do template, as decisões e os arquivos da definição alterados.
 - O merge, decidido por um humano, é aceite e entrega. Não há conferência por agente nem `/spec-sync`.

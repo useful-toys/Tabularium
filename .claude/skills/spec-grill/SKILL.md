@@ -20,7 +20,7 @@ Regras de formato: `spec/AGENTS.md`. Mudança no próprio template (`tabularium-
 - Leia sempre `spec/product.md` inteiro e o `spec/model.md`, se existir: a cascata exige o todo. Leia também o mapa de decisões de cada camada.
 - Abra os documentos técnicos e as decisões cujo `carregar-quando` corresponda à ideia à medida que a árvore de decisões os alcançar, inclusive em rodadas posteriores.
 - Rode `node scripts/spec.mjs check` para ver os `⇢` e os itens comprometidos em aberto.
-- Rode `gh pr list --state open --search "label:spec-compatible,spec-incompatible" --json number,title,files` e veja se outras propostas abertas tocam a mesma área.
+- Rode `gh pr list --state open --json number,title,isDraft,files`, fique com os PRs que alteram `spec/` sem tocar os caminhos de código de `spec/config.json` e veja se outras propostas abertas tocam a mesma área. Os rótulos de tipo não são aplicados por ora: não os use para achar propostas.
 - Consulte o código quando a ideia afirmar algo sobre o comportamento atual.
 
 ## 3. Árvore de decisões
